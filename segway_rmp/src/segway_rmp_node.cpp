@@ -355,7 +355,7 @@ public:
                 this->ang = -50.0*joy_axis.at(0)/32767.0;
                 this->lin = -joy_axis.at(3)/32767.0;
             }
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            // std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }
         return;
     }
