@@ -330,17 +330,17 @@ public:
                     break;
             }
 
-            std::cout << "axis:";
-            for (size_t i(0); i < joy_axis.size(); i++) {
-                std::cout << " " << std::setw(2) << joy_axis.at(i)/32767.0;
-            }
-            std::cout << '\n';
-
-            std::cout << "  button: ";
-            for(size_t i(0);i<joy_button.size();++i) {
-                std::cout << " " << (int)joy_button.at(i);
-            }
-            std::cout << '\n';
+            // std::cout << "axis:";
+            // for (size_t i(0); i < joy_axis.size(); i++) {
+            //     std::cout << " " << std::setw(2) << joy_axis.at(i)/32767.0;
+            // }
+            // std::cout << '\n';
+            //
+            // std::cout << "  button: ";
+            // for(size_t i(0);i<joy_button.size();++i) {
+            //     std::cout << " " << (int)joy_button.at(i);
+            // }
+            // std::cout << '\n';
 
 
             if ((int)joy_button.at(13) == 1) {
@@ -580,7 +580,7 @@ public:
                     if (this->obstacle_detected) {
                         this->lin = 0;
                     }
-                    printf("%lf, %lf\n", this->ang, this->lin);
+                    // printf("%lf, %lf\n", this->ang, this->lin);
                     this->segway_rmp->move(this->lin, this->ang); // add offset 0.03
                 } catch (std::exception& e) {
                     std::string e_msg(e.what());
