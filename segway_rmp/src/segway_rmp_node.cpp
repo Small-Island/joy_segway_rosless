@@ -354,7 +354,7 @@ public:
 
             if (this->latch == 0) {
                 this->ang = -50.0*joy_axis.at(0)/32767.0;
-                this->lin = -joy_axis.at(4)/32767.0;
+                this->lin = -joy_axis.at(3)/32767.0;
             }
         }
         return;
