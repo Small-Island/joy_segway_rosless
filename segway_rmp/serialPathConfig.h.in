@@ -1,0 +1,4 @@
+#define SERIAL_PATH "@serial_PATH@"
+// CMakeLists.txt の 第4行目 の
+// set(serial_PATH "${PROJECT_SOURCE_DIR}/../../serial_out")
+// にて serial_PATH が定義されている。

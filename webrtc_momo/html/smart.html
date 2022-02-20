@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="icon" type='image/png' href="../momo_icon.png">
+    <title>Momo P2P</title>
+  </head>
+  <body>
+      <html lang="ja">
+      <div id="remote_video"></div>
+        <canvas id="myPics" width="600" height="600"></canvas>
+        <style type="text/css">
+            canvas {
+              border: 1px solid black;
+              width: 600px;
+              height: 600px;
+              position: absolute;
+              background: gray;
+              top: 600px;
+              left: 200px;
+              /* border-radius: 50%; */
+            }
+        </style>
+        <pre><div id="log"></div></pre>
+        <script type="text/javascript">
+
+        const log_target = document.getElementById("log");
+
+        // 真のとき、マウスを動かすと線を描く
+        let isDrawing = false;
+        let x = 0;
+        let y = 0;
+
+        const myPics = document.getElementById('myPics');
+        const context = myPics.getContext('2d');
+        context.fillStyle = "black";
+        context.fillRect(0, myPics.height/2 - 5, myPics.width, 10);
+        context.fillRect(myPics.width/2, 0, 10, myPics.height);
+        context.fillStyle = "red";
+        context.fillRect(300 - 50, 300 - 50, 100, 100);
+
+        myPics.addEventListener('touchstart', e => {
+          x = e.touches[0].clientX - myPics.offsetLeft;
+          y = e.touches[0].clientY - myPics.offsetTop;
+          context.clearRect(0, 0, myPics.width, myPics.height);
+          context.fillStyle = "black";
+          context.fillRect(0, myPics.height/2 - 5, myPics.width, 10);
+          context.fillRect(myPics.width/2, 0, 10, myPics.height);
+          context.fillStyle = "red";
+          context.fillRect(x - 50, y - 50, 100, 100);
+          // dataChannel.send(new TextEncoder().encode("jyja" + (x - myPics.width/2)/(myPics.width/2)*40 + "," + (-y + myPics.height/2)/(myPics.height/2)*0.5 + "\n"));
+          isDrawing = true;
+        });
+
+        myPics.addEventListener('touchmove', e => {
+            if (isDrawing === true) {
+                x = e.touches[0].clientX - myPics.offsetLeft;
+                y = e.touches[0].clientY - myPics.offsetTop;
+                if (0 < x && x < myPics.width && 0 < y && y < myPics.height) {
+                    context.clearRect(0, 0, myPics.width, myPics.height);
+                    context.fillStyle = "black";
+                    context.fillRect(0, myPics.height/2 - 5, myPics.width, 10);
+                    context.fillRect(myPics.width/2, 0, 10, myPics.height);
+                    context.fillStyle = "red";
+                    context.fillRect(x - 50, y - 50, 100, 100);
+                    // dataChannel.send(new TextEncoder().encode("jyja" + (x - myPics.width/2)/(myPics.width/2)*40 + "," + (-y + myPics.height/2)/(myPics.height/2)*0.5 + "\n"));
+                }
+            }
+        });
+
+        window.addEventListener('touchend', e => {
+            context.clearRect(0, 0, myPics.width, myPics.height);
+            context.fillStyle = "black";
+            context.fillRect(0, myPics.height/2 - 5, myPics.width, 10);
+            context.fillRect(myPics.width/2, 0, 10, myPics.height);
+            context.fillStyle = "red";
+            context.fillRect(300 - 50, 300 - 50, 100, 100);
+            dataChannel.send(new TextEncoder().encode("jyja0,0\n"));
+            isDrawing = false;
+        });
+        setInterval(sendzero, 1000/100);
+        function sendzero() {
+            if (isDrawing) {
+                if (x < 0) {
+                    x = 0;
+                }
+                else if (x > myPics.width) {
+                    x = myPics.width;
+                }
+                if (y < 0) {
+                    y = 0;
+                }
+                else if (y > myPics.height) {
+                    y = myPics.height;
+                }
+                dataChannel.send(new TextEncoder().encode("jyja" + (-(x - myPics.width/2)/(myPics.width/2)*40).toFixed(3) + "," + ((-y + myPics.height/2)/(myPics.height/2)*0.5).toFixed(3) + "\n"));
+            }
+            else {
+                dataChannel.send(new TextEncoder().encode("jyja0,0\n"));
+            }
+        }
+        </script>
+  </html>
+
+    <script type='text/javascript' src='./js/webrtc_smart.js'></script>
+    <!-- <script type='text/javascript' src='./js/sora.min.js'></script> -->
+    <script type="text/javascript">
+        connect();
+    </script>
+  </body>
+</html>

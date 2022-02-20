@@ -1,0 +1,5 @@
+#!/bin/bash
+cd webrtc_momo
+./momo_x64  $* sora --signaling-url wss://sora.ikeilabsora.0am.jp/signaling --channel-id ojima-sora --video true --audio false --video-codec-type VP9 --video-bit-rate 1000  --role sendonly --multistream true  &
+cd ..
+echo "start sora"
