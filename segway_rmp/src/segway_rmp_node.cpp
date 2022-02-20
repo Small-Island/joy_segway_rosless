@@ -311,7 +311,6 @@ public:
         while (true) {
             js_event js;
             read(joy_fd, &js, sizeof(js_event));
-            ioctl(joy_fd, JSIOCGNAME(80), &name_of_joystick);
 
             switch (js.type & ~JS_EVENT_INIT) {
                 case JS_EVENT_AXIS:
@@ -356,6 +355,7 @@ public:
                 this->ang = -50.0*joy_axis.at(0)/32767.0;
                 this->lin = -joy_axis.at(3)/32767.0;
             }
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }
         return;
     }
