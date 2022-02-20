@@ -43,6 +43,7 @@
 #include <linux/joystick.h>
 #define JOY_DEV "/dev/input/js0"
 
+
 // #include <boost/thread.hpp>
 
 // #include <std_msgs/String.h>
@@ -201,7 +202,7 @@ public:
         this->initial_integrated_left_wheel_position = 0.0;
         this->initial_integrated_right_wheel_position = 0.0;
         this->initial_integrated_turn_position = 0.0;
-        this->latch = 0;
+        this->latch = 3;
         this->lin = 0;
         this->ang = 0;
         this->before_target_linear_vel = 0;
@@ -212,6 +213,7 @@ public:
         this->motors_enabled = false;
         this->recover_motors_enabled = false;
         this->reset_odometry = false;
+        this->joy_control = false;
     }
 
     ~SegwayRMPNode() {
@@ -278,10 +280,12 @@ public:
 
     void joy_read() {
         int joy_fd = -1;
+
         while (true) {
             if (joy_fd < 0) {
                 printf("[%d] connecting to joystick ...\n", joy_fd);
                 joy_fd = open(JOY_DEV, O_RDONLY);
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             }
             else {
                 break;
@@ -307,6 +311,7 @@ public:
         while (true) {
             js_event js;
             read(joy_fd, &js, sizeof(js_event));
+            ioctl(joy_fd, JSIOCGNAME(80), &name_of_joystick);
 
             switch (js.type & ~JS_EVENT_INIT) {
                 case JS_EVENT_AXIS:
@@ -320,8 +325,6 @@ public:
                     if ((int)js.number >= joy_button.size()) {
                         std::cout << "err:" << (int)js.number << '\n';
                         continue;
-
-                        
                     }
                     joy_button.at((int)js.number) = js.value;
                     break;
@@ -339,7 +342,20 @@ public:
             }
             std::cout << '\n';
 
-            usleep(1000);
+
+            if ((int)joy_button.at(1) == 1) {
+                this->latch = 0;
+            }
+            if ((int)joy_button.at(0) == 1) {
+                this->latch = 3;
+                this->ang = 0;
+                this->lin = 0;
+            }
+
+            if (this->latch == 0) {
+                this->ang = -50.0*joy_axis.at(0)/32767.0;
+                this->lin = -joy_axis.at(4)/32767.0;
+            }
         }
         return;
     }
@@ -538,7 +554,7 @@ public:
                     if (std::chrono::system_clock::now() - this->jyja_arrival_time > std::chrono::milliseconds(500)) {
                         this->lin = 0;
                         this->ang = 0;
-                        this->latch = 0;
+                        // this->latch = 0;
                     }
                 }
                 else if (this->latch == 1) {
@@ -564,7 +580,7 @@ public:
                     if (this->obstacle_detected) {
                         this->lin = 0;
                     }
-                    // printf("%lf, %lf\n", this->ang, this->lin);
+                    printf("%lf, %lf\n", this->ang, this->lin);
                     this->segway_rmp->move(this->lin, this->ang); // add offset 0.03
                 } catch (std::exception& e) {
                     std::string e_msg(e.what());
@@ -734,7 +750,7 @@ public:
         // }
         //
         this->linear_vel_feedback = (ss.left_wheel_speed + ss.right_wheel_speed) / 2.0;
-        printf("%lf\n", this->linear_vel_feedback);
+        // printf("%lf\n", this->linear_vel_feedback);
         //
         // this->sss_msg.segway.pitch_angle = ss.pitch * degrees_to_radians;
         // this->sss_msg.segway.pitch_rate = ss.pitch_rate * degrees_to_radians;
@@ -1261,6 +1277,8 @@ private:
     // ros::Subscriber obstacle_sub;
 
     bool motors_enabled, recover_motors_enabled;
+
+    bool joy_control;
 
 }; // class SegwayRMPNode
 
