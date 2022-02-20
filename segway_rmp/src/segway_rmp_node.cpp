@@ -241,7 +241,7 @@ public:
                 printf("read %d byte: %02x %02x %02x %02x\n", read_size, buf_ptr[0], buf_ptr[1], buf_ptr[2], buf_ptr[3]);
                 // printf("read %d byte: %08x\n", read_size, buf_ptr[0]);
                 if (read_size == 4) {
-                    if (buf_ptr[0] == 0x43 && buf_ptr[1] == 0x00) {
+                    if (buf_ptr[0] == 0x43) {
                         // this->ang = 50*(int8_t)((buf_ptr[0] & 0x0000ff00) >> 8) /127.0;
                         // this->lin = 1.0*(int8_t)(buf_ptr[0] & 0x000000ff)/127.0;
                         this->ang = 50*(int8_t)buf_ptr[2] /127.0;
