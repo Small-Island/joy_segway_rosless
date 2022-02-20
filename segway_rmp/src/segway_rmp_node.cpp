@@ -343,10 +343,10 @@ public:
             std::cout << '\n';
 
 
-            if ((int)joy_button.at(1) == 1) {
+            if ((int)joy_button.at(13) == 1) {
                 this->latch = 0;
             }
-            if ((int)joy_button.at(0) == 1) {
+            if ((int)joy_button.at(14) == 1) {
                 this->latch = 3;
                 this->ang = 0;
                 this->lin = 0;
