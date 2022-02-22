@@ -75,10 +75,10 @@
             context.fillRect(myPics.width/2, 0, 10, myPics.height);
             context.fillStyle = "red";
             context.fillRect(300 - 50, 300 - 50, 100, 100);
-            dataChannel.send(new TextEncoder().encode("jyja0,0\n"));
+            dataChannel.send(new Uint8Array([0x43, 0x00, 0x00, 0x00]));
             isDrawing = false;
         });
-        setInterval(sendzero, 1000/100);
+        setInterval(sendzero, 1000/20);
         function sendzero() {
             if (isDrawing) {
                 if (x < 0) {
@@ -93,10 +93,10 @@
                 else if (y > myPics.height) {
                     y = myPics.height;
                 }
-                dataChannel.send(new TextEncoder().encode("jyja" + (-(x - myPics.width/2)/(myPics.width/2)*40).toFixed(3) + "," + ((-y + myPics.height/2)/(myPics.height/2)*0.5).toFixed(3) + "\n"));
+                dataChannel.send(new Uint8Array([0x43, 0x00, -127*(x - myPics.width/2)/(myPics.width/2),  127*(-y + myPics.height/2)/(myPics.height/2)]));
             }
             else {
-                dataChannel.send(new TextEncoder().encode("jyja0,0\n"));
+                dataChannel.send(new Uint8Array([0x43, 0x00, 0x00, 0x00]));
             }
         }
         </script>
