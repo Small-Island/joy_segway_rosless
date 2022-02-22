@@ -62,4 +62,4 @@ target_link_libraries(segwayrmp ${SEGWAYRMP_LINK_LIBS})
 
 ## Setup Install/Uninstall Targets
 
-include(cmake/segwayrmp_targets.cmake)
+# include(cmake/segwayrmp_targets.cmake)

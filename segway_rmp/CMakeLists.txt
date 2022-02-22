@@ -59,7 +59,12 @@ include_directories(
 # )
 
 
-add_executable(segway_rmp_node src/segway_rmp_node.cpp)
+add_executable(main_segway_rmp main_segway_rmp.cpp)
+set_target_properties(
+    main_segway_rmp
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/..
+)
 # add_executable(accel_cmd src/accel_cmd.cpp)
 
 message("libsegwayrmp_LIBRARIES: ${libsegwayrmp_LIBRARIES}")
@@ -72,7 +77,7 @@ list(APPEND libsegwayrmp_LIBRARIES
     ${PROJECT_SOURCE_DIR}/../libsegwayrmp/lib/libsegwayrmp.so
 )
 
-target_link_libraries(segway_rmp_node
+target_link_libraries(main_segway_rmp
   ${Boost_LIBRARIES}
   ${libsegwayrmp_LIBRARIES}
   # ${catkin_LIBRARIES}
