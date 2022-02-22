@@ -18,6 +18,8 @@
               background: gray;
               top: 600px;
               left: 200px;
+              touch-action: none;
+              /* touchAction: none; */
               /* border-radius: 50%; */
             }
         </style>
@@ -52,7 +54,7 @@
           isDrawing = true;
         });
 
-        myPics.addEventListener('touchmove', e => {
+        document.addEventListener('touchmove', e => {
             if (isDrawing === true) {
                 x = e.touches[0].clientX - myPics.offsetLeft;
                 y = e.touches[0].clientY - myPics.offsetTop;
