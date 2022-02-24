@@ -545,17 +545,17 @@ function gameLoop() {
     let gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
     let gp = gamepads[0];
     if (gp != null) {
+        console.log(gp);
         let side = gp.buttons[6].value - gp.buttons[7].value;
         let ang = -gp.axes[0];
         let lin = -gp.axes[3];
-        document.getElementById('leftright').value = 50*ang;
-        document.getElementById('leftright_out').innerHTML = 50*ang.toFixed(3);
-        document.getElementById('frontrear').value = lin;
-        document.getElementById('frontrear_out').innerHTML = lin.toFixed(3);
+        document.getElementById('leftright').value = 127*ang;
+        document.getElementById('leftright_out').innerHTML = (127*ang).toFixed(0);
+        document.getElementById('frontrear').value = 127*lin;
+        document.getElementById('frontrear_out').innerHTML = (127*lin).toFixed(0);
+        document.getElementById('side').value = 127*side;
+                    document.getElementById('side_out').innerHTML = (127*side).toFixed(0);
         if (dataChannel != null) {
-            // dataChannel.send(new TextEncoder().encode("jyja" + ang.toFixed(3) + "," + lin.toFixed(3) + "\n"));
-            // const buffer = new ArrayBuffer(1);
-            // console.log(buffer);
             if (gp.buttons[1].value) {
                 start = true;
                 dataChannel.send(new Int32Array([0x11111111]));
@@ -570,11 +570,8 @@ function gameLoop() {
                 ang = 127*ang;
                 lin = 127*lin;
                 side = 127*side;
-                // ang = (ang << 8) & 0x0000ff00;
-                // lin = lin & 0x000000ff;
                 let send_value = new Uint8Array([0x43, side, ang, lin]);
                 dataChannel.send(send_value);
-                // console.log(send_value)
                 return;
             }
         }
