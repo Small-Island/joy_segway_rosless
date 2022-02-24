@@ -57,9 +57,9 @@ else()
 endif()
 
 ## Uncomment for example
-add_executable(serial_example examples/serial_example.cc)
-add_dependencies(serial_example ${PROJECT_NAME})
-target_link_libraries(serial_example ${PROJECT_NAME})
+# add_executable(serial_example examples/serial_example.cc)
+# add_dependencies(serial_example ${PROJECT_NAME})
+# target_link_libraries(serial_example ${PROJECT_NAME})
 
 ## Include headers
 include_directories(include)
@@ -72,10 +72,10 @@ include_directories(include)
 # )
 
 ## Install headers
-install(FILES include/serial/serial.h include/serial/v8stdint.h
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}/serial)
+# install(FILES include/serial/serial.h include/serial/v8stdint.h
+#   DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}/serial)
 
 ## Tests
-if(CATKIN_ENABLE_TESTING)
-    add_subdirectory(tests)
-endif()
+# if(CATKIN_ENABLE_TESTING)
+#     add_subdirectory(tests)
+# endif()

@@ -59,7 +59,7 @@ include_directories(
 # )
 
 
-add_executable(segway_rmp_node src/segway_rmp_node.cpp)
+add_executable(segway_rmp_node segway_rmp_node.cpp)
 # add_executable(accel_cmd src/accel_cmd.cpp)
 
 message("libsegwayrmp_LIBRARIES: ${libsegwayrmp_LIBRARIES}")
