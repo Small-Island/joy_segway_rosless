@@ -1,4 +1,4 @@
-# C++ (ROSなし) で SegwayRMP200 を動かす。
+# C++ (ROSなし) で SegwayRMP を動かす。
 動作環境 Ubuntu18.04
 ## コンパイル方法
 
