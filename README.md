@@ -13,5 +13,5 @@ joy_segway_rosless/ にて
 joy_segway_rosless/ にて
 
 ```bash
-./joystick_segway.sh
+./main_segway_rmp
 ```
