@@ -545,6 +545,7 @@ function gameLoop() {
     let gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
     let gp = gamepads[0];
     if (gp != null) {
+        let side = gp.buttons[6].value - gp.buttons[7].value;
         let ang = -gp.axes[0];
         let lin = -gp.axes[3];
         document.getElementById('leftright').value = 50*ang;
@@ -568,9 +569,10 @@ function gameLoop() {
             if (start) {
                 ang = 127*ang;
                 lin = 127*lin;
+                side = 127*side;
                 // ang = (ang << 8) & 0x0000ff00;
                 // lin = lin & 0x000000ff;
-                let send_value = new Uint8Array([0x43, 0x00, ang, lin]);
+                let send_value = new Uint8Array([0x43, side, ang, lin]);
                 dataChannel.send(send_value);
                 // console.log(send_value)
                 return;
