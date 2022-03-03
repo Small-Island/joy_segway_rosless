@@ -119,9 +119,9 @@
             //     console.log("hello");
             // }
             // dataChannel.send(new TextEncoder().encode(msg));
-            if (event.data[0] == 0x43) {
+            // if (event.data[0] == 0x43) {
                 dataChannel.send(event.data);
-            }
+            // }
         });
 
 
