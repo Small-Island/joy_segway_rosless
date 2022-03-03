@@ -119,6 +119,7 @@
             //     console.log("hello");
             // }
             // dataChannel.send(new TextEncoder().encode(msg));
+            console.log(event);
             dataChannel.send(event.data);
         });
 
