@@ -65,6 +65,13 @@ set_target_properties(
     PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/..
 )
+
+add_executable(test_segway_rmp test_segway_rmp.cpp)
+set_target_properties(
+    test_segway_rmp
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/..
+)
 # add_executable(accel_cmd src/accel_cmd.cpp)
 
 message("libsegwayrmp_LIBRARIES: ${libsegwayrmp_LIBRARIES}")
@@ -78,6 +85,12 @@ list(APPEND libsegwayrmp_LIBRARIES
 )
 
 target_link_libraries(main_segway_rmp
+  ${Boost_LIBRARIES}
+  ${libsegwayrmp_LIBRARIES}
+  # ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_segway_rmp
   ${Boost_LIBRARIES}
   ${libsegwayrmp_LIBRARIES}
   # ${catkin_LIBRARIES}

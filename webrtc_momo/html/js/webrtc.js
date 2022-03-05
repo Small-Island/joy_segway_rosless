@@ -180,43 +180,11 @@ function prepareNewConnection() {
   peer.addTransceiver('audio', {direction: 'recvonly'});
 
   dataChannel.onmessage = function (event) {
-    let msg = new TextDecoder().decode(event.data);
-    let str = msg.substr(4, msg.length);
-    let show = "";
-    console.log("Got Data Channel Message:", str);
-    for (let i = 0; i < str.length; i++) {
-        // console.log(str[i]);
-        if (str[i] == "?") {
-            show = show + '\n';
-        }
-        else {
-            show = show + str[i];
-        }
-    }
+    console.log("Got Data Channel Message:", event);
+    let show = (new Int16Array([new Uint8Array(event.data)[13] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[14]])[0])/10000.0 ;
 
-    if (msg.substr(0, 4) == 'sgvs') {
-        console.log('sgvs');
-        let target = document.getElementById("sgvs");
-        target.innerHTML = show;
-    }
-    else if (msg.substr(0, 4) == 'sgss') {
-        console.log('sgss');
-        let target = document.getElementById("sgss");
-        target.innerHTML = show;
-    }
-    else if (msg.substr(0, 4) == 'seve') {
-        console.log('seve');
-        if (log_latch) {
-            ideal_velocity_logData = ideal_velocity_logData + show + '\n';
-        }
-    }
-    else if (msg.substr(0, 4) == 'geve') {
-        console.log('geve');
-        if (log_latch) {
-            real_velocity_logData = real_velocity_logData + show + '\n';
-        }
-    }
-    console.log(show);
+    let target = document.getElementById("sgss");
+    target.innerHTML = show;
   };
 
   return peer;
@@ -468,10 +436,10 @@ function sendDataChannel() {
     // dataChannel.send(new TextEncoder().encode(textData));
 
     if (reverse_Input[0].checked) {
-        dataChannel.send( new Int32Array([ 0xab000000 | (((127*T2_Input.value/20.0) << 12) & 0x00ff0000) | (((127*accel_Input.value/0.5) << 8 ) & 0x0000ff00) | ((127*max_velocity_Input.value/1.0) & 0x000000ff) ]));
+        dataChannel.send( new Uint8Array([ 0xaf, T2_Input.value*2, accel_Input.value*20, max_velocity_Input.value*100 ]));
     }
     else {
-        dataChannel.send( new Int32Array([ 0xaf000000 | (((127*T2_Input.value/20.0) << 12) & 0x00ff0000) | (((127*accel_Input.value/0.5) << 8 ) & 0x0000ff00) | ((127*max_velocity_Input.value/1.0) & 0x000000ff) ]));
+        dataChannel.send( new Int32Array([ 0xab, T2_Input.value*2, accel_Input.value*20, max_velocity_Input.value*100 ]));
     }
     // accel_Input.value = "";
     // max_velocity_Input.value = "";

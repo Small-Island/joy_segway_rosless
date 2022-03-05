@@ -214,7 +214,7 @@ public:
             if (read_size < 0) {
                 continue;
             }
-            printf("read %d byte: %02x %02x %02x %02x\n", read_size, buf_ptr[0], buf_ptr[1], buf_ptr[2], buf_ptr[3]);
+            // printf("read %d byte: %02x %02x %02x %02x\n", read_size, buf_ptr[0], buf_ptr[1], buf_ptr[2], buf_ptr[3]);
             // printf("read %d byte: %08x\n", read_size, buf_ptr[0]);
             if (read_size == 4) {
                 if (buf_ptr[0] == 0x43) {
@@ -223,19 +223,23 @@ public:
                     if (this->latch == 3) {
                         this->ang = 50*(int8_t)buf_ptr[2] /127.0;
                         this->lin = 0.7*(int8_t)buf_ptr[3] /127.0;
-                        printf("%lf, %lf\n", this->ang, this->lin);
+                        // printf("%lf, %lf\n", this->ang, this->lin);
                     }
                     this->jyja_arrival_time = std::chrono::system_clock::now();
                 }
                 else if (buf_ptr[0] == 0xab) {
-                    this->latch = 2;
-                    this->ba->setup((int8_t)buf_ptr[1]/2.0, (int8_t)buf_ptr[2]/2.0, (int8_t)buf_ptr[3]/100.0, 1);
+                    if (this->latch == 3) {
+                        this->latch = 2;
+                        this->ba->setup((int8_t)buf_ptr[1]/2.0, (int8_t)buf_ptr[2]/20.0, (int8_t)buf_ptr[3]/100.0, 1);
+                    }
                 }
                 else if (buf_ptr[0] == 0xaf) {
-                    this->latch = 2;
-                    this->ba->setup((int8_t)buf_ptr[1]/2.0, (int8_t)buf_ptr[2]/2.0, (int8_t)buf_ptr[3]/100.0, 0);
+                    if (this->latch == 3) {
+                        this->latch = 2;
+                        this->ba->setup((int8_t)buf_ptr[1]/2.0, (int8_t)buf_ptr[2]/20.0, (int8_t)buf_ptr[3]/100.0, 0);
+                    }
                 }
-                else if (buf_ptr[0] == 0x99) {
+                else if (buf_ptr[0] == 0x99999999) {
                     // std::cout << "segway_rmp_node を終了\n";
                     // std_msgs::String msg;
                     // msg.data = "quit";
@@ -310,11 +314,15 @@ public:
             // std::cout << '\n';
 
 
-            if ((int)joy_button.at(13) == 1) {
+            if ((int)joy_button.at(13)) {
                 this->latch = 0;
             }
-            if ((int)joy_button.at(14) == 1) {
-                this->latch = 3;
+            if ((int)joy_button.at(14)) {
+                if (this->latch == 0) {
+                    this->latch = 3;
+                }
+                else if (this->latch == 2) {
+                }
                 this->ang = 0;
                 this->lin = 0;
             }
@@ -328,6 +336,7 @@ public:
     }
 
     void run() {
+        this->fd_write = open(SERIAL_PATH, O_WRONLY); // SERIAL_PATH は serialPathConfig.h.in にて定義されている。
         if (this->getParameters()) {
             return;
         }
@@ -457,8 +466,9 @@ public:
     }
 
     void handleStatus(segwayrmp::SegwayStatus::Ptr &ss_ptr) {
-        if (!this->connected)
+        if (!this->connected) {
             return;
+        }
         // // Get the time
         //
         // this->sss_msg.header.stamp = current_time;
@@ -493,6 +503,11 @@ public:
         // }
         //
         this->linear_vel_feedback = (ss.left_wheel_speed + ss.right_wheel_speed) / 2.0;
+        uint8_t h = (uint8_t)((uint16_t)((uint16_t)(this->linear_vel_feedback * 10000) & 0xff00) >> 8);
+        uint8_t l = (uint8_t)((uint16_t)(this->linear_vel_feedback * 10000) & 0x00ff);
+        uint8_t buf[4] = {h, l, '\n', 0};
+        write(this->fd_write, &buf, sizeof(buf)*4);
+
         // printf("%lf\n", this->linear_vel_feedback);
         //
         // this->sss_msg.segway.pitch_angle = ss.pitch * degrees_to_radians;
@@ -798,6 +813,8 @@ private:
     bool motors_enabled, recover_motors_enabled;
 
     bool joy_control;
+
+    int fd_write;
 
 }; // class SegwayRMPNode
 

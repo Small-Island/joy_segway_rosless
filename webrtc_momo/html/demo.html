@@ -63,7 +63,8 @@
         </div>
         <div class="SegwayStatusStamped">
             セグウェイから受信した情報 <br>
-            <a id="download2" href="#" download="actual_velocity.log" onclick="handleActualVelDownload()">ダウンロード</a>
+            <a id="download2" href="#" download="actual_velocity.log" onclick="handleActualVelDownload()">ダウンロード</a><br>
+            走行速度
             <font size="4">
                 <pre><div id="sgss"></div></pre>
             </font>
@@ -71,77 +72,5 @@
         </div>
     </main>
     <script type='text/javascript' src='./js/webrtc.js'></script>
-    <script type='text/javascript' src='./js/sora.min.js'></script>
-    <!-- <script type="text/javascript">
-        const debug = true;
-        // const sora = Sora.connection("wss://node-01.sora-labo.shiguredo.jp/signaling", debug);
-        const sora = Sora.connection("wss://sora.ikeilabsora.0am.jp/signaling", debug);
-        // const channelId = "OJIMA-YUKIYA@sora-devtools";
-        const channelId = "ojima-sora"
-        // const metadata = {
-        //     "signaling_key": "wH_hp6DYomonzVH1eu8mDUN0fgEzmynp6HyXx2HrqUB1v4ds",
-        // };
-        const options = {
-            multistream: true,
-            video: true,
-            audio: true,
-            dataChannelSignaling: true,
-            dataChannels: [
-                {
-                    label: "#sora-devtools",
-                    direction: "sendrecv"
-                }
-            ]
-        };
-        let recvonly = sora.recvonly(channelId, null, options);
-        recvonly.connect();
-
-        // recvonly.on("track", (event) => {
-        //     const stream = event.streams[0];
-        //     if (!document.querySelector(`#remote-video-${stream.id}`)) {
-        //         const video = document.createElement("video");
-        //         video.id = `remote-video-${stream.id}`;
-        //         video.autoplay = true;
-        //         video.playsinline = true;
-        //         video.srcObject = stream;
-        //         document.querySelector("#remote-videos").appendChild(video);
-        //     }
-        // });
-        //
-        // recvonly.on("removetrack", (event) => {
-        //     if (document.querySelector(`#remote-video-${event.target.id}`)) {
-        //         document.querySelector(`#remote-video-${event.target.id}`).remove();
-        //     }
-        // });
-
-        recvonly.on('message', (event) => {
-            let msg = new TextDecoder().decode(event.data);
-            console.log('recieve: ' + msg);
-            if (dataChannel == null) {
-                console.log("hello");
-            }
-            dataChannel.send(new TextEncoder().encode(msg));
-        });
-
-
-        setInterval(sendHello, 1000.0*3.0);
-
-        function sendHello() {
-            recvonly.sendMessage("#sora-devtools", new TextEncoder().encode("Hello from xavier nx"));
-        }
-
-
-        // navigator.mediaDevices
-        // .getUserMedia({ audio: true, video: true })
-        // .then((stream) => sendrecv.connect(stream))
-        // .then((stream) => {
-        //   document.querySelector("#local-video").srcObject = stream;
-        //
-        // })
-        // .catch((e) => {
-        //   console.error(e);
-        // });
-    </script> -->
-    <!-- <script type="text/javascript">document.getElementById("connect").click();</script> -->
   </body>
 </html>
