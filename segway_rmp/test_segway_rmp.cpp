@@ -221,7 +221,7 @@ public:
                     // this->ang = 50*(int8_t)((buf_ptr[0] & 0x0000ff00) >> 8) /127.0;
                     // this->lin = 1.0*(int8_t)(buf_ptr[0] & 0x000000ff)/127.0;
                     if (this->latch == 3) {
-                        this->ang = 20*(int8_t)buf_ptr[2] /127.0;
+                        this->ang = 30*(int8_t)buf_ptr[2] /127.0;
                         this->lin = 0.2*(int8_t)buf_ptr[3] /127.0;
                         // printf("%lf, %lf\n", this->ang, this->lin);
                     }
