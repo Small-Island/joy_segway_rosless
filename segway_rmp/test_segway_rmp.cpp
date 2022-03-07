@@ -214,7 +214,7 @@ public:
             if (read_size < 0) {
                 continue;
             }
-            // printf("read %d byte: %02x %02x %02x %02x\n", read_size, buf_ptr[0], buf_ptr[1], buf_ptr[2], buf_ptr[3]);
+            printf("read %d byte: %02x %02x %02x %02x\n", read_size, buf_ptr[0], buf_ptr[1], buf_ptr[2], buf_ptr[3]);
             // printf("read %d byte: %08x\n", read_size, buf_ptr[0]);
             if (read_size == 4) {
                 if (buf_ptr[0] == 0x43) {
@@ -445,7 +445,7 @@ public:
                     if (this->obstacle_detected) {
                         this->lin = 0;
                     }
-                    printf("%lf, %lf\n", this->ang, this->lin);
+                    // printf("%lf, %lf\n", this->ang, this->lin);
                     this->segway_rmp->move(this->lin, this->ang);
                 } catch (std::exception& e) {
                     std::string e_msg(e.what());
