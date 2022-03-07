@@ -222,7 +222,7 @@ public:
                     // this->lin = 1.0*(int8_t)(buf_ptr[0] & 0x000000ff)/127.0;
                     if (this->latch == 3) {
                         this->ang = 50*(int8_t)buf_ptr[2] /127.0;
-                        this->lin = 0.7*(int8_t)buf_ptr[3] /127.0;
+                        this->lin = 0.5*(int8_t)buf_ptr[3] /127.0;
                         // printf("%lf, %lf\n", this->ang, this->lin);
                     }
                     this->jyja_arrival_time = std::chrono::system_clock::now();
