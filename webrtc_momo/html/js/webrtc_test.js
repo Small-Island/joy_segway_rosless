@@ -180,6 +180,7 @@ function prepareNewConnection() {
   peer.addTransceiver('audio', {direction: 'recvonly'});
 
   dataChannel.onmessage = function (event) {
+      let show = (new Int16Array([new Uint8Array(event.data)[13] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[14]])[0])/10000.0 ;
       let target = document.getElementById("sgss");
       target.innerHTML = show;
       if (log_latch) {
