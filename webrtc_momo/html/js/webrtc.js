@@ -185,6 +185,9 @@ function prepareNewConnection() {
 
     let target = document.getElementById("sgss");
     target.innerHTML = show;
+    if (log_latch) {
+        real_velocity_logData = real_velocity_logData + show + '\n';
+    }
   };
 
   return peer;
@@ -439,7 +442,7 @@ function sendDataChannel() {
         dataChannel.send( new Uint8Array([ 0xaf, T2_Input.value*2, accel_Input.value*20, max_velocity_Input.value*100 ]));
     }
     else {
-        dataChannel.send( new Int32Array([ 0xab, T2_Input.value*2, accel_Input.value*20, max_velocity_Input.value*100 ]));
+        dataChannel.send( new Uint8Array([ 0xab, T2_Input.value*2, accel_Input.value*20, max_velocity_Input.value*100 ]));
     }
     // accel_Input.value = "";
     // max_velocity_Input.value = "";
