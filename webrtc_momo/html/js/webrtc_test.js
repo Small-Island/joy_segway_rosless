@@ -180,45 +180,11 @@ function prepareNewConnection() {
   peer.addTransceiver('audio', {direction: 'recvonly'});
 
   dataChannel.onmessage = function (event) {
-    let msg = new TextDecoder().decode(event.data);
-    let str = msg.substr(4, msg.length);
-    let show = "";
-    // console.log("Got local Data Channel Message:", msg);
-    for (let i = 0; i < str.length; i++) {
-        // console.log(str[i]);
-        if (str[i] == "?") {
-            show = show + '\n';
-        }
-        else {
-            show = show + str[i];
-        }
-    }
-
-    if (msg.substr(0, 4) == 'sgvs') {
-        // console.log('sgvs');
-        let target = document.getElementById("sgvs");
-        target.innerHTML = show;
-    }
-    else if (msg.substr(0, 4) == 'sgss') {
-        // console.log('sgss');
-        let target = document.getElementById("sgss");
-        target.innerHTML = show;
-        recvonly.sendMessage("#sora-devtools", new TextEncoder().encode(show));
-    }
-    else if (msg.substr(0, 4) == 'seve') {
-        // console.log('seve');
-        if (log_latch) {
-            ideal_velocity_logData = ideal_velocity_logData + show + '\n';
-        }
-    }
-    else if (msg.substr(0, 4) == 'geve') {
-        // console.log('geve');
-        if (log_latch) {
-            real_velocity_logData = real_velocity_logData + show + '\n';
-        }
-    }
-
-    // console.log(show);
+      let target = document.getElementById("sgss");
+      target.innerHTML = show;
+      if (log_latch) {
+          real_velocity_logData = real_velocity_logData + show + '\n';
+      }
   };
 
   return peer;
