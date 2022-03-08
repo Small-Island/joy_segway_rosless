@@ -505,8 +505,8 @@ public:
         this->linear_vel_feedback = (ss.left_wheel_speed + ss.right_wheel_speed) / 2.0;
         uint8_t h = (uint8_t)((uint16_t)((uint16_t)(this->linear_vel_feedback * 10000) & 0xff00) >> 8);
         uint8_t l = (uint8_t)((uint16_t)(this->linear_vel_feedback * 10000) & 0x00ff);
-        uint8_t buf[4] = {h, l, '\n', 0};
-        write(this->fd_write, &buf, sizeof(buf)*4);
+        uint8_t buf[3] = {h, l, '\n'};
+        write(this->fd_write, &buf, 3);
 
         // printf("%lf\n", this->linear_vel_feedback);
         //
