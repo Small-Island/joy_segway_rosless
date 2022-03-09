@@ -253,84 +253,98 @@ public:
     void joy_read() {
         int joy_fd = -1;
 
-        while (true) {
-            if (joy_fd < 0) {
-                printf("[%d] connecting to joystick ...\n", joy_fd);
-                joy_fd = open(JOY_DEV, O_RDONLY);
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            }
-            else {
-                break;
-            }
-        }
-
-        int num_of_axis = 0, num_of_buttons = 0;
-        char name_of_joystick[80];
-
-        ioctl(joy_fd, JSIOCGAXES, &num_of_axis);
-        ioctl(joy_fd, JSIOCGBUTTONS, &num_of_buttons);
-        ioctl(joy_fd, JSIOCGNAME(80), &name_of_joystick);
-
-        std::vector<char> joy_button;
-        std::vector<double> joy_axis;
-
-        joy_button.resize(num_of_buttons,0);
-        joy_axis.resize(num_of_axis,0);
-        std::cout << "Joystick:  " << name_of_joystick << '\n';
-        std::cout << "  axis: " << num_of_axis << '\n';
-        std::cout << "  buttons: " << num_of_buttons << '\n';
 
         while (true) {
-            js_event js;
-            read(joy_fd, &js, sizeof(js_event));
 
-            switch (js.type & ~JS_EVENT_INIT) {
-                case JS_EVENT_AXIS:
-                    if((int)js.number >= joy_axis.size()) {
-                        std::cout << "err:" << (int)js.number << '\n';
-                        continue;
-                    }
-                    joy_axis.at((int)js.number) = js.value;
-                    break;
-                case JS_EVENT_BUTTON:
-                    if ((int)js.number >= joy_button.size()) {
-                        std::cout << "err:" << (int)js.number << '\n';
-                        continue;
-                    }
-                    joy_button.at((int)js.number) = js.value;
-                    break;
-            }
-
-            // std::cout << "axis:";
-            // for (size_t i(0); i < joy_axis.size(); i++) {
-            //     std::cout << " " << std::setw(2) << joy_axis.at(i)/32767.0;
-            // }
-            // std::cout << '\n';
-            //
-            // std::cout << "  button: ";
-            // for(size_t i(0);i<joy_button.size();++i) {
-            //     std::cout << " " << (int)joy_button.at(i);
-            // }
-            // std::cout << '\n';
-
-
-            if ((int)joy_button.at(13)) {
-                this->latch = 0;
-            }
-            if ((int)joy_button.at(14)) {
-                if (this->latch == 0) {
+            while (true) {
+                if (joy_fd < 0) {
                     this->latch = 3;
+                    this->lin = 0;
+                    this->ang = 0;
+                    printf("[%d] connecting to joystick ...\n", joy_fd);
+                    joy_fd = open(JOY_DEV, O_RDONLY);
+                    std::this_thread::sleep_for(std::chrono::milliseconds(500));
                 }
-                else if (this->latch == 2) {
+                else {
+                    break;
                 }
-                this->ang = 0;
-                this->lin = 0;
             }
 
-            if (this->latch == 0) {
-                this->ang = -50.0*joy_axis.at(0)/32767.0;
-                this->lin = -2.0*joy_axis.at(3)/32767.0;
+            int num_of_axis = 0, num_of_buttons = 0;
+            char name_of_joystick[80];
+
+            ioctl(joy_fd, JSIOCGAXES, &num_of_axis);
+            ioctl(joy_fd, JSIOCGBUTTONS, &num_of_buttons);
+            ioctl(joy_fd, JSIOCGNAME(80), &name_of_joystick);
+
+            std::vector<char> joy_button;
+            std::vector<double> joy_axis;
+
+            joy_button.resize(num_of_buttons,0);
+            joy_axis.resize(num_of_axis,0);
+            std::cout << "Joystick:  " << name_of_joystick << '\n';
+            std::cout << "  axis: " << num_of_axis << '\n';
+            std::cout << "  buttons: " << num_of_buttons << '\n';
+
+            int count = 0;
+
+            while (true && count < 10000) {
+                js_event js;
+                read(joy_fd, &js, sizeof(js_event));
+
+                count++;
+
+                switch (js.type & ~JS_EVENT_INIT) {
+                    case JS_EVENT_AXIS:
+                        if((int)js.number >= joy_axis.size()) {
+                            std::cout << "err:" << (int)js.number << '\n';
+                            continue;
+                        }
+                        joy_axis.at((int)js.number) = js.value;
+                        break;
+                    case JS_EVENT_BUTTON:
+                        if ((int)js.number >= joy_button.size()) {
+                            std::cout << "err:" << (int)js.number << '\n';
+                            continue;
+                        }
+                        joy_button.at((int)js.number) = js.value;
+                        break;
+                }
+
+                // printf("count %d\n", count);
+                // std::cout << "axis:";
+                // for (size_t i(0); i < joy_axis.size(); i++) {
+                //     std::cout << " " << std::setw(2) << joy_axis.at(i)/32767.0;
+                // }
+                // std::cout << '\n';
+                //
+                // std::cout << "  button: ";
+                // for(size_t i(0);i<joy_button.size();++i) {
+                //     std::cout << " " << (int)joy_button.at(i);
+                // }
+                // std::cout << '\n';
+
+
+                if ((int)joy_button.at(13)) {
+                    this->latch = 0;
+                }
+                if ((int)joy_button.at(14)) {
+                    if (this->latch == 0) {
+                        this->latch = 3;
+                    }
+                    else if (this->latch == 2) {
+                    }
+                    this->ang = 0;
+                    this->lin = 0;
+                }
+
+                if (this->latch == 0) {
+                    this->ang = -50.0*joy_axis.at(0)/32767.0;
+                    this->lin = -2.0*joy_axis.at(3)/32767.0;
+                }
             }
+            close(joy_fd);
+            joy_fd = -1;
         }
         return;
     }
@@ -340,6 +354,8 @@ public:
         if (this->getParameters()) {
             return;
         }
+
+        this->begin_time_point = std::chrono::system_clock::now();
 
         this->setupSegwayRMP();
 
@@ -505,8 +521,14 @@ public:
         this->linear_vel_feedback = (ss.left_wheel_speed + ss.right_wheel_speed) / 2.0;
         uint8_t h = (uint8_t)((uint16_t)((uint16_t)(this->linear_vel_feedback * 10000) & 0xff00) >> 8);
         uint8_t l = (uint8_t)((uint16_t)(this->linear_vel_feedback * 10000) & 0x00ff);
-        uint8_t buf[3] = {h, l, '\n'};
-        write(this->fd_write, &buf, 3);
+        int end_time_point = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - this->begin_time_point).count();
+        uint8_t hht = (uint8_t)((uint32_t)(end_time_point & 0xff000000) >> 24);
+        uint8_t ht = (uint8_t)((uint32_t)(end_time_point & 0x00ff0000) >> 16);
+        uint8_t lt = (uint8_t)((uint32_t)(end_time_point & 0x0000ff00) >> 8);
+        uint8_t llt = (uint8_t)(end_time_point & 0x000000ff);
+        uint8_t buf[7] = {hht, ht, lt, llt, h, l, '\n'};
+        write(this->fd_write, &buf, 7);
+        printf("%d\n", end_time_point);
 
         // printf("%lf\n", this->linear_vel_feedback);
         //
@@ -815,6 +837,8 @@ private:
     bool joy_control;
 
     int fd_write;
+
+    std::chrono::system_clock::time_point begin_time_point;
 
 }; // class SegwayRMPNode
 

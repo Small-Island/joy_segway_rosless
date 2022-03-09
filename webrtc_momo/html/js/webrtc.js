@@ -180,14 +180,14 @@ function prepareNewConnection() {
   peer.addTransceiver('audio', {direction: 'recvonly'});
 
   dataChannel.onmessage = function (event) {
-    // console.log(event.data);
-    // console.log("Got Data Channel Message:", new TextDecoder().decode(event.data));
-    let show = (new Int16Array([new Uint8Array(event.data)[0] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[1]])[0])/10000.0 ;
+    // console.log(new Uint8Array(event.data));
 
-    let target = document.getElementById("sgss");
-    target.innerHTML = show;
+    let vel_time = (new Int32Array([new Uint8Array(event.data)[0] << 24])[0] + new Int32Array([new Uint8Array(event.data)[1] << 16])[0] + new Int32Array([new Uint8Array(event.data)[2] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[3]])[0] )/1000.0 ;
+    let real_vel = (new Int16Array([new Uint8Array(event.data)[4] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[5]])[0])/10000.0 ;
+
+    document.getElementById("sgss").innerHTML = '時刻(s) ' + vel_time + '\n走行速度(m/s) ' + real_vel;
     if (log_latch) {
-        real_velocity_logData = real_velocity_logData + show + '\n';
+        real_velocity_logData = real_velocity_logData + vel_time + ' ' + real_vel + '\n';
     }
   };
 
@@ -466,7 +466,6 @@ function handleTargetVelDownload() {
 }
 
 function handleActualVelDownload() {
-    real_velocity_logData = '#計測した速度の記録\n#時刻(s),送信速度(m/s),左右平均(m/s),左車輪(m/s),右車輪(m/s)\n' + real_velocity_logData;
     let blob = new Blob([real_velocity_logData], {"type": "text/plain"});
 
     if (window.navigator.msSaveBlob) {
@@ -479,7 +478,7 @@ function handleActualVelDownload() {
 
 function startLog() {
     ideal_velocity_logData = '';
-    real_velocity_logData = '';
+    real_velocity_logData = '#速度記録\n#時刻(s) 実際の速度(m/s)\n';
     let target1 = document.getElementById('logstartbutton');
     if (target1.value == '記録中') {
         return;
