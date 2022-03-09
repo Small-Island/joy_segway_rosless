@@ -230,12 +230,14 @@ public:
                 else if (buf_ptr[0] == 0xab) {
                     if (this->latch == 3) {
                         this->latch = 2;
+                        this->begin_time_point = std::chrono::system_clock::now();
                         this->ba->setup((int8_t)buf_ptr[1]/2.0, (int8_t)buf_ptr[2]/20.0, (int8_t)buf_ptr[3]/100.0, 1);
                     }
                 }
                 else if (buf_ptr[0] == 0xaf) {
                     if (this->latch == 3) {
                         this->latch = 2;
+                        this->begin_time_point = std::chrono::system_clock::now();
                         this->ba->setup((int8_t)buf_ptr[1]/2.0, (int8_t)buf_ptr[2]/20.0, (int8_t)buf_ptr[3]/100.0, 0);
                     }
                 }
