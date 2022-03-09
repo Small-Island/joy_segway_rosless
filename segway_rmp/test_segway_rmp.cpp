@@ -528,7 +528,6 @@ public:
         uint8_t llt = (uint8_t)(end_time_point & 0x000000ff);
         uint8_t buf[7] = {hht, ht, lt, llt, h, l, '\n'};
         write(this->fd_write, &buf, 7);
-        printf("%d\n", end_time_point);
 
         // printf("%lf\n", this->linear_vel_feedback);
         //
