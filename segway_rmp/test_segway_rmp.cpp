@@ -241,7 +241,10 @@ public:
                         this->ba->setup((int8_t)buf_ptr[1]/2.0, (int8_t)buf_ptr[2]/20.0, (int8_t)buf_ptr[3]/100.0, 0);
                     }
                 }
-                else if (buf_ptr[0] == 0x99999999) {
+                else if (buf_ptr[0] == 0x99) {
+                    this->latch = 0;
+                    this->lin = 0;
+                    this->ang = 0;
                     // std::cout << "segway_rmp_node を終了\n";
                     // std_msgs::String msg;
                     // msg.data = "quit";
@@ -327,22 +330,23 @@ public:
                 // std::cout << '\n';
 
 
-                if ((int)joy_button.at(13)) {
-                    this->latch = 0;
+                if ((int)joy_button.at(13)) { //○
+                    this->latch = 1;
                 }
-                if ((int)joy_button.at(14)) {
-                    if (this->latch == 0) {
-                        this->latch = 3;
-                    }
-                    else if (this->latch == 2) {
-                    }
+                if ((int)joy_button.at(12)) { //△
+                    this->latch = 3;
+                    this->ang = 0;
+                    this->lin = 0;
+                }
+                if ((int)joy_button.at(14)) { //x
+                    this->latch = 0;
                     this->ang = 0;
                     this->lin = 0;
                 }
 
-                if (this->latch == 0) {
+                if (this->latch == 1) {
                     this->ang = -50.0*joy_axis.at(0)/32767.0;
-                    this->lin = -2.0*joy_axis.at(3)/32767.0;
+                    this->lin = -1.5*joy_axis.at(3)/32767.0;
                 }
             }
             close(joy_fd);
@@ -442,12 +446,8 @@ public:
 
                 Lavel la;
                 if (this->latch == 0) {
-                }
-                if (this->latch == 3) {
-                    if (std::chrono::system_clock::now() - this->jyja_arrival_time > std::chrono::milliseconds(500)) {
-                        this->lin = 0;
-                        this->ang = 0;
-                    }
+                    this->lin = 0;
+                    this->ang = 0;
                 }
                 else if (this->latch == 1) {
                 }
@@ -457,6 +457,12 @@ public:
                     // this->lin = la.linear_vel + 0.03;
                     // this->lin = (this->lin - this->linear_vel_feedback)*0.5 + la.linear_vel;
                     this->ang = la.angular_vel;
+                }
+                else if (this->latch == 3) {
+                    if (std::chrono::system_clock::now() - this->jyja_arrival_time > std::chrono::milliseconds(500)) {
+                        this->lin = 0;
+                        this->ang = 0;
+                    }
                 }
 
                 try {
