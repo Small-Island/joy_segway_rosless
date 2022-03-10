@@ -453,7 +453,7 @@ function sendDataChannel() {
 }
 
 function quit_accel_cmd() {
-    dataChannel.send(new Int32Array([0x99999999]));
+    dataChannel.send(new Uint8Array([0x99, 0x99, 0x99, 0x99]));
 }
 
 function handleTargetVelDownload() {
@@ -470,10 +470,11 @@ function handleTargetVelDownload() {
 
 function handleActualVelDownload() {
     let blob = new Blob([real_velocity_logData], {"type": "text/plain"});
-
+    const file_name = "actual_velocity_a_" + accel_Input.value + "_v_" + max_velocity_Input.value + "_T2_" + T2_Input.value + ".log";
+    document.getElementById("download2").download = file_name;
     if (window.navigator.msSaveBlob) {
-        window.navigator.msSaveBlob(blob, "actual_velocity.log");
-        window.navigator.msSaveOrOpenBlob(blob, "actual_velocity.log");
+        window.navigator.msSaveBlob(blob, file_name);
+        window.navigator.msSaveOrOpenBlob(blob, file_name);
     } else {
         document.getElementById("download2").href = window.URL.createObjectURL(blob);
     }
