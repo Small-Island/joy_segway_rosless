@@ -482,7 +482,7 @@ function handleActualVelDownload() {
 
 function startLog() {
     ideal_velocity_logData = '';
-    real_velocity_logData = '#accel(m/s^2) ' + accel_Input.value + ' max_vel(m/s) ' + max_velocity_Input.value + ' max_vel_time(s) ' + T2_Input.value + ']\n#時刻(s) 実際の速度(m/s)\n';
+    real_velocity_logData = '#accel(m/s^2) ' + accel_Input.value + ' max_vel(m/s) ' + max_velocity_Input.value + ' max_vel_time(s) ' + T2_Input.value + '\n#時刻(s) 実際の速度(m/s)\n';
     let target1 = document.getElementById('logstartbutton');
     if (target1.value == '記録中') {
         return;
