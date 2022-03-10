@@ -179,7 +179,7 @@ public:
         this->initial_integrated_left_wheel_position = 0.0;
         this->initial_integrated_right_wheel_position = 0.0;
         this->initial_integrated_turn_position = 0.0;
-        this->latch = 3;
+        this->latch = 0;
         this->lin = 0;
         this->ang = 0;
         this->before_target_linear_vel = 0;
