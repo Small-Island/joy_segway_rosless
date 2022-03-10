@@ -263,7 +263,7 @@ public:
 
             while (true) {
                 if (joy_fd < 0) {
-                    this->latch = 3;
+                    this->latch = 0;
                     this->lin = 0;
                     this->ang = 0;
                     printf("[%d] connecting to joystick ...\n", joy_fd);
