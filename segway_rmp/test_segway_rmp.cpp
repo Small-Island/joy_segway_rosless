@@ -330,10 +330,10 @@ public:
                 // std::cout << '\n';
 
 
-                if ((int)joy_button.at(13)) { //○
+                if ((int)joy_button.at(10) && (int)joy_button.at(13)) { //L1 and ○
                     this->latch = 1;
                 }
-                if ((int)joy_button.at(12)) { //△
+                if ((int)joy_button.at(10) && (int)joy_button.at(12)) { //L1 and △
                     this->latch = 3;
                     this->ang = 0;
                     this->lin = 0;
