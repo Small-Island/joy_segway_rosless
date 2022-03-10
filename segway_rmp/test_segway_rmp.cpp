@@ -258,17 +258,22 @@ public:
     void joy_read() {
         int joy_fd = -1;
 
-
         while (true) {
-
+            int search_count = 0;
             while (true) {
                 if (joy_fd < 0) {
-                    this->latch = 0;
-                    this->lin = 0;
-                    this->ang = 0;
+                    search_count++;
                     printf("[%d] connecting to joystick ...\n", joy_fd);
                     joy_fd = open(JOY_DEV, O_RDONLY);
-                    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                    if (joy_fd >= 0) {
+                        break;
+                    }
+                    if (search_count > 5) {
+                        this->latch = 0;
+                        this->lin = 0;
+                        this->ang = 0;
+                    }
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 }
                 else {
                     break;
