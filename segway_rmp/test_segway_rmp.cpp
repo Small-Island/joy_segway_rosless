@@ -186,6 +186,7 @@ public:
         this->linear_vel_feedback = 0;
         this->zero_judge = 0;
         this->gain = 1.4;
+        this->offset = 0.04;
         this->obstacle_detected = false;
         this->motors_enabled = false;
         this->recover_motors_enabled = false;
@@ -459,7 +460,7 @@ public:
                 else if (this->latch == 2) {
                     la = this->ba->controller();
                     // this->lin = la.linear_vel;
-                    this->lin = la.linear_vel + 0.04;
+                    this->lin = la.linear_vel + this->offset;
                     // this->lin = (this->lin - this->linear_vel_feedback)*0.5 + la.linear_vel;
                     this->ang = la.angular_vel;
                 }
@@ -839,8 +840,7 @@ private:
 
     BanAccel* ba;
 
-    double v1, v2;
-    double gain;
+    double gain, offset;
 
     bool obstacle_detected;
     // ros::Subscriber obstacle_sub;
