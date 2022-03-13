@@ -413,7 +413,9 @@ function cal_velocity_plan() {
     + "        T3: " + T3.toFixed(6) + " (s)";
 }
 
-function sendDataChannel() {
+const sleep = waitTime => new Promise( resolve => setTimeout(resolve, waitTime) );
+
+const sendDataChannel = async function() {
     // console.log("hello");
     // if (accel_Input.value ==  || max_velocity_Input.value == NULL) {
     //     let target = document.getElementById("warning");
@@ -442,15 +444,18 @@ function sendDataChannel() {
     // }
     // dataChannel.send(new TextEncoder().encode(textData));
 
+
     if (document.getElementsByName("q2")[0].checked) {
         dataChannel.send( new Uint8Array([ 0x01, 0x00, 0x00, document.getElementById("offset_input").value*100 ]) );
     }
     else if (document.getElementsByName("q2")[1].checked) {
         dataChannel.send( new Uint8Array([ 0x02, 0x00, 0x00, document.getElementById("gain_input").value*100 ]) );
     }
-    else if (document.getElementsByName("q1")[2].checked) {
+    else if (document.getElementsByName("q2")[2].checked) {
         dataChannel.send( new Uint8Array([ 0x03, 0x00, 0x00, 0x00 ]) );
     }
+
+    await sleep(10);
 
     if (reverse_Input[0].checked) {
         dataChannel.send( new Uint8Array([ 0xaf, T2_Input.value*2, accel_Input.value*20, max_velocity_Input.value*100 ]));
@@ -458,8 +463,6 @@ function sendDataChannel() {
     else {
         dataChannel.send( new Uint8Array([ 0xab, T2_Input.value*2, accel_Input.value*20, max_velocity_Input.value*100 ]));
     }
-    // accel_Input.value = "";
-    // max_velocity_Input.value = "";
 }
 
 function quit_accel_cmd() {
