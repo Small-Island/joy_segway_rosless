@@ -529,7 +529,7 @@ function gameLoop() {
         document.getElementById('frontrear').value = 127*lin;
         document.getElementById('frontrear_out').innerHTML = (127*lin).toFixed(0);
         document.getElementById('side').value = 127*side;
-                    document.getElementById('side_out').innerHTML = (127*side).toFixed(0);
+        document.getElementById('side_out').innerHTML = (127*side).toFixed(0);
         if (dataChannel != null) {
             if (gp.buttons[1].value) {
                 start = true;
