@@ -43,6 +43,14 @@
 #include <linux/joystick.h>
 #define JOY_DEV "/dev/input/js0"
 
+#include <arpa/inet.h>
+#include <unistd.h>
+
+int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+struct sockaddr_in addr;
+struct My_udp_data {
+    double obstacle_rate = 0.0;
+};
 
 // #include <boost/thread.hpp>
 
@@ -376,6 +384,17 @@ public:
         return;
     }
 
+    void udp_read() {
+        while (1) {
+            struct My_udp_data my_udp_data = {0};
+            int recv_size = recv(sockfd, &my_udp_data, sizeof(struct My_udp_data), 0);
+            if (my_udp_data.obstacle_rate > 0.5) {
+                this->obstacle_detected = true;
+            }
+            printf("read %d byte: %lf\n", recv_size, my_udp_data.obstacle_rate);
+        }
+    }
+
     void run() {
         this->fd_write = open(SERIAL_PATH, O_WRONLY); // SERIAL_PATH は serialPathConfig.h.in にて定義されている。
         if (this->getParameters()) {
@@ -390,6 +409,7 @@ public:
 
         boost::thread th_momo_serial_read(&SegwayRMPNode::momo_serial_read, this);
         boost::thread th_joy_read(&SegwayRMPNode::joy_read, this);
+        boost::thread th_udp_read(&SegwayRMPNode::udp_read, this);
 
         this->reset_odometry = false;
         this->connected = false;
@@ -888,6 +908,11 @@ void handleStatusWrapper(segwayrmp::SegwayStatus::Ptr ss) { // removed '&' by Oj
 }
 
 int main(int argc, char **argv) {
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = inet_addr("0.0.0.0");
+    addr.sin_port = htons(4001);
+
+    bind(sockfd, (const struct sockaddr *)&addr, sizeof(addr));
 
     SegwayRMPNode segwayrmp_node;
 
