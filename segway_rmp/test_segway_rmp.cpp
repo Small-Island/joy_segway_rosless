@@ -185,8 +185,9 @@ public:
         this->before_target_linear_vel = 0;
         this->linear_vel_feedback = 0;
         this->zero_judge = 0;
-        this->gain = 1.4;
         this->offset = 0.04;
+        this->gain = 0.4;
+        this->offset_gain_none_latch = 1;
         this->obstacle_detected = false;
         this->motors_enabled = false;
         this->recover_motors_enabled = false;
@@ -228,6 +229,7 @@ public:
                     }
                     this->jyja_arrival_time = std::chrono::system_clock::now();
                 }
+
                 else if (buf_ptr[0] == 0xab) {
                     if (this->latch == 3) {
                         this->latch = 2;
@@ -242,6 +244,19 @@ public:
                         this->ba->setup((int8_t)buf_ptr[1]/2.0, (int8_t)buf_ptr[2]/20.0, (int8_t)buf_ptr[3]/100.0, 0);
                     }
                 }
+
+                else if (buf_ptr[0] == 0x01) {
+                    this->offset_gain_none_latch = 1;
+                    this->offset = (int8_t)buf_ptr[3]/100.0;
+                }
+                else if (buf_ptr[0] == 0x02) {
+                    this->offset_gain_none_latch = 2;
+                    this->gain = (int8_t)buf_ptr[3]/100.0;
+                }
+                else if (buf_ptr[0] == 0x03) {
+                    this->offset_gain_none_latch = 3;
+                }
+
                 else if (buf_ptr[0] == 0x99) {
                     this->latch = 0;
                     this->lin = 0;
@@ -459,9 +474,16 @@ public:
                 }
                 else if (this->latch == 2) {
                     la = this->ba->controller();
-                    // this->lin = la.linear_vel;
-                    this->lin = la.linear_vel + this->offset;
-                    // this->lin = (this->lin - this->linear_vel_feedback)*(this->gain) + la.linear_vel;
+                    if (this->offset_gain_none_latch == 1) {
+                        this->lin = la.linear_vel + this->offset;
+                    }
+                    else if (this->offset_gain_none_latch == 2) {
+                        this->lin = (this->lin - this->linear_vel_feedback)*(this->gain) + la.linear_vel;
+                    }
+                    else if (this->offset_gain_none_latch == 3) {
+                        this->lin = la.linear_vel;
+                    }
+
                     this->ang = la.angular_vel;
                 }
                 else if (this->latch == 3) {
@@ -840,7 +862,8 @@ private:
 
     BanAccel* ba;
 
-    double gain, offset;
+    double offset, gain;
+    int offset_gain_none_latch; // 1: offset, 2: gain, 3: none
 
     bool obstacle_detected;
     // ros::Subscriber obstacle_sub;

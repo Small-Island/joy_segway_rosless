@@ -442,6 +442,16 @@ function sendDataChannel() {
     // }
     // dataChannel.send(new TextEncoder().encode(textData));
 
+    if (document.getElementsByName("q2")[0].checked) {
+        dataChannel.send( new Uint8Array([ 0x01, 0x00, 0x00, document.getElementById("offset_input").value*100 ]) );
+    }
+    else if (document.getElementsByName("q2")[1].checked) {
+        dataChannel.send( new Uint8Array([ 0x02, 0x00, 0x00, document.getElementById("gain_input").value*100 ]) );
+    }
+    else if (document.getElementsByName("q1")[2].checked) {
+        dataChannel.send( new Uint8Array([ 0x03, 0x00, 0x00, 0x00 ]) );
+    }
+
     if (reverse_Input[0].checked) {
         dataChannel.send( new Uint8Array([ 0xaf, T2_Input.value*2, accel_Input.value*20, max_velocity_Input.value*100 ]));
     }
