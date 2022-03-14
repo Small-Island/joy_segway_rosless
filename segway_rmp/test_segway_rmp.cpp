@@ -396,7 +396,7 @@ public:
         while (1) {
             struct My_udp_data my_udp_data = {0};
             int recv_size = recv(sockfd, &my_udp_data, sizeof(struct My_udp_data), 0);
-            if (my_udp_data.obstacle_rate > 0.4) {
+            if (my_udp_data.obstacle_rate > 0.3) {
                 this->obstacle_detected = true;
             }
             else {
