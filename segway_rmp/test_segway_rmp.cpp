@@ -516,7 +516,7 @@ public:
                     if (this->d1_count > 0) {
                         this->d1_count++;
                     }
-                    if (this->d1_count > 20) {
+                    if (this->d1_count > 15) {
                         this->d1_count = 0;
                         this->ang = 0;
                     }
