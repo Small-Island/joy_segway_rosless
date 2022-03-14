@@ -201,6 +201,7 @@ public:
         this->recover_motors_enabled = false;
         this->reset_odometry = false;
         this->joy_control = false;
+        this->d1_count = 0;
     }
 
     ~SegwayRMPNode() {
@@ -263,6 +264,13 @@ public:
                 }
                 else if (buf_ptr[0] == 0x03) {
                     this->offset_gain_none_latch = 3;
+                }
+
+                else if (buf_ptr[0] == 0xd1) {
+                    if (this->latch == 2) {
+                        this->d1_count = 10;
+                        this->ang = 10*(int8_t)buf_ptr[2]/127.0;
+                    }
                 }
 
                 else if (buf_ptr[0] == 0x99) {
@@ -504,7 +512,14 @@ public:
                         this->lin = la.linear_vel;
                     }
 
-                    this->ang = la.angular_vel;
+                    // this->ang = la.angular_vel;
+                    if (this->d1_count > 0) {
+                        this->d1_count++;
+                    }
+                    if (this->d1_count > 20) {
+                        this->d1_count = 0;
+                        this->ang = 0;
+                    }
                 }
                 else if (this->latch == 3) {
                     if (std::chrono::system_clock::now() - this->jyja_arrival_time > std::chrono::milliseconds(500)) {
@@ -895,6 +910,8 @@ private:
     int fd_write;
 
     std::chrono::system_clock::time_point begin_time_point;
+
+    int d1_count;
 
 }; // class SegwayRMPNode
 

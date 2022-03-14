@@ -465,6 +465,14 @@ const sendDataChannel = async function() {
     }
 }
 
+function d_left() {
+    dataChannel.send(new Uint8Array([ 0xd1, 0, 127, 0 ]));
+}
+
+function d_right() {
+    dataChannel.send(new Uint8Array([ 0xd1, 0, -127, 0 ]));
+}
+
 function quit_accel_cmd() {
     dataChannel.send(new Uint8Array([0x99, 0x99, 0x99, 0x99]));
 }
