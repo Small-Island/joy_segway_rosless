@@ -300,12 +300,12 @@ public:
                     if (joy_fd >= 0) {
                         break;
                     }
-                    if (search_count > 5) {
+                    if (search_count > 3) {
                         this->latch = 0;
                         this->lin = 0;
                         this->ang = 0;
                     }
-                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(50));
                 }
                 else {
                     break;
