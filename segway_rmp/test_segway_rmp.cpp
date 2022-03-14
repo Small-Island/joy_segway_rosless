@@ -399,6 +399,9 @@ public:
             if (my_udp_data.obstacle_rate > 0.5) {
                 this->obstacle_detected = true;
             }
+            else {
+                this->obstacle_detected = false;
+            }
             printf("read %d byte: %lf\n", recv_size, my_udp_data.obstacle_rate);
         }
     }
