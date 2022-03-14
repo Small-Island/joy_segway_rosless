@@ -483,7 +483,17 @@ function handleTargetVelDownload() {
 
 function handleActualVelDownload() {
     let blob = new Blob([real_velocity_logData], {"type": "text/plain"});
-    const file_name = "actual_velocity_a_" + accel_Input.value + "_v_" + max_velocity_Input.value + "_T2_" + T2_Input.value + ".log";
+    let file_name = "actual_velocity_a_" + accel_Input.value + "_v_" + max_velocity_Input.value + "_T2_" + T2_Input.value;
+    if (document.getElementsByName('q2')[0].checked) {
+        file_name = file_name + "_offset_" + document.getElementById("offset_input").value + '.log';
+    }
+    else if (document.getElementsByName('q2')[1].checked) {
+        file_name = file_name + "_gain_" + document.getElementById("gain_input").value + '.log';
+    }
+    else if (document.getElementsByName('q2')[2].checked) {
+        file_name = file_name + '.log';
+    }
+
     document.getElementById("download2").download = file_name;
     if (window.navigator.msSaveBlob) {
         window.navigator.msSaveBlob(blob, file_name);
@@ -495,7 +505,16 @@ function handleActualVelDownload() {
 
 function startLog() {
     ideal_velocity_logData = '';
-    real_velocity_logData = '#accel(m/s^2) ' + accel_Input.value + ' max_vel(m/s) ' + max_velocity_Input.value + ' max_vel_time(s) ' + T2_Input.value + '\n#時刻(s) 実際の速度(m/s)\n';
+    real_velocity_logData = '#accel(m/s^2) ' + accel_Input.value + ' max_vel(m/s) ' + max_velocity_Input.value + ' max_vel_time(s) ' + T2_Input.value;
+    if (document.getElementsByName('q2')[0].checked) {
+        real_velocity_logData = real_velocity_logData + ' offset ' + document.getElementById("offset_input").value + '\n#時刻(s) 実際の速度(m/s)\n';
+    }
+    else if (document.getElementsByName('q2')[1].checked) {
+        real_velocity_logData = real_velocity_logData + ' gain ' + document.getElementById("gain_input").value + '\n#時刻(s) 実際の速度(m/s)\n';
+    }
+    else if (document.getElementsByName('q2')[2].checked) {
+        real_velocity_logData = real_velocity_logData + '\n#時刻(s) 実際の速度(m/s)\n';
+    }
     let target1 = document.getElementById('logstartbutton');
     if (target1.value == '記録中') {
         return;
