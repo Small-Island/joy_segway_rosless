@@ -402,7 +402,7 @@ public:
             else {
                 this->obstacle_detected = false;
             }
-            printf("read %d byte: %lf\n", recv_size, my_udp_data.obstacle_rate);
+            // printf("read %d byte: %lf\n", recv_size, my_udp_data.obstacle_rate);
         }
     }
 
