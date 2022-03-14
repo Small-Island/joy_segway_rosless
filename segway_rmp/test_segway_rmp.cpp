@@ -534,6 +534,9 @@ public:
                 try {
                     if (this->obstacle_detected && this->lin > 0) {
                         this->lin = 0;
+                        if (this->latch == 2) {
+                            this->latch = 0;
+                        }
                     }
                     // printf("%lf, %lf\n", this->ang, this->lin);
                     this->segway_rmp->move(this->lin, this->ang);
