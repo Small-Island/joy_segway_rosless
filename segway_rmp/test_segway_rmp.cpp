@@ -602,15 +602,17 @@ public:
         // }
         //
         this->linear_vel_feedback = (ss.left_wheel_speed + ss.right_wheel_speed) / 2.0;
-        int16_t vel = (int16_t)(this->linear_vel_feedback * 10000.0);
-        uint8_t h = (uint8_t)((uint16_t)(vel & 0xff00) >> 8);
-        uint8_t l = (uint8_t)(vel & 0x00ff);
+        int vel = (int16_t)(this->linear_vel_feedback * 10000.0);
+        uint8_t hh = (uint8_t)((uint32_t)(vel & 0xff000000) >> 24);
+        uint8_t h = (uint8_t)((uint32_t)(vel & 0x00ff0000) >> 16);
+        uint8_t l = (uint8_t)((uint32_t)(vel & 0x0000ff00) >> 8);
+        uint8_t ll = (uint8_t)(vel & 0x000000ff);
         int end_time_point = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - this->begin_time_point).count();
         uint8_t hht = (uint8_t)((uint32_t)(end_time_point & 0xff000000) >> 24);
         uint8_t ht = (uint8_t)((uint32_t)(end_time_point & 0x00ff0000) >> 16);
         uint8_t lt = (uint8_t)((uint32_t)(end_time_point & 0x0000ff00) >> 8);
         uint8_t llt = (uint8_t)(end_time_point & 0x000000ff);
-        uint8_t buf[7] = {hht, ht, lt, llt, h, l, '\n'};
+        uint8_t buf[9] = {hht, ht, lt, llt, hh, h, l, ll, '\n'};
         write(this->fd_write, &buf, 7);
 
         // printf("%lf\n", this->linear_vel_feedback);

@@ -182,10 +182,10 @@ function prepareNewConnection() {
   dataChannel.onmessage = function (event) {
     // console.log(event.data.byteLength);
 
-    if (event.data.byteLength == 6) {
+    if (event.data.byteLength == 8) {
 
       let vel_time = (new Int32Array([new Uint8Array(event.data)[0] << 24])[0] + new Int32Array([new Uint8Array(event.data)[1] << 16])[0] + new Int32Array([new Uint8Array(event.data)[2] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[3]])[0] )/1000.0 ;
-      let real_vel = (new Int16Array([new Uint8Array(event.data)[4] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[5]])[0])/10000.0 ;
+      let real_vel = (new Int32Array([new Uint8Array(event.data)[4] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[5] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[6] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[7]])[0] )/10000.0 ;
 
       document.getElementById("sgss").innerHTML = '時刻(s) ' + vel_time + '\n走行速度(m/s) ' + real_vel;
       if (log_latch) {
