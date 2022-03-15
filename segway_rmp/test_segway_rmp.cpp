@@ -613,7 +613,7 @@ public:
         uint8_t lt = (uint8_t)((uint32_t)(end_time_point & 0x0000ff00) >> 8);
         uint8_t llt = (uint8_t)(end_time_point & 0x000000ff);
         uint8_t buf[9] = {hht, ht, lt, llt, hh, h, l, ll, '\n'};
-        write(this->fd_write, &buf, 7);
+        write(this->fd_write, &buf, 9);
 
         // printf("%lf\n", this->linear_vel_feedback);
         //
