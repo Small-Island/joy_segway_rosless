@@ -603,7 +603,7 @@ public:
         //
         this->linear_vel_feedback = (ss.left_wheel_speed + ss.right_wheel_speed) / 2.0;
         printf("%lf\n", this->linear_vel_feedback);
-        int vel = (int16_t)(this->linear_vel_feedback * 10000.0);
+        int vel = (int32_t)(this->linear_vel_feedback * 10000.0);
         uint8_t hh = (uint8_t)((uint32_t)(vel & 0xff000000) >> 24);
         uint8_t h = (uint8_t)((uint32_t)(vel & 0x00ff0000) >> 16);
         uint8_t l = (uint8_t)((uint32_t)(vel & 0x0000ff00) >> 8);
