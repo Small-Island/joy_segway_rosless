@@ -494,7 +494,7 @@ public:
                     this->recover_motors_enabled = false;
                 }
 
-                // boost::mutex::scoped_lock lock(this->m_mutex);
+                boost::mutex::scoped_lock lock(this->m_mutex);
 
                 Lavel la;
                 if (this->latch == 0) {
@@ -532,11 +532,8 @@ public:
                 }
 
                 try {
-                    if (this->obstacle_detected_in_3m && this->lin > 0.5) {
-                        this->lin = 0.5;
-                    }
-                    if (this->obstacle_detected_in_2m && this->lin > 0.3) {
-                        this->lin = 0.3;
+                    if (this->obstacle_detected_in_2m && this->lin > 0.4) {
+                        this->lin = 0.4;
                     }
                     if (this->obstacle_detected_in_1m && this->lin > 0) {
                         this->lin = 0;
