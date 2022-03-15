@@ -402,7 +402,7 @@ public:
             this->obstacle_detected_in_1m = my_udp_data.obstacle_detected_in_1m;
             this->obstacle_detected_in_2m = my_udp_data.obstacle_detected_in_2m;
             this->obstacle_detected_in_3m = my_udp_data.obstacle_detected_in_3m;
-            printf("1m %d, 2m %d, 3m %d\n", my_udp_data.obstacle_detected_in_1m, my_udp_data.obstacle_detected_in_2m, my_udp_data.obstacle_detected_in_3m)
+            printf("1m %d, 2m %d, 3m %d\n", my_udp_data.obstacle_detected_in_1m, my_udp_data.obstacle_detected_in_2m, my_udp_data.obstacle_detected_in_3m);
         }
     }
 
