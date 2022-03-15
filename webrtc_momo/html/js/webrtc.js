@@ -458,10 +458,10 @@ const sendDataChannel = async function() {
     await sleep(10);
 
     if (reverse_Input[0].checked) {
-        dataChannel.send( new Uint8Array([ 0xaf, T2_Input.value*2, accel_Input.value*20, max_velocity_Input.value*100 ]));
+        dataChannel.send( new Uint8Array([ 0xaf, T2_Input.value*2, accel_Input.value*20, max_velocity_Input.value*20 ]));
     }
     else {
-        dataChannel.send( new Uint8Array([ 0xab, T2_Input.value*2, accel_Input.value*20, max_velocity_Input.value*100 ]));
+        dataChannel.send( new Uint8Array([ 0xab, T2_Input.value*2, accel_Input.value*20, max_velocity_Input.value*20 ]));
     }
 }
 
