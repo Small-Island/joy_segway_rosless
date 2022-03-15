@@ -493,13 +493,13 @@ function handleActualVelDownload() {
     let blob = new Blob([real_velocity_logData], {"type": "text/plain"});
     let file_name = "actual_velocity_a_" + accel_Input.value + "_v_" + max_velocity_Input.value + "_T2_" + T2_Input.value;
     if (document.getElementsByName('q2')[0].checked) {
-        file_name = file_name + "_offset_" + document.getElementById("offset_input").value + '.log';
+        file_name = file_name + "_offset_" + document.getElementById("offset_input").value + '.txt';
     }
     else if (document.getElementsByName('q2')[1].checked) {
-        file_name = file_name + "_gain_" + document.getElementById("gain_input").value + '.log';
+        file_name = file_name + "_gain_" + document.getElementById("gain_input").value + '.txt';
     }
     else if (document.getElementsByName('q2')[2].checked) {
-        file_name = file_name + '.log';
+        file_name = file_name + '.txt';
     }
 
     document.getElementById("download2").download = file_name;
