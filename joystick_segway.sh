@@ -4,5 +4,5 @@ cd ~/joy_segway_rosless
 #/usr/bin/chromium-browser http://127.0.0.1:8080/html/test.html &
 ./momo_arm64.run
 ./test_segway_rmp
-# ~/ojima-librealsense/build/examples/pointcloud/rs-pointcloud
+~/ojima-librealsense/build/examples/pointcloud/rs-pointcloud
 # python3 ./src/mywork/obstacleDetection.py &
