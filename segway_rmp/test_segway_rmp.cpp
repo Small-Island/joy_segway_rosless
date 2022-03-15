@@ -51,6 +51,7 @@ struct sockaddr_in addr;
 struct My_udp_data {
     char obstacle_detected_in_1m = 0;
     char obstacle_detected_in_2m = 0;
+    char obstacle_detected_in_3m = 0;
 };
 
 // #include <boost/thread.hpp>
@@ -400,6 +401,7 @@ public:
             int recv_size = recv(sockfd, &my_udp_data, sizeof(struct My_udp_data), 0);
             this->obstacle_detected_in_1m = my_udp_data.obstacle_detected_in_1m;
             this->obstacle_detected_in_2m = my_udp_data.obstacle_detected_in_2m;
+            this->obstacle_detected_in_3m = my_udp_data.obstacle_detected_in_3m;
         }
     }
 
@@ -529,7 +531,10 @@ public:
                 }
 
                 try {
-                    if (this->obstacle_detected_in_2m && this->lin > 0 && this->lin > 0.3) {
+                    if (this->obstacle_detected_in_3m && this->lin > 0.5) {
+                        this->lin = 0.5;
+                    }
+                    if (this->obstacle_detected_in_2m && this->lin > 0.3) {
                         this->lin = 0.3;
                     }
                     if (this->obstacle_detected_in_1m && this->lin > 0) {
@@ -906,7 +911,7 @@ private:
     double offset, gain;
     int offset_gain_none_latch; // 1: offset, 2: gain, 3: none
 
-    bool obstacle_detected_in_1m, obstacle_detected_in_2m;
+    bool obstacle_detected_in_1m, obstacle_detected_in_2m, obstacle_detected_in_3m;
     // ros::Subscriber obstacle_sub;
 
     bool motors_enabled, recover_motors_enabled;
