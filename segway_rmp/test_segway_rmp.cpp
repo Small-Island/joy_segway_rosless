@@ -49,7 +49,8 @@
 int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 struct sockaddr_in addr;
 struct My_udp_data {
-    double obstacle_rate = 0.0;
+    char obstacle_detected_in_1m = 0;
+    char obstacle_detected_in_2m = 0;
 };
 
 // #include <boost/thread.hpp>
@@ -196,7 +197,8 @@ public:
         this->offset = 0.04;
         this->gain = 0.4;
         this->offset_gain_none_latch = 1;
-        this->obstacle_detected = false;
+        this->obstacle_detected_in_1m = false;
+        this->obstacle_detected_in_2m = false;
         this->motors_enabled = false;
         this->recover_motors_enabled = false;
         this->reset_odometry = false;
@@ -396,13 +398,8 @@ public:
         while (1) {
             struct My_udp_data my_udp_data = {0};
             int recv_size = recv(sockfd, &my_udp_data, sizeof(struct My_udp_data), 0);
-            if (my_udp_data.obstacle_rate > 0.4) {
-                this->obstacle_detected = true;
-            }
-            else {
-                this->obstacle_detected = false;
-            }
-            // printf("read %d byte: %lf\n", recv_size, my_udp_data.obstacle_rate);
+            this->obstacle_detected_in_1m = my_udp_data.obstacle_detected_in_1m;
+            this->obstacle_detected_in_2m = my_udp_data.obstacle_detected_in_2m;
         }
     }
 
@@ -532,7 +529,10 @@ public:
                 }
 
                 try {
-                    if (this->obstacle_detected && this->lin > 0) {
+                    if (this->obstacle_detected_in_2m && this->lin > 0 && this->lin > 0.3) {
+                        this->lin = 0.3;
+                    }
+                    if (this->obstacle_detected_in_1m && this->lin > 0) {
                         this->lin = 0;
                         if (this->latch == 2) {
                             this->latch = 0;
@@ -906,7 +906,7 @@ private:
     double offset, gain;
     int offset_gain_none_latch; // 1: offset, 2: gain, 3: none
 
-    bool obstacle_detected;
+    bool obstacle_detected_in_1m, obstacle_detected_in_2m;
     // ros::Subscriber obstacle_sub;
 
     bool motors_enabled, recover_motors_enabled;
