@@ -269,7 +269,7 @@ public:
                 else if (buf_ptr[0] == 0xd1) {
                     if (this->latch == 2) {
                         this->d1_count = 10;
-                        this->ang = 5*(int8_t)buf_ptr[2]/127.0;
+                        this->ang = 3*(int8_t)buf_ptr[2]/127.0;
                     }
                 }
 
