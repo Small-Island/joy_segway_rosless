@@ -541,6 +541,9 @@ public:
                             this->latch = 0;
                         }
                     }
+                    if (this->lin < -0.5) {
+                        this->lin = -0.5;
+                    }
                     // printf("%lf, %lf\n", this->ang, this->lin);
                     this->segway_rmp->move(this->lin, this->ang);
                 } catch (std::exception& e) {
