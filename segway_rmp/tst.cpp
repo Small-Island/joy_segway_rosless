@@ -20,7 +20,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-
+#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <cmath>
@@ -37,6 +37,9 @@
 #include <vector>
 #include <linux/joystick.h>
 #define JOY_DEV "/dev/input/js0"
+
+int latch;
+double lin, ang;
 
 
 void momo_serial_read() {
@@ -58,22 +61,36 @@ void momo_serial_read() {
 
 void hoge() {
     int fd_write = open(SERIAL_PATH, O_WRONLY);
-    double vel = -1;
-    std::chrono::system_clock::time_point begin = std::chrono::system_clock::now();
+    // double vel_d = -4;
+
+    const char* file_name = "sample.out";
+    std::ofstream ofs(file_name);
+
+    std::chrono::system_clock::time_point begin_time_point = std::chrono::system_clock::now();
     while (true) {
-        uint8_t h = (uint8_t)((uint16_t)((uint16_t)(vel * 10000) & 0xff00) >> 8);
-        uint8_t l = (uint8_t)((uint16_t)(vel * 10000) & 0x00ff);
-        uint8_t buf[3] = {h, l, '\n'};
-        write(fd_write, &buf, 3);
+        int vel = (int32_t)(lin * 10000.0);
+        uint8_t hh = (uint8_t)((uint32_t)(vel & 0xff000000) >> 24);
+        uint8_t h = (uint8_t)((uint32_t)(vel & 0x00ff0000) >> 16);
+        uint8_t l = (uint8_t)((uint32_t)(vel & 0x0000ff00) >> 8);
+        uint8_t ll = (uint8_t)(vel & 0x000000ff);
+        int end_time_point = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - begin_time_point).count();
+        uint8_t hht = (uint8_t)((uint32_t)(end_time_point & 0xff000000) >> 24);
+        uint8_t ht = (uint8_t)((uint32_t)(end_time_point & 0x00ff0000) >> 16);
+        uint8_t lt = (uint8_t)((uint32_t)(end_time_point & 0x0000ff00) >> 8);
+        uint8_t llt = (uint8_t)(end_time_point & 0x000000ff);
+        uint8_t buf[9] = {hht, ht, lt, llt, hh, h, l, ll, '\n'};
+        write(fd_write, &buf, 9);
+        if (!ofs) {
+            ofs << end_time_point << ' ' << lin << '\n';
+        }
+        if (end_time_point > 5000) {
+            ofs.close();
+        }
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
-        // printf("%lf\n", (double)std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() / 1000.0);
-        vel = vel + 0.001;
+        // vel_d = vel_d + 0.001;
     }
 }
 
-int latch;
-double lin, ang;
 
 void joy_read() {
     int joy_fd = -1;
@@ -83,7 +100,7 @@ void joy_read() {
 
         while (true) {
             if (joy_fd < 0) {
-                latch = 3;
+                latch = 0;
                 lin = 0;
                 ang = 0;
                 printf("[%d] connecting to joystick ...\n", joy_fd);
@@ -144,26 +161,22 @@ void joy_read() {
             std::cout << '\n';
 
             std::cout << "  button: ";
-            for(size_t i(0);i<joy_button.size();++i) {
+            for(size_t i(0); i < joy_button.size(); i++) {
                 std::cout << " " << (int)joy_button.at(i);
             }
             std::cout << '\n';
 
 
-            if ((int)joy_button.at(0)) {
-                latch = 0;
+            if ((int)joy_button.at(2)) {
+                latch = 1;
             }
             if ((int)joy_button.at(1)) {
-                if (latch == 0) {
-                    latch = 3;
-                }
-                else if (latch == 2) {
-                }
+                latch = 0;
                 ang = 0;
                 lin = 0;
             }
 
-            if (latch == 0) {
+            if (latch == 1) {
                 ang = -50.0*joy_axis.at(0)/32767.0;
                 lin = -2.0*joy_axis.at(3)/32767.0;
             }

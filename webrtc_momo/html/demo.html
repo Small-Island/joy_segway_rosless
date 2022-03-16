@@ -41,7 +41,7 @@
     </div>
     <div id="warning"></div>
     <!-- <img src="./img.png"><br> -->
-    加速度 (> 0)　　　　<input type="range" id="accel_text" onchange="cal_velocity_plan()" min="0.00" max="8.0" step="0.05" value="0.00" oninput="this.nextElementSibling.value = this.value" style="width: 40%;"><output>0.05</output> (m/s^2) <br><br>
+    加速度 (> 0)　　　　<input type="range" id="accel_text" onchange="cal_velocity_plan()" min="0.00" max="6.0" step="0.05" value="0.00" oninput="this.nextElementSibling.value = this.value" style="width: 40%;"><output>0.05</output> (m/s^2) <br><br>
     最高速度　 　　　　<input type="range" id="max_velocity_text" onchange="cal_velocity_plan()" min="0.00" max="4.00" step="0.05" value="0.00" oninput="this.nextElementSibling.value = this.value" style="width: 40%;"><output>0.00</output> (m/s) <br><br>
     最高速度で走る時間 <input type="range" id="T2_text" onchange="cal_velocity_plan()" min="0.0" max="20" step="0.5" value="0.5" oninput="this.nextElementSibling.value = this.value" style="width: 40%;"><output>0.5</output> (s) <br><br>
     <!-- <input type="radio" name="q1" checked> 前進 <br><br> -->
@@ -69,7 +69,8 @@
         </div>
         <div class="SegwayStatusStamped">
             セグウェイから受信した情報 <br>
-            <a id="download2" href="#" onclick="handleActualVelDownload()">ダウンロード</a><br>
+            <a id="download2" href="" onclick="handleActualVelDownload()">ダウンロード</a><br>
+            <!-- <button id="download2" onclick="handleActualVelDownload()">ダウンロード</button><br> -->
             <font size="4">
                 <pre><div id="sgss"></div></pre>
             </font>

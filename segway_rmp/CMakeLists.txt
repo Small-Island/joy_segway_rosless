@@ -73,9 +73,16 @@ set_target_properties(
     RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/..
 )
 
-add_executable(test test.cpp)
+add_executable(file_segway_rmp file_segway_rmp.cpp)
 set_target_properties(
-    test
+    file_segway_rmp
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/..
+)
+
+add_executable(tst tst.cpp)
+set_target_properties(
+    tst
     PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/..
 )
@@ -104,7 +111,13 @@ target_link_libraries(test_segway_rmp
   # ${catkin_LIBRARIES}
 )
 
-target_link_libraries(test
+target_link_libraries(file_segway_rmp
+  ${Boost_LIBRARIES}
+  ${libsegwayrmp_LIBRARIES}
+  # ${catkin_LIBRARIES}
+)
+
+target_link_libraries(tst
   ${Boost_LIBRARIES}
   ${libsegwayrmp_LIBRARIES}
   # ${catkin_LIBRARIES}

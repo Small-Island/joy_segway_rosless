@@ -490,7 +490,7 @@ function handleTargetVelDownload() {
 }
 
 function handleActualVelDownload() {
-    let blob = new Blob([real_velocity_logData], {"type": "text/plain"});
+    const blob = new Blob([real_velocity_logData], {"type": "text/plain"});
     let file_name = "actual_velocity_a_" + accel_Input.value + "_v_" + max_velocity_Input.value + "_T2_" + T2_Input.value;
     if (document.getElementsByName('q2')[0].checked) {
         file_name = file_name + "_offset_" + document.getElementById("offset_input").value + '.txt';
@@ -502,13 +502,43 @@ function handleActualVelDownload() {
         file_name = file_name + '.txt';
     }
 
+    // const url = window.URL.createObjectURL(blob);
+    // console.log(url);
+    // const a = document.createElement("a");
+    // document.body.appendChild(a);
+    // a.download = file_name;
+    // a.href = url;
+    // a.click();
+    // a.remove();
+    // setTimeout(() => {
+    //     a.remove();
+    //     window.URL.revokeObjectURL(url);
+    //     console.log("hello");
+    // }, 1000);
+
     document.getElementById("download2").download = file_name;
-    if (window.navigator.msSaveBlob) {
-        window.navigator.msSaveBlob(blob, file_name);
-        window.navigator.msSaveOrOpenBlob(blob, file_name);
-    } else {
+    // if (window.navigator.msSaveBlob) {
+    //     window.navigator.msSaveBlob(blob, file_name);
+    //     window.navigator.msSaveOrOpenBlob(blob, file_name);
+        // console.log("hello");
+    // } else {
         document.getElementById("download2").href = window.URL.createObjectURL(blob);
-    }
+    // }
+
+    // document.getElementById("download2").remove();
+    // const a = document.createElement("a");
+    // a.id = "download2";
+    // a.href = '#';
+    // a.onclick="handleActualVelDownload()";
+    // a.innerHTML = "ダウンロード";
+    // document.getElementById("download2_wrapper").appendChild(a);
+
+    // setTimeout(() => {
+    //     window.URL.revokeObjectURL(document.getElementById("download2").href);
+    //     document.getElementById('download2').removeAttribute('download');
+    //     document.getElementById('download2').removeAttribute('href');
+    //     console.log("hello");
+    // }, 500);
 }
 
 function startLog() {

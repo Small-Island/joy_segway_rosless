@@ -20,7 +20,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-
+#include <fstream>
+#include <ctime>
 #include <iostream>
 #include <sstream>
 #include <cmath>
@@ -89,13 +90,14 @@ public:
 
 class BanAccel {
     int* latch;
+    bool* log;
     int section, reverse;
     double t, ct, total_time, T1, T2, T3;
     double vel, a;
     double vel_limit;
     double x;
 public:
-    BanAccel(int* latch): latch(latch) {}
+    BanAccel(int* latch, bool* log): latch(latch), log(log) {}
     void setup(double T2, double a, double vel_limit, int reverse) {
         this->reverse = reverse;
         this->vel_limit = vel_limit;
@@ -164,6 +166,7 @@ public:
         else {
             this->vel = 0;
             *(this->latch) = 3;
+            *(this->log) = false;
             return;
         }
         return;
@@ -189,7 +192,7 @@ public:
         this->initial_integrated_left_wheel_position = 0.0;
         this->initial_integrated_right_wheel_position = 0.0;
         this->initial_integrated_turn_position = 0.0;
-        this->latch = 0;
+        this->latch = 3;
         this->lin = 0;
         this->ang = 0;
         this->before_target_linear_vel = 0;
@@ -200,11 +203,15 @@ public:
         this->offset_gain_none_latch = 1;
         this->obstacle_detected_in_1m = false;
         this->obstacle_detected_in_2m = false;
+        this->obstacle_detected_in_3m = false;
         this->motors_enabled = false;
         this->recover_motors_enabled = false;
         this->reset_odometry = false;
         this->joy_control = false;
         this->d1_count = 0;
+        this->log = false;
+        this->ofs_closed = true;
+        this->file_counta = 0;
     }
 
     ~SegwayRMPNode() {
@@ -249,11 +256,21 @@ public:
                         this->ba->setup((int8_t)buf_ptr[1]/2.0, (int8_t)buf_ptr[2]/20.0, (int8_t)buf_ptr[3]/20.0, 1);
                     }
                 }
-                else if (buf_ptr[0] == 0xaf) {
+                else if ((buf_ptr[0] & 0xf0) == 0xa0) {
                     if (this->latch == 3) {
                         this->latch = 2;
                         this->begin_time_point = std::chrono::system_clock::now();
                         this->ba->setup((int8_t)buf_ptr[1]/2.0, (int8_t)buf_ptr[2]/20.0, (int8_t)buf_ptr[3]/20.0, 0);
+                        std::stringstream ss;
+                        this->file_counta++;
+                        // ss << "./log/" << std::setfill('0') << std::setw(2) << this->file_counta << std::setfill(' ') << "actual_velocity_a_" << (int8_t)buf_ptr[2]/20.0 << "_v_" << (int8_t)buf_ptr[3]/20.0 << "_T2_" << (int8_t)buf_ptr[1]/2.0 << ".out";
+                        time_t t = time(NULL);
+                        ss << "./log/" << ctime(&t) << "actual_velocity_a_" << (int8_t)buf_ptr[2]/20.0 << "_v_" << (int8_t)buf_ptr[3]/20.0 << "_T2_" << (int8_t)buf_ptr[1]/2.0 << ".out";
+                        this->ofs = new std::ofstream(ss.str());
+                        *(this->ofs) << "#accel(m/s^2) " << (int8_t)buf_ptr[2]/20.0 << " max_vel(m/s) " << (int8_t)buf_ptr[3]/20.0 << " max_vel_time(s) " << (int8_t)buf_ptr[1]/2.0 << '\n';
+                        *(this->ofs) << "#時刻(s) 実際の速度(m/s)\n";
+                        this->ofs_closed = false;
+                        this->log = true;
                     }
                 }
 
@@ -406,6 +423,32 @@ public:
         }
     }
 
+    void hoge() {
+        while (1) {
+            int vel = (int32_t)(this->lin * 10000.0);
+            uint8_t hh = (uint8_t)((uint32_t)(vel & 0xff000000) >> 24);
+            uint8_t h = (uint8_t)((uint32_t)(vel & 0x00ff0000) >> 16);
+            uint8_t l = (uint8_t)((uint32_t)(vel & 0x0000ff00) >> 8);
+            uint8_t ll = (uint8_t)(vel & 0x000000ff);
+            int end_time_point = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - this->begin_time_point).count();
+            uint8_t hht = (uint8_t)((uint32_t)(end_time_point & 0xff000000) >> 24);
+            uint8_t ht = (uint8_t)((uint32_t)(end_time_point & 0x00ff0000) >> 16);
+            uint8_t lt = (uint8_t)((uint32_t)(end_time_point & 0x0000ff00) >> 8);
+            uint8_t llt = (uint8_t)(end_time_point & 0x000000ff);
+            uint8_t buf[9] = {hht, ht, lt, llt, hh, h, l, ll, '\n'};
+            write(this->fd_write, &buf, 9);
+
+            if (this->latch == 2 && !this->ofs_closed) {
+                *(this->ofs) << end_time_point/1000.0 << ' ' << this->lin << '\n';
+            }
+            if (this->latch == 3 && !this->ofs_closed) {
+                this->ofs->close();
+                this->ofs_closed = true;
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    }
+
     void run() {
         this->fd_write = open(SERIAL_PATH, O_WRONLY); // SERIAL_PATH は serialPathConfig.h.in にて定義されている。
         if (this->getParameters()) {
@@ -416,11 +459,14 @@ public:
 
         this->setupSegwayRMP();
 
-        this->ba = new BanAccel(&(this->latch));
+        this->ba = new BanAccel(&(this->latch), &(this->log));
 
         boost::thread th_momo_serial_read(&SegwayRMPNode::momo_serial_read, this);
         boost::thread th_joy_read(&SegwayRMPNode::joy_read, this);
         boost::thread th_udp_read(&SegwayRMPNode::udp_read, this);
+
+        // boost::thread th_hoge(&SegwayRMPNode::hoge, this);
+        // this->spin();
 
         this->reset_odometry = false;
         this->connected = false;
@@ -444,6 +490,7 @@ public:
 
 
     bool spin() {
+        // if (1) {
         if (true && this->connected) {
             printf("Segway RMP Ready.\n");
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
@@ -463,6 +510,7 @@ public:
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
             this->segway_rmp->setControllerGainSchedule(segwayrmp::heavy);
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            // while (1) {
             while (true && this->connected) {
 
                 if (!this->connected || this->reset_odometry) {
@@ -544,8 +592,8 @@ public:
                     if (this->lin < -0.5) {
                         this->lin = -0.5;
                     }
-                    // printf("%lf, %lf\n", this->ang, this->lin);
-                    this->segway_rmp->move(this->lin, this->ang);
+                    // printf("%lf, %lf, %d\n", this->ang, this->lin, this->latch);
+                    // this->segway_rmp->move(this->lin, this->ang);
                 } catch (std::exception& e) {
                     std::string e_msg(e.what());
                     printf("Error commanding Segway RMP: %s", e_msg.c_str());
@@ -615,6 +663,14 @@ public:
         uint8_t llt = (uint8_t)(end_time_point & 0x000000ff);
         uint8_t buf[9] = {hht, ht, lt, llt, hh, h, l, ll, '\n'};
         write(this->fd_write, &buf, 9);
+
+        if (this->latch == 2 && !this->ofs_closed) {
+            *(this->ofs) << end_time_point/1000.0 << ' ' << this->linear_vel_feedback << '\n';
+        }
+        if (this->latch == 3 && !this->ofs_closed) {
+            this->ofs->close();
+            this->ofs_closed = true;
+        }
 
         // printf("%lf\n", this->linear_vel_feedback);
         //
@@ -927,6 +983,11 @@ private:
     std::chrono::system_clock::time_point begin_time_point;
 
     int d1_count;
+
+    std::ofstream* ofs;
+    bool log;
+    bool ofs_closed;
+    int file_counta;
 
 }; // class SegwayRMPNode
 
