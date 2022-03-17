@@ -277,17 +277,17 @@ public:
                         std::string str = ctime(&t);
                         ss << "./log/" << str.substr(0, str.size()-1) << "actual_velocity_a_" << (int8_t)buf_ptr[2]/20.0 << "_v_" << (int8_t)buf_ptr[3]/20.0 << "_T2_" << (int8_t)buf_ptr[1]/2.0 << "_count_" << (int)(buf_ptr[0] & 0x0f);
                         switch (this->offset_gain_none_latch) {
-                            case 1: ss << "_offset_" << this->offset << ".out";
-                            case 2: ss << "_gain_" << this->gain << ".out";
-                            case 3: ss << "_none.out";
+                            case 1: ss << "_offset_" << this->offset << ".out"; break;
+                            case 2: ss << "_gain_" << this->gain << ".out"; break;
+                            case 3: ss << "_none.out"; break;
                         }
                         this->ofs = new std::ofstream(ss.str());
                         this->ofs_closed = false;
                         *(this->ofs) << "#accel(m/s^2) " << (int8_t)buf_ptr[2]/20.0 << " max_vel(m/s) " << (int8_t)buf_ptr[3]/20.0 << " max_vel_time(s) " << (int8_t)buf_ptr[1]/2.0;
                         switch (this->offset_gain_none_latch) {
-                            case 1: *(this->ofs) << " offset " << this->offset;
-                            case 2: *(this->ofs) << " gain " << this->gain;
-                            case 3: *(this->ofs) << " none ";
+                            case 1: *(this->ofs) << " offset " << this->offset; break;
+                            case 2: *(this->ofs) << " gain " << this->gain; break;
+                            case 3: *(this->ofs) << " none "; break;
                         }
                         *(this->ofs) << " count " << (int)(buf_ptr[0] & 0x0f) << '\n';
                         *(this->ofs) << "#時刻(s) 実際の速度(m/s)\n";
