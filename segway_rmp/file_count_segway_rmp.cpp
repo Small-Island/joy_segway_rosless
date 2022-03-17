@@ -463,13 +463,13 @@ public:
 
     void run() {
         this->fd_write = open(SERIAL_PATH, O_WRONLY); // SERIAL_PATH は serialPathConfig.h.in にて定義されている。
-        // if (this->getParameters()) {
-        //     return;
-        // }
+        if (this->getParameters()) {
+            return;
+        }
 
         this->begin_time_point = std::chrono::system_clock::now();
 
-        // this->setupSegwayRMP();
+        this->setupSegwayRMP();
 
         this->ba = new BanAccel(&(this->latch), &(this->log));
 
