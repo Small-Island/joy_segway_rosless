@@ -1000,7 +1000,7 @@ private:
     int d1_count;
 
     std::ofstream* ofs;
-    bool log_margin_count;
+    int log_margin_count;
     bool ofs_closed;
 }; // class SegwayRMPNode
 
