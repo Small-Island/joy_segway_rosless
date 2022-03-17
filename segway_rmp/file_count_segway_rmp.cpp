@@ -275,7 +275,12 @@ public:
                         // ss << "./log/" << std::setfill('0') << std::setw(2) << this->file_counta << std::setfill(' ') << "actual_velocity_a_" << (int8_t)buf_ptr[2]/20.0 << "_v_" << (int8_t)buf_ptr[3]/20.0 << "_T2_" << (int8_t)buf_ptr[1]/2.0 << ".out";
                         time_t t = time(NULL);
                         std::string str = ctime(&t);
-                        ss << "./log/" << str.substr(0, str.size()-1) << "actual_velocity_a_" << (int8_t)buf_ptr[2]/20.0 << "_v_" << (int8_t)buf_ptr[3]/20.0 << "_T2_" << (int8_t)buf_ptr[1]/2.0 << ".out";
+                        ss << "./log/" << str.substr(0, str.size()-1) << "actual_velocity_a_" << (int8_t)buf_ptr[2]/20.0 << "_v_" << (int8_t)buf_ptr[3]/20.0 << "_T2_" << (int8_t)buf_ptr[1]/2.0 << "_count_" << (int8_t)(buf_ptr[0] & 0x0f);
+                        switch (this->offset_gain_none_latch) {
+                            case 1: ss << "_offset_" << this->offset << ".out";
+                            case 2: ss << "_gain_" << this->gain << ".out";
+                            case 3: ss << "_none.out";
+                        }
                         this->ofs = new std::ofstream(ss.str());
                         this->ofs_closed = false;
                         *(this->ofs) << "#accel(m/s^2) " << (int8_t)buf_ptr[2]/20.0 << " max_vel(m/s) " << (int8_t)buf_ptr[3]/20.0 << " max_vel_time(s) " << (int8_t)buf_ptr[1]/2.0 << '\n';
