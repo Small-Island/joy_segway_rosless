@@ -6,5 +6,6 @@ webrtc_log*
 main_segway_rmp
 test_segway_rmp
 file_segway_rmp
+file_not_segway_rmp
 tst
 log

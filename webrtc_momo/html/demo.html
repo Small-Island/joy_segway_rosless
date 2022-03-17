@@ -41,14 +41,15 @@
     </div>
     <div id="warning"></div>
     <!-- <img src="./img.png"><br> -->
-    加速度 (> 0)　　　　<input type="range" id="accel_text" onchange="cal_velocity_plan()" min="0.00" max="6.0" step="0.05" value="0.00" oninput="this.nextElementSibling.value = this.value" style="width: 40%;"><output>0.05</output> (m/s^2) <br><br>
+    加速度 (> 0)　　　　<input type="range" id="accel_text" onchange="cal_velocity_plan()" min="0.00" max="6.0" step="0.05" value="0.05" oninput="this.nextElementSibling.value = this.value" style="width: 40%;"><output>0.05</output> (m/s^2) <br><br>
     最高速度　 　　　　<input type="range" id="max_velocity_text" onchange="cal_velocity_plan()" min="0.00" max="4.00" step="0.05" value="0.00" oninput="this.nextElementSibling.value = this.value" style="width: 40%;"><output>0.00</output> (m/s) <br><br>
     最高速度で走る時間 <input type="range" id="T2_text" onchange="cal_velocity_plan()" min="0.0" max="20" step="0.5" value="0.5" oninput="this.nextElementSibling.value = this.value" style="width: 40%;"><output>0.5</output> (s) <br><br>
     <!-- <input type="radio" name="q1" checked> 前進 <br><br> -->
     <!-- <input type="radio" name="q1"> 後退<br><br> -->
-    <input type="radio" name="q2" checked> offset <input id="offset_input" type="number" value="0.04" step="0.01" style="width: 50px"><br>
+    <input type="radio" name="q2"> offset <input id="offset_input" type="number" value="0.04" step="0.01" style="width: 50px"><br>
     <input type="radio" name="q2"> gain <input id="gain_input" type="number" step="0.1" style="width: 50px"><br>
-    <input type="radio" name="q2"> none <br><br>
+    <input type="radio" name="q2" checked> none <br>
+    回数 <input id="count_input" type="number" step="1" value="1" style="width: 50px"><br><br>
     <pre><div id="result_velocity_plan"></div></pre><br>
     <button id="d-left" onclick="d_left();" style="float: left; width: 70px; height: 70px">左修正</button>
     <button id="d-right" onclick="d_right();" style="float: right; width: 70px; height: 70px">右修正</button>　<br><br><br><br><br>
