@@ -277,7 +277,8 @@ public:
                         this->file_counta++;
                         // ss << "./log/" << std::setfill('0') << std::setw(2) << this->file_counta << std::setfill(' ') << "actual_velocity_a_" << (int8_t)buf_ptr[2]/20.0 << "_v_" << (int8_t)buf_ptr[3]/20.0 << "_T2_" << (int8_t)buf_ptr[1]/2.0 << ".out";
                         time_t t = time(NULL);
-                        ss << "./log/" << ctime(&t) << "actual_velocity_a_" << (int8_t)buf_ptr[2]/20.0 << "_v_" << (int8_t)buf_ptr[3]/20.0 << "_T2_" << (int8_t)buf_ptr[1]/2.0 << ".out";
+                        std::string str = ctime(&t);
+                        ss << "./log/" << str.substr(0, str.size()-1) << "actual_velocity_a_" << (int8_t)buf_ptr[2]/20.0 << "_v_" << (int8_t)buf_ptr[3]/20.0 << "_T2_" << (int8_t)buf_ptr[1]/2.0 << ".out";
                         this->ofs = new std::ofstream(ss.str());
                         *(this->ofs) << "#accel(m/s^2) " << (int8_t)buf_ptr[2]/20.0 << " max_vel(m/s) " << (int8_t)buf_ptr[3]/20.0 << " max_vel_time(s) " << (int8_t)buf_ptr[1]/2.0 << '\n';
                         *(this->ofs) << "#時刻(s) 実際の速度(m/s)\n";

@@ -27,6 +27,7 @@
 #include <chrono>
 #include <thread>
 #include <unistd.h>
+#include <ctime>
 
 #include <sys/fcntl.h>
 #include <iomanip>
@@ -188,6 +189,9 @@ void joy_read() {
 }
 
 int main(int argc, char **argv) {
+    time_t t = time(NULL);
+    std::string str = ctime(&t);
+    std::cout << str.substr(0, str.size()-1);
     std::thread th_momo_serial_read(momo_serial_read);
     std::thread th_hoge(hoge);
     std::thread th_joy_read(joy_read);
