@@ -90,7 +90,6 @@ public:
 
 class BanAccel {
     int* latch;
-    bool* log;
     int section, reverse;
     double t, ct, total_time, T1, T2, T3;
     double vel, a;
@@ -99,7 +98,7 @@ class BanAccel {
     char n;
     char count;
 public:
-    BanAccel(int* latch, bool* log): latch(latch), log(log), count(0) {}
+    BanAccel(int* latch): latch(latch), count(0) {}
     void setup(double T2, double a, double vel_limit, int reverse, char n) {
         this->count = 1;
         this->n = n;
@@ -171,7 +170,6 @@ public:
             this->vel = 0;
             if (this->count == this->n) {
                 *(this->latch) = 3;
-                *(this->log) = false;
             }
             else {
                 this->count++;
@@ -221,9 +219,8 @@ public:
         this->reset_odometry = false;
         this->joy_control = false;
         this->d1_count = 0;
-        this->log = false;
         this->ofs_closed = true;
-        this->file_counta = 0;
+        this->log_margin_count = 0;
     }
 
     ~SegwayRMPNode() {
@@ -271,19 +268,19 @@ public:
                 else if ((buf_ptr[0] & 0xf0) == 0xa0) {
                     if (this->latch == 3) {
                         this->latch = 2;
+                        this->log_margin_count = 0;
                         this->begin_time_point = std::chrono::system_clock::now();
                         this->ba->setup((int8_t)buf_ptr[1]/2.0, (int8_t)buf_ptr[2]/20.0, (int8_t)buf_ptr[3]/20.0, 0, (int8_t)(buf_ptr[0] & 0x0f));
                         std::stringstream ss;
-                        this->file_counta++;
                         // ss << "./log/" << std::setfill('0') << std::setw(2) << this->file_counta << std::setfill(' ') << "actual_velocity_a_" << (int8_t)buf_ptr[2]/20.0 << "_v_" << (int8_t)buf_ptr[3]/20.0 << "_T2_" << (int8_t)buf_ptr[1]/2.0 << ".out";
                         time_t t = time(NULL);
                         std::string str = ctime(&t);
                         ss << "./log/" << str.substr(0, str.size()-1) << "actual_velocity_a_" << (int8_t)buf_ptr[2]/20.0 << "_v_" << (int8_t)buf_ptr[3]/20.0 << "_T2_" << (int8_t)buf_ptr[1]/2.0 << ".out";
                         this->ofs = new std::ofstream(ss.str());
+                        this->ofs_closed = false;
                         *(this->ofs) << "#accel(m/s^2) " << (int8_t)buf_ptr[2]/20.0 << " max_vel(m/s) " << (int8_t)buf_ptr[3]/20.0 << " max_vel_time(s) " << (int8_t)buf_ptr[1]/2.0 << '\n';
                         *(this->ofs) << "#時刻(s) 実際の速度(m/s)\n";
                         this->ofs_closed = false;
-                        this->log = true;
                     }
                 }
 
@@ -472,7 +469,7 @@ public:
 
         this->setupSegwayRMP();
 
-        this->ba = new BanAccel(&(this->latch), &(this->log));
+        this->ba = new BanAccel(&(this->latch));
 
         boost::thread th_momo_serial_read(&SegwayRMPNode::momo_serial_read, this);
         boost::thread th_joy_read(&SegwayRMPNode::joy_read, this);
@@ -680,9 +677,14 @@ public:
         if (this->latch == 2 && !this->ofs_closed) {
             *(this->ofs) << end_time_point/1000.0 << ' ' << this->linear_vel_feedback << '\n';
         }
-        if (this->latch == 3 && !this->ofs_closed) {
+        else if (this->latch == 3 && !this->ofs_closed && this->log_margin_count < 50) {
+            *(this->ofs) << end_time_point/1000.0 << ' ' << this->linear_vel_feedback << '\n';
+            this->log_margin_count++;
+        }
+        else if (this->latch == 3 && !this->ofs_closed && this->log_margin_count >= 50) {
             this->ofs->close();
             this->ofs_closed = true;
+            this->log_margin_count = 0;
         }
 
         // printf("%lf\n", this->linear_vel_feedback);
@@ -998,10 +1000,8 @@ private:
     int d1_count;
 
     std::ofstream* ofs;
-    bool log;
+    bool log_margin_count;
     bool ofs_closed;
-    int file_counta;
-
 }; // class SegwayRMPNode
 
 // Callback wrapper
