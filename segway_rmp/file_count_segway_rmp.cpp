@@ -688,11 +688,11 @@ public:
         if (this->latch == 2 && !this->ofs_closed) {
             *(this->ofs) << end_time_point/1000.0 << ' ' << this->linear_vel_feedback << '\n';
         }
-        else if (this->latch == 3 && !this->ofs_closed && this->log_margin_count < 50) {
+        else if (this->latch == 3 && !this->ofs_closed && this->log_margin_count < 200) {
             *(this->ofs) << end_time_point/1000.0 << ' ' << this->linear_vel_feedback << '\n';
             this->log_margin_count++;
         }
-        else if (this->latch == 3 && !this->ofs_closed && this->log_margin_count >= 50) {
+        else if (this->latch == 3 && !this->ofs_closed && this->log_margin_count >= 200) {
             this->ofs->close();
             this->ofs_closed = true;
             this->log_margin_count = 0;
