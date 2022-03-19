@@ -406,11 +406,11 @@ function cal_velocity_plan() {
     let T3 = vel_limit / a;
     let x =  (T2 + (T1 + T2 + T3)) * vel_limit / 2.0;
     document.getElementById("result_velocity_plan").innerHTML =
-      "total_time: " + (T1 + T2 + T3).toFixed(6) + " (s)\n"
-    + "         x: " + x.toFixed(6) + " (m)\n"
-    + "        T1: " + T1.toFixed(6) + " (s)\n"
-    + "        T2: " + T2.toFixed(6) + " (s)\n"
-    + "        T3: " + T3.toFixed(6) + " (s)";
+      "合計時間: " + (T1 + T2 + T3).toFixed(6) + " (s)\n"
+    + "      x: " + x.toFixed(6) + " (m)\n"
+    + "     T1: " + T1.toFixed(6) + " (s)\n"
+    + "     T2: " + T2.toFixed(6) + " (s)\n"
+    + "     T3: " + T3.toFixed(6) + " (s)";
 }
 
 const sleep = waitTime => new Promise( resolve => setTimeout(resolve, waitTime) );
@@ -586,16 +586,15 @@ window.addEventListener("gamepadconnected", function(e) {
     gameLoop();
 });
 
-let start = false;
+// let start = true;
 
 function gameLoop() {
     let gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
     let gp = gamepads[0];
     if (gp != null) {
-        console.log(gp);
         let side = gp.buttons[6].value - gp.buttons[7].value;
-        let ang = -gp.axes[0];
-        let lin = -gp.axes[3];
+        let ang = -gp.axes[0] * Math.abs(gp.axes[0]);
+        let lin = -gp.axes[3] * Math.abs(gp.axes[3]);
         document.getElementById('leftright').value = 127*ang;
         document.getElementById('leftright_out').innerHTML = (127*ang).toFixed(0);
         document.getElementById('frontrear').value = 127*lin;
@@ -603,17 +602,17 @@ function gameLoop() {
         document.getElementById('side').value = 127*side;
         document.getElementById('side_out').innerHTML = (127*side).toFixed(0);
         if (dataChannel != null) {
-            if (gp.buttons[1].value) {
-                start = true;
-                dataChannel.send(new Uint8Array([0x11, 0x11, 0x11, 0x11]));
-                return;
-            }
-            if (gp.buttons[0].value) {
-                start = false;
-                dataChannel.send(new Uint8Array([0x99, 0x99, 0x99, 0x99]));
-                return;
-            }
-            if (start) {
+            // if (gp.buttons[1].value) {
+            //     start = true;
+            //     dataChannel.send(new Uint8Array([0x11, 0x11, 0x11, 0x11]));
+            //     return;
+            // }
+            // if (gp.buttons[0].value) {
+            //     start = false;
+            //     dataChannel.send(new Uint8Array([0x99, 0x99, 0x99, 0x99]));
+            //     return;
+            // }
+            if (document.getElementsByName("q3")[1].checked) {
                 ang = 127*ang;
                 lin = 127*lin;
                 side = 127*side;

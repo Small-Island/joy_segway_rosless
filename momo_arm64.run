@@ -19,7 +19,7 @@ socat pty,echo=0,raw,link=./serial_out  pty,raw,echo=0,link=./webrtc_momo/serial
 
 cd webrtc_momo
 
-./momo_arm64 --no-audio-device --no-video-device --serial ./serial_in,9600 test &
+./momo_arm64 --no-audio-device --no-video-device --serial ./serial_in,9600 test --document-root ./html &
 # ./momo_arm64 --no-audio-device --video-device /dev/video0 --serial ./serial_in,9600 test &
 # ./momo_arm64 --hw-mjpeg-decoder false --resolution 4K --video-device /dev/video0 --serial ./serial_in,9600 test &
 

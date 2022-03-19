@@ -87,6 +87,7 @@ void hoge() {
         if (end_time_point > 5000) {
             ofs.close();
         }
+        printf("%lf, %lf\n", ang, lin);
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         // vel_d = vel_d + 0.001;
     }
@@ -154,18 +155,18 @@ void joy_read() {
                     break;
             }
 
-            printf("count %d\n", count);
-            std::cout << "axis:";
-            for (size_t i(0); i < joy_axis.size(); i++) {
-                std::cout << " " << std::setw(2) << joy_axis.at(i)/32767.0;
-            }
-            std::cout << '\n';
-
-            std::cout << "  button: ";
-            for(size_t i(0); i < joy_button.size(); i++) {
-                std::cout << " " << (int)joy_button.at(i);
-            }
-            std::cout << '\n';
+            // printf("count %d\n", count);
+            // std::cout << "axis:";
+            // for (size_t i(0); i < joy_axis.size(); i++) {
+            //     std::cout << " " << std::setw(2) << joy_axis.at(i)/32767.0;
+            // }
+            // std::cout << '\n';
+            //
+            // std::cout << "  button: ";
+            // for(size_t i(0); i < joy_button.size(); i++) {
+            //     std::cout << " " << (int)joy_button.at(i);
+            // }
+            // std::cout << '\n';
 
 
             if ((int)joy_button.at(2)) {
@@ -179,7 +180,7 @@ void joy_read() {
 
             if (latch == 1) {
                 ang = -50.0*joy_axis.at(0)/32767.0;
-                lin = -2.0*joy_axis.at(3)/32767.0;
+                lin = -1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0);
             }
         }
         close(joy_fd);

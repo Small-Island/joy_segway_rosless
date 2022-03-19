@@ -19,7 +19,7 @@ socat pty,echo=0,raw,link=./serial_out  pty,raw,echo=0,link=./webrtc_momo/serial
 
 cd webrtc_momo
 
-./momo_x64 --no-audio-device --no-video-device --serial ./serial_in,9600 test &
+./momo_x64 --no-audio-device --no-video-device --serial ./serial_in,9600 test --document-root ./html &
 
 # /usr/bin/google-chrome http://127.0.0.1:8080/html/test.html &
 
