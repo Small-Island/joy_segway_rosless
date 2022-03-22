@@ -593,8 +593,10 @@ function gameLoop() {
     let gp = gamepads[0];
     if (gp != null) {
         let side = gp.buttons[6].value - gp.buttons[7].value;
-        let ang = -gp.axes[0] * Math.abs(gp.axes[0]);
-        let lin = -gp.axes[3] * Math.abs(gp.axes[3]);
+        let ang = -gp.axes[0];
+        let lin = -gp.axes[3];
+        // let ang = -gp.axes[0] * Math.abs(gp.axes[0]);
+        // let lin = -gp.axes[3] * Math.abs(gp.axes[3]);
         document.getElementById('leftright').value = 127*ang;
         document.getElementById('leftright_out').innerHTML = (127*ang).toFixed(0);
         document.getElementById('frontrear').value = 127*lin;
