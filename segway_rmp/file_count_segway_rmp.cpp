@@ -250,7 +250,6 @@ public:
         this->motors_enabled = false;
         this->recover_motors_enabled = false;
         this->reset_odometry = false;
-        this->joy_control = false;
         this->d1_count = 0;
         this->ofs_closed = true;
         this->log_margin_count = 0;
@@ -370,6 +369,8 @@ public:
         int joy_fd = -1;
         MyQueue my_queue;
 
+        double vel1 = 0.0, vel2 = 0.0;
+
         while (true) {
             int search_count = 0;
             while (true) {
@@ -469,9 +470,10 @@ public:
                 if (this->latch == 1) {
                     // this->ang = -50.0*joy_axis.at(0)/32767.0;
                     // this->lin = -1.5*joy_axis.at(3)/32767.0;
-                    this->ang = -50.0*joy_axis.at(0)/32767.0;
-                    my_queue.enqueue(-1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0));
-                    this->lin = my_queue.mean();
+                    this->joy_ang = -50.0*joy_axis.at(0)/32767.0;
+                    this->joy_lin = -1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0);
+                    // my_queue.enqueue(-1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0));
+                    // this->lin = my_queue.mean();
                 }
             }
             close(joy_fd);
@@ -578,6 +580,9 @@ public:
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
             this->segway_rmp->setControllerGainSchedule(segwayrmp::heavy);
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+            double old_vel = 0.0;
+
             // while (1) {
             while (true && this->connected) {
 
@@ -618,6 +623,13 @@ public:
                     this->ang = 0;
                 }
                 else if (this->latch == 1) {
+                    if (old_vel < this->joy_lin) {
+                        this->lin = old_vel + 0.01;
+                    }
+                    else {
+                        this->lin = old_vel - 0.01;
+                    }
+                    this->old_vel = this->lin;
                 }
                 else if (this->latch == 2) {
                     la = this->ba->controller();
@@ -1049,7 +1061,7 @@ private:
 
     bool motors_enabled, recover_motors_enabled;
 
-    bool joy_control;
+    double joy_lin, joy_ang;
 
     int fd_write;
 
