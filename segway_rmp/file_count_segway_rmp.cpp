@@ -411,7 +411,7 @@ public:
 
             int count = 0;
 
-            while (true && count < 1000) {
+            while (true && 30 < count && count < 1000) {
                 js_event js;
                 read(joy_fd, &js, sizeof(js_event));
 
