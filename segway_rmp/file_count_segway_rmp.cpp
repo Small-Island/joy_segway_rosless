@@ -360,6 +360,7 @@ public:
 
     void joy_read() {
         int joy_fd = -1;
+        MyQueue my_queue;
 
         while (true) {
             int search_count = 0;
@@ -400,7 +401,6 @@ public:
             std::cout << "  buttons: " << num_of_buttons << '\n';
 
             int count = 0;
-            MyQueue my_queue;
 
             while (true && count < 10000) {
                 js_event js;
@@ -425,18 +425,18 @@ public:
                         break;
                 }
 
-                printf("count %d\n", count);
-                std::cout << "axis:";
-                for (size_t i(0); i < joy_axis.size(); i++) {
-                    std::cout << " " << std::setw(2) << joy_axis.at(i)/32767.0;
-                }
-                std::cout << '\n';
-
-                std::cout << "  button: ";
-                for(size_t i(0);i<joy_button.size();++i) {
-                    std::cout << " " << (int)joy_button.at(i);
-                }
-                std::cout << '\n';
+                // printf("count %d\n", count);
+                // std::cout << "axis:";
+                // for (size_t i(0); i < joy_axis.size(); i++) {
+                //     std::cout << " " << std::setw(2) << joy_axis.at(i)/32767.0;
+                // }
+                // std::cout << '\n';
+                //
+                // std::cout << "  button: ";
+                // for(size_t i(0);i<joy_button.size();++i) {
+                //     std::cout << " " << (int)joy_button.at(i);
+                // }
+                // std::cout << '\n';
 
 
                 if ((int)joy_button.at(10) && (int)joy_button.at(13)) { //L1 and ○
