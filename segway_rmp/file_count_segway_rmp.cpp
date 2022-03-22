@@ -206,6 +206,11 @@ public:
         }
         return sum/100.0;
     }
+    void reset_zero() {
+        for (int i = 0; i < 100; i++) {
+            buf[i] = 0;
+        }
+    }
 };
 
 // ROS Node class
@@ -373,6 +378,7 @@ public:
                         break;
                     }
                     if (search_count > 3) {
+                        my_queue.reset_zero();
                         this->latch = 0;
                         this->lin = 0;
                         this->ang = 0;
@@ -402,7 +408,7 @@ public:
 
             int count = 0;
 
-            while (true && count < 10000) {
+            while (true && count < 1000) {
                 js_event js;
                 read(joy_fd, &js, sizeof(js_event));
 
@@ -425,18 +431,18 @@ public:
                         break;
                 }
 
-                // printf("count %d\n", count);
-                // std::cout << "axis:";
-                // for (size_t i(0); i < joy_axis.size(); i++) {
-                //     std::cout << " " << std::setw(2) << joy_axis.at(i)/32767.0;
-                // }
-                // std::cout << '\n';
-                //
-                // std::cout << "  button: ";
-                // for(size_t i(0);i<joy_button.size();++i) {
-                //     std::cout << " " << (int)joy_button.at(i);
-                // }
-                // std::cout << '\n';
+                printf("count %d\n", count);
+                std::cout << "axis:";
+                for (size_t i(0); i < joy_axis.size(); i++) {
+                    std::cout << " " << std::setw(2) << joy_axis.at(i)/32767.0;
+                }
+                std::cout << '\n';
+
+                std::cout << "  button: ";
+                for(size_t i(0);i<joy_button.size();++i) {
+                    std::cout << " " << (int)joy_button.at(i);
+                }
+                std::cout << '\n';
 
 
                 if ((int)joy_button.at(10) && (int)joy_button.at(13)) { //L1 and ○
