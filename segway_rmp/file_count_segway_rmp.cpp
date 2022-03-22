@@ -386,6 +386,8 @@ public:
                         this->latch = 0;
                         this->lin = 0;
                         this->ang = 0;
+			this->joy_lin = 0;
+			this->joy_ang = 0;
                     }
                     std::this_thread::sleep_for(std::chrono::milliseconds(50));
                 }
@@ -465,13 +467,15 @@ public:
                     this->latch = 0;
                     this->ang = 0;
                     this->lin = 0;
+                    this->joy_ang = 0;
+                    this->joy_lin = 0;
                 }
 
                 if (this->latch == 1) {
                     // this->ang = -50.0*joy_axis.at(0)/32767.0;
-                    // this->lin = -1.5*joy_axis.at(3)/32767.0;
-                    this->joy_ang = -50.0*joy_axis.at(0)/32767.0;
-                    this->joy_lin = -1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0);
+                    this->joy_lin = -1.5*joy_axis.at(3)/32767.0;
+                    this->joy_ang = -50.0*joy_axis.at(0)/32767.0 * fabs(joy_axis.at(0)/32767.0);
+                    // this->joy_lin = -1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0);
                     // my_queue.enqueue(-1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0));
                     // this->lin = my_queue.mean();
                 }
@@ -621,10 +625,13 @@ public:
                 if (this->latch == 0) {
                     this->lin = 0;
                     this->ang = 0;
+                    this->joy_ang = 0;
+                    this->joy_lin = 0;
+                    old_vel = 0;
                 }
                 else if (this->latch == 1) {
                     this->ang = this->joy_ang;
-                    this->lin = old_vel*0.9 + this->joy_lin*0.1;
+                    this->lin = old_vel*0.97 + this->joy_lin*0.03;
                     old_vel = this->lin;
                 }
                 else if (this->latch == 2) {
