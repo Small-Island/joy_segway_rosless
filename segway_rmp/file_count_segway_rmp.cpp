@@ -185,12 +185,15 @@ public:
 
 class MyQueue {
 private:
-    double buf[100];
-    int index;
+    double buf[64];
+    int index, size;
 public:
-    MyQueue(): index(0) {};
+    MyQueue(): index(0), size(0) {};
     void enqueue(double value) {
-        if (index < 100) {
+        if (size < 64) {
+            size++;
+        }
+        if (index < 64) {
             buf[index] = value;
             index++;
         }
@@ -201,13 +204,13 @@ public:
     }
     double mean() {
         double sum = 0.0;
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < size; i++) {
             sum = sum + buf[i];
         }
-        return sum/100.0;
+        return sum/size;
     }
     void reset_zero() {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 64; i++) {
             buf[i] = 0;
         }
     }
