@@ -629,7 +629,7 @@ public:
                     else {
                         this->lin = old_vel - 0.01;
                     }
-                    this->old_vel = this->lin;
+                    old_vel = this->lin;
                 }
                 else if (this->latch == 2) {
                     la = this->ba->controller();
