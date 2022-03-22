@@ -623,12 +623,7 @@ public:
                     this->ang = 0;
                 }
                 else if (this->latch == 1) {
-                    if (old_vel < this->joy_lin) {
-                        this->lin = old_vel + 0.01;
-                    }
-                    else {
-                        this->lin = old_vel - 0.01;
-                    }
+                    this->lin = old_vel*0.8 + this->joy_lin*0.2;
                     old_vel = this->lin;
                 }
                 else if (this->latch == 2) {
