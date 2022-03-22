@@ -283,12 +283,12 @@ public:
                     // this->ang = 50*(int8_t)((buf_ptr[0] & 0x0000ff00) >> 8) /127.0;
                     // this->lin = 1.0*(int8_t)(buf_ptr[0] & 0x000000ff)/127.0;
                     if (this->latch == 3) {
-                        this->ang = 50*(int8_t)buf_ptr[2] /127.0;
+                        this->momo_ang = 50*(int8_t)buf_ptr[2] /127.0 * std::fabs((int8_t)buf_ptr[2] /127.0);
                         if ((int8_t)buf_ptr[3] > 0) {
-                            this->lin = 1.5*(int8_t)buf_ptr[3] /127.0;
+                            this->momo_lin = 1.5*(int8_t)buf_ptr[3] /127.0;
                         }
                         else {
-                            this->lin = 0.5*(int8_t)buf_ptr[3] /127.0;
+                            this->momo_lin = 0.5*(int8_t)buf_ptr[3] /127.0;
                         }
                         // printf("%lf, %lf\n", this->ang, this->lin);
                     }
@@ -473,7 +473,12 @@ public:
 
                 if (this->latch == 1) {
                     // this->ang = -50.0*joy_axis.at(0)/32767.0;
-                    this->joy_lin = -1.5*joy_axis.at(3)/32767.0;
+                    if (joy_axis.at(3) < 0) {
+                        this->joy_lin = -1.5*joy_axis.at(3)/32767.0;
+                    }
+                    else {
+                        this->joy_lin = 0.5*joy_axis.at(3)/32767.0;
+                    }
                     this->joy_ang = -50.0*joy_axis.at(0)/32767.0 * fabs(joy_axis.at(0)/32767.0);
                     // this->joy_lin = -1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0);
                     // my_queue.enqueue(-1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0));
@@ -659,6 +664,11 @@ public:
                     if (std::chrono::system_clock::now() - this->jyja_arrival_time > std::chrono::milliseconds(500)) {
                         this->lin = 0;
                         this->ang = 0;
+                    }
+                    else {
+                        this->ang = this->momo_ang;
+                        this->lin = old_vel*0.97 + this->momo_lin*0.03;
+                        old_vel = this->lin;
                     }
                 }
 
@@ -1064,7 +1074,7 @@ private:
 
     bool motors_enabled, recover_motors_enabled;
 
-    double joy_lin, joy_ang;
+    double joy_lin, joy_ang, momo_ang, momo_lin;
 
     int fd_write;
 
