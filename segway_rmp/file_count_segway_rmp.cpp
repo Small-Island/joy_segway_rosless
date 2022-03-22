@@ -664,6 +664,9 @@ public:
                     if (std::chrono::system_clock::now() - this->jyja_arrival_time > std::chrono::milliseconds(500)) {
                         this->lin = 0;
                         this->ang = 0;
+                        old_vel = 0;
+                        this->momo_ang = 0;
+                        this->momo_lin = 0;
                     }
                     else {
                         this->ang = this->momo_ang;
