@@ -411,7 +411,7 @@ public:
 
             int count = 0;
 
-            while (true && 30 < count && count < 1000) {
+            while (true && count < 1000) {
                 js_event js;
                 read(joy_fd, &js, sizeof(js_event));
 
@@ -446,6 +446,10 @@ public:
                     std::cout << " " << (int)joy_button.at(i);
                 }
                 std::cout << '\n';
+
+                if (count < 30) {
+                    continue;
+                }
 
 
                 if ((int)joy_button.at(10) && (int)joy_button.at(13)) { //L1 and ○
