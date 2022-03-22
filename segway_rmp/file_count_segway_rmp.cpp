@@ -428,8 +428,10 @@ public:
                 }
 
                 if (this->latch == 1) {
+                    // this->ang = -50.0*joy_axis.at(0)/32767.0;
+                    // this->lin = -1.5*joy_axis.at(3)/32767.0;
                     this->ang = -50.0*joy_axis.at(0)/32767.0;
-                    this->lin = -1.5*joy_axis.at(3)/32767.0;
+                    this->lin = -1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0);
                 }
             }
             close(joy_fd);
