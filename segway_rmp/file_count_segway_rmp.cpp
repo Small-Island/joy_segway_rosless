@@ -183,6 +183,31 @@ public:
     }
 };
 
+class MyQueue {
+private:
+    double buf[50];
+    int index;
+public:
+    MyQueue(): index(0) {};
+    void enqueue(double value) {
+        if (index < 50) {
+            buf[index] = value;
+            index++;
+        }
+        else {
+            index = 0;
+            buf[index] = value;
+        }
+    }
+    double mean() {
+        double sum = 0.0;
+        for (int i = 0; i < 50; i++) {
+            sum = sum + buf[i];
+        }
+        return sum/50.0;
+    }
+};
+
 // ROS Node class
 class SegwayRMPNode {
 public:
@@ -375,6 +400,7 @@ public:
             std::cout << "  buttons: " << num_of_buttons << '\n';
 
             int count = 0;
+            MyQueue my_queue;
 
             while (true && count < 10000) {
                 js_event js;
@@ -431,7 +457,8 @@ public:
                     // this->ang = -50.0*joy_axis.at(0)/32767.0;
                     // this->lin = -1.5*joy_axis.at(3)/32767.0;
                     this->ang = -50.0*joy_axis.at(0)/32767.0;
-                    this->lin = -1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0);
+                    my_queue.enqueue(-1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0));
+                    this->lin = my_queue.mean();
                 }
             }
             close(joy_fd);
