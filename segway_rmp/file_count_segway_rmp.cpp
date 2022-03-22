@@ -474,10 +474,10 @@ public:
                 if (this->latch == 1) {
                     // this->ang = -50.0*joy_axis.at(0)/32767.0;
                     if (joy_axis.at(3) < 0) {
-                        this->joy_lin = -1.5*joy_axis.at(3)/32767.0;
+                        this->joy_lin = -1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0);
                     }
                     else {
-                        this->joy_lin = -0.5*joy_axis.at(3)/32767.0;
+                        this->joy_lin = -0.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0);
                     }
                     this->joy_ang = -50.0*joy_axis.at(0)/32767.0 * fabs(joy_axis.at(0)/32767.0);
                     // this->joy_lin = -1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0);
