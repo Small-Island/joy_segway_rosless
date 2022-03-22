@@ -386,8 +386,8 @@ public:
                         this->latch = 0;
                         this->lin = 0;
                         this->ang = 0;
-			this->joy_lin = 0;
-			this->joy_ang = 0;
+                        this->joy_lin = 0;
+                        this->joy_ang = 0;
                     }
                     std::this_thread::sleep_for(std::chrono::milliseconds(50));
                 }
