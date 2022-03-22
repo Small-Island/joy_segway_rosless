@@ -669,7 +669,7 @@ public:
                     this->disconnect();
                 }
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(52));
+                std::this_thread::sleep_for(std::chrono::milliseconds(50));
             }
         }
 
