@@ -1086,7 +1086,7 @@ int main(int argc, char **argv) {
                 }
 
                 // boost::mutex::scoped_lock lock(m_mutex);
-                m_mutex.lock();
+                // m_mutex.lock();
 
                 Lavel la;
                 if (latch == 0) {
