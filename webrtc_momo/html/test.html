@@ -122,7 +122,7 @@
             // }
             // dataChannel.send(new TextEncoder().encode(msg));
 
-            if (new Uint8Array(event.data)[0] == 0x43) {
+            if (new Uint8Array(event.data)[0] == 0x43 && event.data.byteLength == 4) {
                 if (dataChannel) {
                     dataChannel.send(event.data);
                 }
