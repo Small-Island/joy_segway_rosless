@@ -362,7 +362,7 @@ void joy_read() {
                     joy_lin = - A * ((1 - k)*x + k) * x;
                 }
                 else {
-                    joy_lin = - A * ((1 - k)*x + k) * x;
+                    joy_lin = A * ((1 - k)*x + k) * x;
                 }
             }
         }
