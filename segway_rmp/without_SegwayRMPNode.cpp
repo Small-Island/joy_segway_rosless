@@ -1144,6 +1144,7 @@ int main(int argc, char **argv) {
                         lin = -0.5;
                     }
                     segway_rmp.move(0.3, ang);
+                    printf("hello\n");
                 } catch (std::exception& e) {
                     std::string e_msg(e.what());
                     printf("Error commanding Segway RMP: %s", e_msg.c_str());
