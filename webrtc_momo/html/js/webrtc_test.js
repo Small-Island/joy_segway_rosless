@@ -1,3 +1,26 @@
+const debug = true;
+// const sora = Sora.connection("wss://207-148-92-89.stable.sora.sora-labo.shiguredo.app/signaling", debug);
+const sora = Sora.connection("wss://sora.ikeilabsora.0am.jp/signaling", debug);
+// const channelId = "OJIMA-YUKIYA@sora-devtools";
+const channelId = "twincam-left"
+// const metadata = {
+//     "signaling_key": "0mKFzDghLJNL7bmqa99hj4pp13IGaG_o4SHWdHoIKMzffpyZwQmo5dOIVi_9QBZ_",
+// };
+const options = {
+    multistream: true,
+    video: false,
+    audio: true,
+    dataChannelSignaling: true,
+    dataChannels: [
+        {
+            label: "#sora-devtools",
+            direction: "sendrecv"
+        }
+    ]
+};
+let recvonly = sora.recvonly(channelId, null, options);
+
+
 const remoteVideo = document.getElementById('remote_video');
 const T2_Input = document.getElementById('T2_text');
 const accel_Input = document.getElementById('accel_text');
@@ -181,7 +204,7 @@ function prepareNewConnection() {
 
   dataChannel.onmessage = function (event) {
       if (event.data.byteLength == 8) {
-
+        recvonly.sendMessage('sora-devtools', event.data);
         let vel_time = (new Int32Array([new Uint8Array(event.data)[0] << 24])[0] + new Int32Array([new Uint8Array(event.data)[1] << 16])[0] + new Int32Array([new Uint8Array(event.data)[2] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[3]])[0] )/1000.0 ;
         let real_vel = (new Int32Array([new Uint8Array(event.data)[4] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[5] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[6] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[7]])[0] )/10000.0 ;
 
