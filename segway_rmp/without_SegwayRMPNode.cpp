@@ -1049,17 +1049,10 @@ int main(int argc, char **argv) {
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
             segway_rmp.setControllerGainSchedule(segwayrmp::heavy);
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
-            printf("2\n");
 
             // while (1) {
             while (connected) {
-
-                printf("1\n");
-
-                if (!connected) {
-                    continue;
-                }
-
+                
                 if (!motors_enabled) {
 
                     continue;
@@ -1146,7 +1139,7 @@ int main(int argc, char **argv) {
                     if (lin < -0.5) {
                         lin = -0.5;
                     }
-                    segway_rmp.move(0.3, ang);
+                    segway_rmp.move(lin, ang);
                     printf("hello\n");
                 } catch (std::exception& e) {
                     std::string e_msg(e.what());
