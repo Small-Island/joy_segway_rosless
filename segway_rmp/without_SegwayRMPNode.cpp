@@ -1086,7 +1086,7 @@ int main(int argc, char **argv) {
                 }
 
                 // boost::mutex::scoped_lock lock(m_mutex);
-                // m_mutex.lock();
+                m_mutex.lock();
 
                 Lavel la;
                 if (latch == 0) {
@@ -1153,7 +1153,7 @@ int main(int argc, char **argv) {
                     printf("Error commanding Segway RMP: %s", e_msg.c_str());
                     connected = false;
                 }
-
+                m_mutex.unlock();
                 std::this_thread::sleep_for(std::chrono::milliseconds(50));
             }
         }
