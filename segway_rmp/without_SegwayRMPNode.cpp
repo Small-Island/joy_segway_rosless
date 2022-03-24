@@ -495,7 +495,7 @@ int main(int argc, char **argv) {
 
     ba = new BanAccel(&latch);
 
-    // std::thread th_momo_serial_read(momo_serial_read);
+    std::thread th_momo_serial_read(momo_serial_read);
     std::thread th_joy_read(joy_read);
     // std::thread th_udp_read(udp_read);
 
