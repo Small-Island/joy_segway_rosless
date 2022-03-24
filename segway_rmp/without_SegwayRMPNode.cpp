@@ -356,7 +356,7 @@ void joy_read() {
                 // this->lin = my_queue.mean();
                 double A = 1;
                 double k = 0.5;
-                double x = joy_axis.at(3)/32767.0; // -1 ~ 1
+                double x = -joy_axis.at(3)/32767.0; // -1 ~ 1
                 joy_lin = A * ((1 - k)*x + k) * x;
             }
         }
@@ -612,9 +612,9 @@ int main(int argc, char **argv) {
                             latch = 0;
                         }
                     }
-                    if (lin < -0.5) {
-                        lin = -0.5;
-                    }
+                    // if (lin < -0.5) {
+                    //     lin = -0.5;
+                    // }
                     segway_rmp.move(lin, ang);
                 } catch (std::exception& e) {
                     std::string e_msg(e.what());
