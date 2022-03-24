@@ -227,8 +227,6 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
         log_margin_count = 0;
     }
 
-    printf("linear_vel_feedback: %lf\n", linear_vel_feedback);
-
     if (!motors_enabled && (bool)(ss.motor_status)) {
         recover_motors_enabled = true;
     }
@@ -392,11 +390,15 @@ void momo_serial_read() {
                 // this->lin = 1.0*(int8_t)(buf_ptr[0] & 0x000000ff)/127.0;
                 if (latch == 3) {
                     momo_ang = 50*(int8_t)buf_ptr[2] /127.0 * std::fabs((int8_t)buf_ptr[2] /127.0);
-                    if ((int8_t)buf_ptr[3] > 0) {
-                        momo_lin = 1.5*(int8_t)buf_ptr[3] /127.0;
+                    double A = 1.0; // 指令値 (m/s) の最大値
+                    double k = 0.1;
+                    double x = 1.0*(int8_t)buf_ptr[3] /127.0; // 遠隔のjoystick の入力値 -1 ~ 1
+
+                    if (x > 0) {
+                        momo_lin = A*((1 - k)*x + k)*x;  // joy_lin は指令値 (m/s)
                     }
                     else {
-                        momo_lin = 0.5*(int8_t)buf_ptr[3] /127.0;
+                        momo_lin = - A*((1 - k)*x + k)*x; // joy_lin は指令値 (m/s)
                     }
                     // printf("%lf, %lf\n", ang, lin);
                 }
