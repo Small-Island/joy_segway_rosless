@@ -1143,7 +1143,7 @@ int main(int argc, char **argv) {
                     if (lin < -0.5) {
                         lin = -0.5;
                     }
-                    segway_rmp.move(lin, ang);
+                    segway_rmp.move(0.3, ang);
                 } catch (std::exception& e) {
                     std::string e_msg(e.what());
                     printf("Error commanding Segway RMP: %s", e_msg.c_str());
