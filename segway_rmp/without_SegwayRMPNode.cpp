@@ -624,7 +624,7 @@ int main(int argc, char **argv) {
                     // if (lin < -0.5) {
                     //     lin = -0.5;
                     // }
-                    printf("%d\n", lin);
+                    printf("%lf\n", lin);
                     segway_rmp.move(lin, ang);
                 } catch (std::exception& e) {
                     std::string e_msg(e.what());
