@@ -382,7 +382,7 @@ void momo_serial_read() {
         if (read_size < 0) {
             continue;
         }
-        printf("read %d byte: %02x %02x %02x %02d\n", read_size, buf_ptr[0], buf_ptr[1], buf_ptr[2], (int8_t)buf_ptr[3]);
+        printf("read %d byte: %02x %4x %4x %4d\n", read_size, buf_ptr[0], buf_ptr[1], buf_ptr[2], (int8_t)buf_ptr[3]);
         // printf("read %d byte: %08x\n", read_size, buf_ptr[0]);
         if (read_size == 4) {
             if (buf_ptr[0] == 0x43) {
@@ -393,6 +393,8 @@ void momo_serial_read() {
                     double A = 1.0; // 指令値 (m/s) の最大値
                     double k = 0.1;
                     double x = 1.0*(int8_t)buf_ptr[3] /127.0; // 遠隔のjoystick の入力値 -1 ~ 1
+
+                    printf("%lf\n", x);
 
                     if (x > 0) {
                         momo_lin = A*((1 - k)*x + k)*x;  // joy_lin は指令値 (m/s)
@@ -624,7 +626,7 @@ int main(int argc, char **argv) {
                     // if (lin < -0.5) {
                     //     lin = -0.5;
                     // }
-                    printf("%lf\n", lin);
+                    // printf("%lf\n", lin);
                     segway_rmp.move(lin, ang);
                 } catch (std::exception& e) {
                     std::string e_msg(e.what());
