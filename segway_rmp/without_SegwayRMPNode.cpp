@@ -566,7 +566,7 @@ int main(int argc, char **argv) {
                 }
                 else if (latch == 1) {
                     ang = joy_ang;
-                    lin = lin*0.97 + joy_lin*0.03;
+                    lin = joy_lin;
                 }
                 else if (latch == 2) {
                     la = ba->controller();
