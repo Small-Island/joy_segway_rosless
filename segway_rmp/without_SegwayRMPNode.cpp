@@ -382,7 +382,7 @@ void momo_serial_read() {
         if (read_size < 0) {
             continue;
         }
-        printf("read %d byte: %02x %4x %4x %4d\n", read_size, buf_ptr[0], buf_ptr[1], buf_ptr[2], (int8_t)buf_ptr[3]);
+        printf("read %d byte: 0x%02x %4x %4x %4d\n", read_size, buf_ptr[0], buf_ptr[1], buf_ptr[2], (int8_t)buf_ptr[3]);
         // printf("read %d byte: %08x\n", read_size, buf_ptr[0]);
         if (read_size == 4) {
             if (buf_ptr[0] == 0x43) {
