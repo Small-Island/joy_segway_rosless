@@ -392,17 +392,13 @@ void momo_serial_read() {
                     momo_ang = 50*(int8_t)buf_ptr[2] /127.0 * std::fabs((int8_t)buf_ptr[2] /127.0);
                     double A = 1.0; // 指令値 (m/s) の最大値
                     double k = 0.1;
-                    double x = 1.0*(int8_t)buf_ptr[3] /127.0; // 遠隔のjoystick の入力値 -1 ~ 1
+                    double x = fabs(1.0*(int8_t)buf_ptr[3] /127.0); // 遠隔のjoystick の入力値 -1 ~ 1
 
-                    // printf("%lf\n", x);
+                    momo_lin = A*((1 - k)*x + k)*x;  // joy_lin は指令値 (m/s)
 
-                    if (x > 0) {
-                        momo_lin = A*((1 - k)*x + k)*x;  // joy_lin は指令値 (m/s)
+                    if ((int8_t)buf_ptr[3] < 0) {
+                        momo_lin = - momo_lin;
                     }
-                    else {
-                        momo_lin = - A*((1 - k)*x + k)*x; // joy_lin は指令値 (m/s)
-                    }
-                    printf("%lf\n", momo_lin);
                 }
                 jyja_arrival_time = std::chrono::system_clock::now();
             }
