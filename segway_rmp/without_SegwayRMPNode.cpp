@@ -757,7 +757,7 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
         log_margin_count = 0;
     }
 
-    printf("linear_vel_feedback: %lf", linear_vel_feedback);
+    printf("linear_vel_feedback: %lf\n", linear_vel_feedback);
 
     if (!motors_enabled && (bool)(ss.motor_status)) {
         recover_motors_enabled = true;
@@ -1142,7 +1142,6 @@ int main(int argc, char **argv) {
                         lin = -0.5;
                     }
                     segway_rmp.move(lin, ang);
-                    printf("hello\n");
                 } catch (std::exception& e) {
                     std::string e_msg(e.what());
                     printf("Error commanding Segway RMP: %s", e_msg.c_str());
