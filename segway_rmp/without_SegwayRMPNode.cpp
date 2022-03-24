@@ -391,7 +391,7 @@ void momo_serial_read() {
                 if (latch == 3) {
                     momo_ang = 50*(int8_t)buf_ptr[2] /127.0 * std::fabs((int8_t)buf_ptr[2] /127.0);
                     double A = 1.0; // 指令値 (m/s) の最大値
-                    double k = 0.1;
+                    double k = 0.0625;
                     double x = fabs(1.0*(int8_t)buf_ptr[3] /127.0); // 遠隔のjoystick の入力値 -1 ~ 1
 
                     momo_lin = A*((1 - k)*x + k)*x;  // joy_lin は指令値 (m/s)
