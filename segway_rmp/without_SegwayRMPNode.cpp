@@ -1053,7 +1053,7 @@ int main(int argc, char **argv) {
             // while (1) {
             while (true && connected) {
 
-                if (!connected || reset_odometry) {
+                if (!connected) {
                     continue;
                 }
 
