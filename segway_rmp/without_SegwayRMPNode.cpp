@@ -757,6 +757,8 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
         log_margin_count = 0;
     }
 
+    printf("linear_vel_feedback: %lf", linear_vel_feedback);
+
     if (!motors_enabled && (bool)(ss.motor_status)) {
         recover_motors_enabled = true;
     }
@@ -1052,7 +1054,7 @@ int main(int argc, char **argv) {
 
             // while (1) {
             while (connected) {
-                
+
                 if (!motors_enabled) {
 
                     continue;
