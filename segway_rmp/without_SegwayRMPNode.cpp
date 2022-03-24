@@ -605,7 +605,7 @@ int main(int argc, char **argv) {
                     }
                     else {
                         ang = momo_ang;
-                        lin = lin*0.97 + momo_lin*0.03;
+                        lin = momo_lin;
                     }
                 }
 
