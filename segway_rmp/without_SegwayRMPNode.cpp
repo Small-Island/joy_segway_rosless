@@ -357,12 +357,11 @@ void joy_read() {
                 double A = 1;
                 double k = 0.1;
                 double x = -joy_axis.at(3)/32767.0; // -1 ~ 1
-                joy_lin = A * ((1 - k)*x + k) * x;
-                if (joy_axis.at(3) > 0) {
-                    joy_lin = - A * ((1 - k)*x + k) * x;
+                if (x > 0) {
+                    joy_lin = A * ((1 - k)*x + k) * x;
                 }
                 else {
-                    joy_lin = A * ((1 - k)*x + k) * x;
+                    joy_lin = - A * ((1 - k)*x + k) * x;
                 }
             }
         }
