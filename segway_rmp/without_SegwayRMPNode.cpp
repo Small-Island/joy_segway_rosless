@@ -1051,7 +1051,9 @@ int main(int argc, char **argv) {
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
             // while (1) {
-            while (true && connected) {
+            while (connected) {
+
+                printf("1\n");
 
                 if (!connected) {
                     continue;
