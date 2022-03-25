@@ -368,7 +368,7 @@ void joy_read() {
                 // this->lin = my_queue.mean();
 
                 double A = 1.0; // 指令値 (m/s) の最大値
-                double k = 0.1;
+                double k = 0.05;
                 double x = -joy_axis.at(3)/32767.0; // joystick の入力値 -1 ~ 1
 
                 if (x > 0) {
@@ -406,7 +406,7 @@ void momo_serial_read() {
                     cmd_angular_vel_from_momo = 50*(int8_t)buf_ptr[2] /127.0 * std::fabs((int8_t)buf_ptr[2] /127.0);
 
                     double A = 1.0; // 指令値 (m/s) の最大値
-                    double k = 0.1;
+                    double k = 0.05;
                     double x = (int8_t)buf_ptr[3] /127.0; // 遠隔のjoystick の入力値 -1 ~ 1
                     if (x > 0) {
                         cmd_linear_vel_from_momo = A*((1 - k)*x + k)*x;  // cmd_linear_vel_from_momo は指令値 (m/s)
