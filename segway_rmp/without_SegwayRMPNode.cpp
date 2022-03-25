@@ -359,7 +359,7 @@ void joy_read() {
 
                 joy_lin = A*((1 - k)*x + k)*x;  // joy_lin は指令値 (m/s)
 
-                if ((int8_t)joy_axis.at(3) > 0) {
+                if (joy_axis.at(3) > 0) {
                     joy_lin = - joy_lin;
                 }
             }
