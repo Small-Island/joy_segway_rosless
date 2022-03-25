@@ -155,18 +155,18 @@ void joy_read() {
                     break;
             }
 
-            // printf("count %d\n", count);
-            // std::cout << "axis:";
-            // for (size_t i(0); i < joy_axis.size(); i++) {
-            //     std::cout << " " << std::setw(2) << joy_axis.at(i)/32767.0;
-            // }
-            // std::cout << '\n';
-            //
-            // std::cout << "  button: ";
-            // for(size_t i(0); i < joy_button.size(); i++) {
-            //     std::cout << " " << (int)joy_button.at(i);
-            // }
-            // std::cout << '\n';
+            printf("count %d\n", count);
+            std::cout << "axis:";
+            for (size_t i(0); i < joy_axis.size(); i++) {
+                std::cout << " " << std::setw(2) << joy_axis.at(i)/32767.0;
+            }
+            std::cout << '\n';
+
+            std::cout << "  button: ";
+            for(size_t i(0); i < joy_button.size(); i++) {
+                std::cout << " " << (int)joy_button.at(i);
+            }
+            std::cout << '\n';
 
 
             if ((int)joy_button.at(2)) {
