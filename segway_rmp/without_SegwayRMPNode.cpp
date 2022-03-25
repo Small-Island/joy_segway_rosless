@@ -348,19 +348,21 @@ void joy_read() {
                 // else {
                 //     joy_lin = -0.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0);
                 // }
-                joy_ang = -50.0*joy_axis.at(0)/32767.0 * fabs(joy_axis.at(0)/32767.0);
+                cmd_angular_vel_from_joystick = -50.0*joy_axis.at(0)/32767.0 * fabs(joy_axis.at(0)/32767.0);
                 // this->joy_lin = -1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0);
                 // my_queue.enqueue(-1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0));
                 // this->lin = my_queue.mean();
 
                 double A = 1.0; // 指令値 (m/s) の最大値
                 double k = 0.1;
-                double x = fabs(joy_axis.at(3)/32767.0); // joystick の入力値 -1 ~ 1
+                double x = -joy_axis.at(3)/32767.0; // joystick の入力値 -1 ~ 1
 
-                joy_lin = A*((1 - k)*x + k)*x;  // joy_lin は指令値 (m/s)
 
-                if (joy_axis.at(3) > 0) {
-                    joy_lin = - joy_lin;
+                if (x > 0) {
+                    cmd_linear_vel_from_joystick = A*((1 - k)*x + k)*x;  // cmd_linear_vel_from_joystick は指令値 (m/s)
+                }
+                else {
+                    cmd_linear_vel_from_joystick = - A*((1 - k)*(-x) + k)*(-x);  // cmd_linear_vel_from_joystick は指令値 (m/s)
                 }
             }
         }
@@ -388,15 +390,16 @@ void momo_serial_read() {
                 // this->ang = 50*(int8_t)((buf_ptr[0] & 0x0000ff00) >> 8) /127.0;
                 // this->lin = 1.0*(int8_t)(buf_ptr[0] & 0x000000ff)/127.0;
                 if (latch == 3) {
-                    momo_ang = 50*(int8_t)buf_ptr[2] /127.0 * std::fabs((int8_t)buf_ptr[2] /127.0);
+                    cmd_angular_vel_from_momo = 50*(int8_t)buf_ptr[2] /127.0 * std::fabs((int8_t)buf_ptr[2] /127.0);
+
                     double A = 1.0; // 指令値 (m/s) の最大値
-                    double k = 0.0625;
-                    double x = fabs(1.0*(int8_t)buf_ptr[3] /127.0); // 遠隔のjoystick の入力値 -1 ~ 1
-
-                    momo_lin = A*((1 - k)*x + k)*x;  // joy_lin は指令値 (m/s)
-
-                    if ((int8_t)buf_ptr[3] < 0) {
-                        momo_lin = - momo_lin;
+                    double k = 0.1;
+                    double x = (int8_t)buf_ptr[3] /127.0; // 遠隔のjoystick の入力値 -1 ~ 1
+                    if (x > 0) {
+                        cmd_linear_vel_from_momo = A*((1 - k)*x + k)*x;  // cmd_linear_vel_from_momo は指令値 (m/s)
+                    }
+                    else {
+                        cmd_linear_vel_from_momo = - A*((1 - k)*(-x) + k)*(-x);  // cmd_linear_vel_from_momo は指令値 (m/s)
                     }
                 }
                 jyja_arrival_time = std::chrono::system_clock::now();
@@ -567,12 +570,14 @@ int main(int argc, char **argv) {
                 if (latch == 0) {
                     lin = 0;
                     ang = 0;
-                    joy_ang = 0;
-                    joy_lin = 0;
+                    cmd_linear_vel_from_momo = 0;
+                    cmd_angular_vel_from_momo = 0;
+                    cmd_linear_vel_from_joystick = 0;
+                    cmd_angular_vel_from_joystick = 0;
                 }
                 else if (latch == 1) {
-                    ang = joy_ang;
-                    lin = joy_lin;
+                    ang = cmd_angular_vel_from_joystick;
+                    lin = cmd_linear_vel_from_joystick;
                 }
                 else if (latch == 2) {
                     la = ba->controller();
@@ -599,12 +604,14 @@ int main(int argc, char **argv) {
                     if (std::chrono::system_clock::now() - jyja_arrival_time > std::chrono::milliseconds(500)) {
                         lin = 0;
                         ang = 0;
-                        momo_ang = 0;
-                        momo_lin = 0;
+                        cmd_linear_vel_from_momo = 0;
+                        cmd_angular_vel_from_momo = 0;
+                        cmd_linear_vel_from_joystick = 0;
+                        cmd_angular_vel_from_joystick = 0;
                     }
                     else {
-                        ang = momo_ang;
-                        lin = momo_lin;
+                        ang = cmd_angular_vel_from_momo;
+                        lin = cmd_linear_vel_from_momo;
                     }
                 }
 
