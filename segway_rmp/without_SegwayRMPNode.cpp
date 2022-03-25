@@ -355,13 +355,12 @@ void joy_read() {
 
                 double A = 1.0; // 指令値 (m/s) の最大値
                 double k = 0.1;
-                double x = -joy_axis.at(3)/32767.0; // joystick の入力値 -1 ~ 1
+                double x = fabs(joy_axis.at(3)/32767.0); // joystick の入力値 -1 ~ 1
 
-                if (x > 0) {
-                    joy_lin = A*((1 - k)*x + k)*x;  // joy_lin は指令値 (m/s)
-                }
-                else {
-                    joy_lin = - A*((1 - k)*x + k)*x; // joy_lin は指令値 (m/s)
+                joy_lin = A*((1 - k)*x + k)*x;  // joy_lin は指令値 (m/s)
+
+                if ((int8_t)joy_axis.at(3) > 0) {
+                    joy_lin = - joy_lin;
                 }
             }
         }
