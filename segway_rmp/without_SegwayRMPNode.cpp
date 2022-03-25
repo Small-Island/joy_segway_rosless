@@ -255,8 +255,10 @@ void joy_read() {
                     latch = 0;
                     lin = 0;
                     ang = 0;
-                    joy_lin = 0;
-                    joy_ang = 0;
+                    cmd_linear_vel_from_momo = 0;
+                    cmd_angular_vel_from_momo = 0;
+                    cmd_linear_vel_from_joystick = 0;
+                    cmd_angular_vel_from_joystick = 0;
                 }
                 std::this_thread::sleep_for(std::chrono::milliseconds(50));
             }
