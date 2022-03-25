@@ -326,18 +326,30 @@ void joy_read() {
 
             if ((int)joy_button.at(10) && (int)joy_button.at(13)) { //L1 and ○
                 latch = 1;
+                ang = 0;
+                lin = 0;
+                cmd_linear_vel_from_momo = 0;
+                cmd_angular_vel_from_momo = 0;
+                cmd_linear_vel_from_joystick = 0;
+                cmd_angular_vel_from_joystick = 0;
             }
             if ((int)joy_button.at(10) && (int)joy_button.at(12)) { //L1 and △
                 latch = 3;
                 ang = 0;
                 lin = 0;
+                cmd_linear_vel_from_momo = 0;
+                cmd_angular_vel_from_momo = 0;
+                cmd_linear_vel_from_joystick = 0;
+                cmd_angular_vel_from_joystick = 0;
             }
             if ((int)joy_button.at(14)) { //x
                 latch = 0;
                 ang = 0;
                 lin = 0;
-                joy_ang = 0;
-                joy_lin = 0;
+                cmd_linear_vel_from_momo = 0;
+                cmd_angular_vel_from_momo = 0;
+                cmd_linear_vel_from_joystick = 0;
+                cmd_angular_vel_from_joystick = 0;
             }
 
             if (latch == 1) {
