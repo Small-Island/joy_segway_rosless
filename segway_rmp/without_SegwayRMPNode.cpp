@@ -165,8 +165,8 @@ public:
 
 
 int latch = 3;
-double lin = 0, momo_lin = 0, joy_lin = 0;
-double ang = 0, momo_ang = 0, joy_ang = 0;
+double lin = 0, cmd_linear_vel_from_momo = 0, cmd_linear_vel_from_joystick= 0;
+double ang = 0, cmd_angular_vel_from_momo = 0, cmd_angular_vel_from_joystick = 0;
 double before_target_linear_vel = 0;
 double linear_vel_feedback = 0;
 int zero_judge = 0;
