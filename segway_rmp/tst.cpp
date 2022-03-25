@@ -87,7 +87,7 @@ void hoge() {
         if (end_time_point > 5000) {
             ofs.close();
         }
-        printf("%lf, %lf\n", ang, lin);
+        // printf("%lf, %lf\n", ang, lin);
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         // vel_d = vel_d + 0.001;
     }
