@@ -488,6 +488,17 @@ void momo_serial_read() {
     return;
 }
 
+void udp_read() {
+    while (1) {
+        struct My_udp_data my_udp_data = {0};
+        int recv_size = recv(sockfd, &my_udp_data, sizeof(struct My_udp_data), 0);
+        obstacle_detected_in_1m = my_udp_data.obstacle_detected_in_1m;
+        obstacle_detected_in_2m = my_udp_data.obstacle_detected_in_2m;
+        obstacle_detected_in_3m = my_udp_data.obstacle_detected_in_3m;
+        printf("1m %d, 2m %d, 3m %d\n", my_udp_data.obstacle_detected_in_1m, my_udp_data.obstacle_detected_in_2m, my_udp_data.obstacle_detected_in_3m);
+    }
+}
+
 
 int main(int argc, char **argv) {
     addr.sin_family = AF_INET;
@@ -512,7 +523,7 @@ int main(int argc, char **argv) {
 
     std::thread th_momo_serial_read(momo_serial_read);
     std::thread th_joy_read(joy_read);
-    // std::thread th_udp_read(udp_read);
+    std::thread th_udp_read(udp_read);
 
     // boost::thread th_hoge(&SegwayRMPNode::hoge, this);
     // this->spin();
