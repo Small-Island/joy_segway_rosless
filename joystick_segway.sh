@@ -8,7 +8,7 @@ if [ $(arch) = 'aarch64' ]; then
     ./without_SegwayRMPNode &
     ~/ojima-librealsense/build/examples/pointcloud/ojima-pointcloud
 elif [ $(arch) = 'armv7l' ]; then
-    ./momo_arm64.run
+    ./momo.run
     ./without_SegwayRMPNode
 fi
 # python3 ./src/mywork/obstacleDetection.py &
