@@ -4,7 +4,7 @@ cd libsegwayrmp
 if [ ! -e lib ]; then
     mkdir lib
 fi
-if [ $(arch) = 'aarch64' ] || [$(arch) = 'aarch64' ]; then
+if [ $(arch) = 'aarch64' ] || [$(arch) = 'armv7l' ]; then
     cp ./ftd2xx/linux/arm64/libftd2xx.a ./lib/
 elif [ $(arch) = 'x86_64' ]; then
     cp ./ftd2xx/linux/x64/libftd2xx.a ./lib/
