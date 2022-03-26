@@ -10,4 +10,5 @@ if [ $(arch) = 'aarch64' ]; then
 elif [ $(arch) = 'armv7l' ]; then
     ./momo_arm64.run
     ./without_SegwayRMPNode
+fi
 # python3 ./src/mywork/obstacleDetection.py &
