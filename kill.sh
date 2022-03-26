@@ -4,8 +4,12 @@ if [[ $(ps | grep momo_x64) ]]; then
     killall momo_x64
 fi
 
-if [[ $(ps | grep momo_arm64) ]]; then
-    killall momo_arm64
+if [[ $(ps | grep momo_raspberry) ]]; then
+    killall momo_raspberry
+fi
+
+if [[ $(ps | grep momo_xavier) ]]; then
+    killall momo_xavier
 fi
 
 if [[ $(ps | grep socat) ]]; then
