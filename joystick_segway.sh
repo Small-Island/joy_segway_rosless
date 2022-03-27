@@ -5,10 +5,10 @@ cd ~/joy_segway_rosless
 
 if [ $(arch) = 'aarch64' ]; then
     ./momo.run
-    ./without_SegwayRMPNode &
+    ./main &
     ~/ojima-librealsense/build/examples/pointcloud/ojima-pointcloud
 elif [ $(arch) = 'armv7l' ]; then
     ./momo.run
-    ./without_SegwayRMPNode
+    ./main
 fi
 # python3 ./src/mywork/obstacleDetection.py &
