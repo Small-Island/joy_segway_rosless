@@ -9,6 +9,6 @@ if [ $(arch) = 'aarch64' ]; then # jetson xavier NX
     ~/ojima-librealsense/build/examples/pointcloud/ojima-pointcloud
 elif [ $(arch) = 'armv7l' ]; then # Raspberry pi
     ./momo.run
-    ./main
+    ./main_ras
 fi
 # python3 ./src/mywork/obstacleDetection.py &
