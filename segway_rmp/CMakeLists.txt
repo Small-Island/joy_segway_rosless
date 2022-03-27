@@ -57,6 +57,8 @@ add_executable(main main.cpp)
 #     RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/..
 # )
 
+add_executable(main_ras main_ras.cpp)
+
 add_executable(tst tst.cpp)
 # set_target_properties(
 #     tst
@@ -93,6 +95,12 @@ target_link_libraries(main
   ${Boost_LIBRARIES}
   ${libsegwayrmp_LIBRARIES}
 )
+
+target_link_libraries(main_ras
+  ${Boost_LIBRARIES}
+  ${libsegwayrmp_LIBRARIES}
+)
+
 
 target_link_libraries(tst
   ${Boost_LIBRARIES}
