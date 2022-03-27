@@ -1,20 +1,8 @@
 #!/bin/bash
 
 cd libsegwayrmp
-if [ ! -e lib ]; then
-    mkdir lib
-fi
-if [ $(arch) = 'aarch64' ]; then
-    cp ./ftd2xx/linux/armv8/libftd2xx.a ./lib/
-elif [ $(arch) = 'armv7l' ]; then
-    cp ./ftd2xx/linux/armv7/libftd2xx.a ./lib/
-elif [ $(arch) = 'x86_64' ]; then
-    cp ./ftd2xx/linux/x64/libftd2xx.a ./lib/
-fi
-
 cd serial
 make
-
 cd ..
 
 make
