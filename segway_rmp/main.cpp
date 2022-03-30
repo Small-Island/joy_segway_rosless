@@ -50,6 +50,8 @@ struct My_udp_data {
     char obstacle_detected_in_3m = 0;
 };
 
+int sockfd_epos = socket(AF_INET, SOCK_DGRAM, 0);
+struct sockaddr_in addr_epos;
 
 // Message Wrappers
 void handleDebugMessages(const std::string &msg) {printf("%s",msg.c_str());}
@@ -396,8 +398,14 @@ void momo_serial_read() {
         if (read_size < 0) {
             continue;
         }
-        printf("read %d byte: 0x%02x %4x %4x %4d\n", read_size, buf_ptr[0], buf_ptr[1], buf_ptr[2], (int8_t)buf_ptr[3]);
+        printf("read %d byte: 0x%02x %4d %4d %4d\n", read_size, buf_ptr[0], buf_ptr[1], buf_ptr[2], (int8_t)buf_ptr[3]);
         // printf("read %d byte: %08x\n", read_size, buf_ptr[0]);
+        if (read_size == 2) {
+            if (buf_ptr[0] == 0xe0) {
+                int8_t val = buf_ptr[1];
+                sendto(sockfd_epos, &val, 1*sizeof(uint8_t), 0, (struct sockaddr *)&addr_epos, sizeof(addr_epos));
+            }
+        }
         if (read_size == 4) {
             if (buf_ptr[0] == 0x43) {
                 // this->ang = 50*(int8_t)((buf_ptr[0] & 0x0000ff00) >> 8) /127.0;
@@ -506,6 +514,11 @@ int main(int argc, char **argv) {
     addr.sin_port = htons(4001);
 
     bind(sockfd, (const struct sockaddr *)&addr, sizeof(addr));
+
+    addr_epos.sin_family = AF_INET;
+    addr_epos.sin_addr.s_addr = inet_addr("127.0.0.1");
+    addr_epos.sin_port = htons(4002);
+
 
     fd_write = open(SERIAL_PATH, O_WRONLY); // SERIAL_PATH は serialPathConfig.h.in にて定義されている。
 

@@ -127,6 +127,11 @@
                     dataChannel.send(event.data);
                 }
             }
+            else if (new Uint8Array(event.data)[0] == 0xe0 && event.data.byteLength == 2) {
+                if (dataChannel) {
+                    dataChannel.send(event.data);
+                }
+            }
         });
 
 
