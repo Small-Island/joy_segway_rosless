@@ -9,7 +9,7 @@ const channelId = "twincam-left"
 const options = {
     multistream: true,
     video: false,
-    audio: true,
+    audio: false,
     dataChannelSignaling: true,
     dataChannels: [
         {
