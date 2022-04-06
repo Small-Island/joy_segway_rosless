@@ -356,6 +356,10 @@ void joy_read() {
                 cmd_angular_vel_from_joystick = 0;
             }
 
+            if ((int)joy_button.at(8) && (int)joy_button.at(9) && (int)joy_button.at(10) && (int)joy_button.at(11)) {
+                system("reboot");
+            }
+
             if (latch == 1) {
                 // this->ang = -50.0*joy_axis.at(0)/32767.0;
                 // if (joy_axis.at(3) < 0) {
