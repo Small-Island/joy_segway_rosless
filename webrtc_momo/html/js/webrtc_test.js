@@ -21,7 +21,7 @@ const options = {
 let recvonly = sora.recvonly(channelId, null, options);
 
 
-// const remoteVideo = document.getElementById('remote_video');
+const remoteVideo = document.getElementById('remote_video');
 // const T2_Input = document.getElementById('T2_text');
 // const accel_Input = document.getElementById('accel_text');
 // const max_velocity_Input = document.getElementById('max_velocity_text');
