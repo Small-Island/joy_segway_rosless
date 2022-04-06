@@ -368,7 +368,7 @@ void joy_read() {
                 // else {
                 //     joy_lin = -0.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0);
                 // }
-                cmd_angular_vel_from_joystick = -50.0*joy_axis.at(0)/32767.0 * fabs(joy_axis.at(0)/32767.0);
+                // cmd_angular_vel_from_joystick = -50.0*joy_axis.at(0)/32767.0 * fabs(joy_axis.at(0)/32767.0);
                 // this->joy_lin = -1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0);
                 // my_queue.enqueue(-1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0));
                 // this->lin = my_queue.mean();
@@ -383,6 +383,17 @@ void joy_read() {
                 else {
                     cmd_linear_vel_from_joystick = - A*((1 - k)*(-x) + k)*(-x);  // cmd_linear_vel_from_joystick は指令値 (m/s)
                 }
+
+                A = 40; // 指令値 (deg/s) の最大値
+                x = -joy_axis.at(0)/32767.0; // joystick の入力値 -1 ~ 1
+
+                if (x > 0) {
+                    cmd_angular_vel_from_joystick = A*((1 - k)*x + k)*x;  // cmd_angular_vel_from_joystick は指令値 (deg/s)
+                }
+                else {
+                    cmd_angular_vel_from_joystick = - A*((1 - k)*(-x) + k)*(-x);  // cmd_angular_vel_from_joystick は指令値 (deg/s)
+                }
+
             }
         }
         close(joy_fd);
@@ -425,6 +436,16 @@ void momo_serial_read() {
                     }
                     else {
                         cmd_linear_vel_from_momo = - A*((1 - k)*(-x) + k)*(-x);  // cmd_linear_vel_from_momo は指令値 (m/s)
+                    }
+
+                    A = 40.0; // 指令値 (deg/s) の最大値
+                    k = 0.05;
+                    x = (int8_t)buf_ptr[0] /127.0; // 遠隔のjoystick の入力値 -1 ~ 1
+                    if (x > 0) {
+                        cmd_angular_vel_from_momo = A*((1 - k)*x + k)*x;  // cmd_linear_vel_from_momo は指令値 (m/s)
+                    }
+                    else {
+                        cmd_angular_vel_from_momo = - A*((1 - k)*(-x) + k)*(-x);  // cmd_linear_vel_from_momo は指令値 (m/s)
                     }
                 }
                 jyja_arrival_time = std::chrono::system_clock::now();
