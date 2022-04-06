@@ -357,7 +357,7 @@ void joy_read() {
             }
 
             if ((int)joy_button.at(8) && (int)joy_button.at(9) && (int)joy_button.at(10) && (int)joy_button.at(11)) {
-                system("reboot");
+                system("shutdown -h 0");
             }
 
             if (latch == 1) {
