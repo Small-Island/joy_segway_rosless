@@ -70,6 +70,7 @@
     </main>
     <script type='text/javascript' src='./js/sora.min.js'></script>
     <script type='text/javascript' src='./js/webrtc_test.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
         // const debug = true;
         // // const sora = Sora.connection("wss://207-148-92-89.stable.sora.sora-labo.shiguredo.app/signaling", debug);
@@ -92,7 +93,7 @@
         //     ]
         // };
         // let recvonly = sora.recvonly(channelId, null, options);
-        recvonly.connect();
+        // recvonly.connect();
 
         // recvonly.on("track", (event) => {
         //     const stream = event.streams[0];
@@ -133,6 +134,42 @@
                 }
             }
         });
+
+        recvonly.on('datachannel', (event) => {
+            console.log(event);
+        });
+
+        setInterval(observe_wifi, 5000);
+        observe_wifi();
+
+        function observe_wifi() {
+            if (!recvonly.signalingSwitched) {
+                recvonly.connect();
+            }
+        }
+
+        let currentIP = '';
+        let oldIP = '';
+
+        oldIP = currentIP;
+
+        setInterval(observe_IP, 5000)
+
+        async function observe_IP() {
+            try {
+                const response = await axios.get('https://api.ipify.org?format=json');
+                currentIP = response.data.ip;
+                console.log(currentIP);
+                if (currentIP != oldIP && oldIP != '') {
+                    recvonly.connect();
+                }
+                oldIP = currentIP;
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+
 
 
         // setInterval(sendHello, 1000.0*3.0);
