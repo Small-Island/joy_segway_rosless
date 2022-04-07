@@ -68,7 +68,11 @@
             <br>
         </div>
     </main>
-    <script type='text/javascript' src='./js/sora.min.js'></script>
+    <!-- <script type='text/javascript' src='./js/sora.min.js'></script> -->
+    <script type="text/javascript">
+        let CLOSE_DATA_CHANNEL = false;
+    </script>
+    <script type='text/javascript' src='./js/sora.js'></script>
     <script type='text/javascript' src='./js/webrtc_test.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
@@ -146,24 +150,34 @@
             }
         }
 
-        let currentIP = '';
-        let oldIP = '';
+        // let currentIP = '';
+        // let oldIP = '';
+        //
+        // oldIP = currentIP;
+        //
+        // setInterval(observe_IP, 5000)
+        //
+        // async function observe_IP() {
+        //     try {
+        //         const response = await axios.get('https://api.ipify.org?format=json');
+        //         currentIP = response.data.ip;
+        //         console.log(currentIP);
+        //         if (currentIP != oldIP && oldIP != '') {
+        //             recvonly.connect();
+        //         }
+        //         oldIP = currentIP;
+        //     } catch (error) {
+        //         console.error(error);
+        //     }
+        // }
 
-        oldIP = currentIP;
-
-        setInterval(observe_IP, 5000)
-
-        async function observe_IP() {
-            try {
-                const response = await axios.get('https://api.ipify.org?format=json');
-                currentIP = response.data.ip;
-                console.log(currentIP);
-                if (currentIP != oldIP && oldIP != '') {
-                    recvonly.connect();
-                }
-                oldIP = currentIP;
-            } catch (error) {
-                console.error(error);
+        setInterval(observe_CLOSE_DATA_CHANNEL, 10000);
+        function observe_CLOSE_DATA_CHANNEL() {
+            if (CLOSE_DATA_CHANNEL) {
+                connect_clicked();
+            }
+            if (CLOSE_DATA_CHANNEL && sendrecv_right.signalingSwitched) {
+                CLOSE_DATA_CHANNEL = false;
             }
         }
 
