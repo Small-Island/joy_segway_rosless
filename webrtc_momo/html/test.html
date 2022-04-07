@@ -123,7 +123,7 @@
             // }
             // dataChannel.send(new TextEncoder().encode(msg));
 
-            console.log("message");
+            // console.log("message");
 
             if (new Uint8Array(event.data)[0] == 0x43 && event.data.byteLength == 4) {
                 if (dataChannel) {
