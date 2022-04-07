@@ -71,6 +71,7 @@
     <!-- <script type='text/javascript' src='./js/sora.min.js'></script> -->
     <script type="text/javascript">
         let CLOSE_DATA_CHANNEL = false;
+        let RESTART = true;
     </script>
     <script type='text/javascript' src='./js/sora.js'></script>
     <script type='text/javascript' src='./js/webrtc_test.js'></script>
@@ -178,8 +179,8 @@
                     recvonly.connect();
                 }
             }
-            if (CLOSE_DATA_CHANNEL && sendrecv_right.signalingSwitched) {
-                CLOSE_DATA_CHANNEL = false;
+            if (RESTART) {
+                RESTART = false;
                 disconnect();
                 connect();
             }

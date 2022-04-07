@@ -1875,7 +1875,10 @@
                 CLOSE_DATA_CHANNEL = true;
             }
             if (title == 'OPEN DATA CHANNEL') {
-                CLOSE_DATA_CHANNEL = false;
+                if (CLOSE_DATA_CHANNEL) {
+                    RESTART = true;
+                    CLOSE_DATA_CHANNEL = false;
+                }
             }
 	        console.group(prefix + " " + title);
 	        dump(value);
