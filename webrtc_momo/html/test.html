@@ -123,6 +123,8 @@
             // }
             // dataChannel.send(new TextEncoder().encode(msg));
 
+            console.log("message");
+
             if (new Uint8Array(event.data)[0] == 0x43 && event.data.byteLength == 4) {
                 if (dataChannel) {
                     dataChannel.send(event.data);
@@ -133,10 +135,6 @@
                     dataChannel.send(event.data);
                 }
             }
-        });
-
-        recvonly.on('datachannel', (event) => {
-            console.log(event);
         });
 
         setInterval(observe_wifi, 5000);
