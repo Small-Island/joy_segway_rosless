@@ -152,14 +152,14 @@
             }
         });
 
-        setInterval(observe_wifi, 5000);
-        observe_wifi();
-
-        function observe_wifi() {
-            if (!recvonly.signalingSwitched) {
-                recvonly.connect();
-            }
-        }
+        // setInterval(observe_wifi, 5000);
+        // observe_wifi();
+        //
+        // function observe_wifi() {
+        //     if (!recvonly.signalingSwitched) {
+        //         recvonly.connect();
+        //     }
+        // }
 
         // let currentIP = '';
         // let oldIP = '';
@@ -191,7 +191,7 @@
             }
             if (RESTART) {
                 RESTART = false;
-                disconnect();
+                // disconnect();
                 connect();
             }
         }
