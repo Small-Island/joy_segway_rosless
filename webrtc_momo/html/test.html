@@ -188,12 +188,13 @@
         function observe_CLOSE_DATA_CHANNEL() {
             if (CLOSE_DATA_CHANNEL) {
                 if (!recvonly.signalingSwitched) {
+                    disconnect();
                     recvonly.connect();
                 }
             }
             if (RESTART) {
                 RESTART = false;
-                disconnect();
+                // disconnect();
                 connect();
             }
         }
