@@ -36,7 +36,7 @@
       <!-- <input type="button" onclick="play();" value="Play"><br> -->
     <!-- </div> -->
     <!-- <div> -->
-    <div id="remote_video"></div>
+    <video id="remote_video" style="display: none;"></video>
       <!-- <video id="remote_video" autoplay style="border: 3px solid gray;"></video> -->
     <!-- </div> -->
     <!-- <div id="warning"></div> -->
@@ -193,7 +193,7 @@
             }
             if (RESTART) {
                 RESTART = false;
-                // disconnect();
+                disconnect();
                 connect();
             }
         }
