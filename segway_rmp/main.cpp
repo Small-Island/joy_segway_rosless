@@ -171,6 +171,7 @@ double lin = 0, cmd_linear_vel_from_momo = 0, cmd_linear_vel_from_joystick= 0;
 double ang = 0, cmd_angular_vel_from_momo = 0, cmd_angular_vel_from_joystick = 0;
 double before_target_linear_vel = 0;
 double linear_vel_feedback = 0;
+double angular_vel_feedback = 0;
 int zero_judge = 0;
 double offset = 0.04;
 double gain = 0.4;
@@ -202,19 +203,29 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
         return;
     }
     segwayrmp::SegwayStatus &ss = *(ss_ptr);
-    linear_vel_feedback = (ss.left_wheel_speed + ss.right_wheel_speed) / 2.0;
+
+    angular_vel_feedback = ss.yaw_rate; // (deg/s)
+    int ang_vel = (int32_t)(angular_vel_feedback * 10000);
+    uint8_t hha = (uint8_t)((uint32_t)(ang_vel & 0xff000000) >> 24);
+    uint8_t ha = (uint8_t)((uint32_t)(ang_vel & 0x00ff0000) >> 16);
+    uint8_t la = (uint8_t)((uint32_t)(ang_vel & 0x0000ff00) >> 8);
+    uint8_t lla = (uint8_t)(ang_vel & 0x000000ff);
+
+    linear_vel_feedback = (ss.left_wheel_speed + ss.right_wheel_speed) / 2.0; // (m/s)
     int vel = (int32_t)(linear_vel_feedback * 10000.0);
     uint8_t hh = (uint8_t)((uint32_t)(vel & 0xff000000) >> 24);
     uint8_t h = (uint8_t)((uint32_t)(vel & 0x00ff0000) >> 16);
     uint8_t l = (uint8_t)((uint32_t)(vel & 0x0000ff00) >> 8);
     uint8_t ll = (uint8_t)(vel & 0x000000ff);
+
     int end_time_point = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - begin_time_point).count();
     uint8_t hht = (uint8_t)((uint32_t)(end_time_point & 0xff000000) >> 24);
     uint8_t ht = (uint8_t)((uint32_t)(end_time_point & 0x00ff0000) >> 16);
     uint8_t lt = (uint8_t)((uint32_t)(end_time_point & 0x0000ff00) >> 8);
     uint8_t llt = (uint8_t)(end_time_point & 0x000000ff);
-    uint8_t buf[9] = {hht, ht, lt, llt, hh, h, l, ll, '\n'};
-    write(fd_write, &buf, 9);
+
+    uint8_t buf[13] = {hht, ht, lt, llt, hh, h, l, ll, hha, ha, la, lla, '\n'};
+    write(fd_write, &buf, 13);
 
     if (latch == 2 && !ofs_closed) {
         *(ofs) << end_time_point/1000.0 << ' ' << linear_vel_feedback << '\n';
