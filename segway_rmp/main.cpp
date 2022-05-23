@@ -536,10 +536,10 @@ void udp_read() {
     while (1) {
         struct My_udp_data my_udp_data = {0};
         int recv_size = recv(sockfd, &my_udp_data, sizeof(struct My_udp_data), 0);
-        obstacle_detected_in_1m = my_udp_data.obstacle_detected_in_1m;
+        obstacle_detected_in_0_5m = my_udp_data.obstacle_detected_in_0_5m;
         obstacle_detected_in_2m = my_udp_data.obstacle_detected_in_2m;
         obstacle_detected_in_3m = my_udp_data.obstacle_detected_in_3m;
-        printf("1m %d, 2m %d, 3m %d\n", my_udp_data.obstacle_detected_in_1m, my_udp_data.obstacle_detected_in_2m, my_udp_data.obstacle_detected_in_3m);
+        // printf("0.5m %d, 2m %d, 3m %d\n", my_udp_data.obstacle_detected_in_0_5m, my_udp_data.obstacle_detected_in_2m, my_udp_data.obstacle_detected_in_3m);
     }
 }
 
