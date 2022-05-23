@@ -5,8 +5,8 @@ cd ~/joy_segway_rosless
 
 if [ $(arch) = 'aarch64' ]; then # jetson xavier NX
     ./momo.run
-    ./main &
-    ~/ojima-librealsense/build/examples/pointcloud/ojima-pointcloud
+    ~/ojima-librealsense/build/examples/pointcloud/ojima-pointcloud &
+    ./main
 elif [ $(arch) = 'armv7l' ]; then # Raspberry pi
     ./momo.run
     ./main_ras
