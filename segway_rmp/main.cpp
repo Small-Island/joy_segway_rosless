@@ -45,7 +45,7 @@
 int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 struct sockaddr_in addr;
 struct My_udp_data {
-    char obstacle_detected_in_1m = 0;
+    char obstacle_detected_in_0_5m = 0;
     char obstacle_detected_in_2m = 0;
     char obstacle_detected_in_3m = 0;
 };
@@ -176,7 +176,7 @@ int zero_judge = 0;
 double offset = 0.04;
 double gain = 0.4;
 int offset_gain_none_latch = 1;
-bool obstacle_detected_in_1m = false;
+bool obstacle_detected_in_0_5m = false;
 bool obstacle_detected_in_2m = false;
 bool obstacle_detected_in_3m = false;
 bool motors_enabled = false;
@@ -692,7 +692,7 @@ int main(int argc, char **argv) {
                     if (obstacle_detected_in_2m && lin > 0.4) {
                         lin = 0.4;
                     }
-                    if (obstacle_detected_in_1m && lin > 0) {
+                    if (obstacle_detected_in_0_5m && lin > 0) {
                         lin = 0;
                         if (latch == 2) {
                             latch = 0;
