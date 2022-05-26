@@ -580,6 +580,7 @@ int main(int argc, char **argv) {
     // this->spin();
 
     connected = false;
+    double brake_lin = 0;
     while (true) {
         try {
             segway_rmp.connect(true);
@@ -650,14 +651,6 @@ int main(int argc, char **argv) {
                     cmd_linear_vel_from_joystick = 0;
                     cmd_angular_vel_from_joystick = 0;
                 }
-                else if (emergency_brake) {
-                    if (lin > 0) {
-                        lin = lin - 0.01;
-                    }
-                    if (lin < 0) {
-                        lin = 0;
-                    }
-                }
                 else if (latch == 1) {
                     ang = cmd_angular_vel_from_joystick;
                     lin = cmd_linear_vel_from_joystick;
@@ -703,13 +696,19 @@ int main(int argc, char **argv) {
                     if (obstacle_detected_in_1_5m && lin > 0.4) {
                         lin = 0.4;
                     }
-                    if (obstacle_detected_in_0_7m) {
-                        if (lin > 0) {
+                    if (obstacle_detected_in_0_7m && lin > 0) {
+                        if (!emergency_brake) {
                             emergency_brake = true;
+                            brake_lin = lin;
                         }
                     }
-                    else {
-                        emergency_brake = false;
+                    if (emergency_brake) {
+                        brake_lin = brake_lin - 0.1;
+                        lin = brake_lin;
+                        if (lin < 0) {
+                            emergency_brake = false;
+                            lin = 0;
+                        }
                     }
                     // if (lin < -0.5) {
                     //     lin = -0.5;
