@@ -726,18 +726,18 @@ int main(int argc, char **argv) {
                     if (emergency_brake) {
                         emergency_brake_lin = emergency_brake_lin - 0.02;
                         if (emergency_brake_lin < 0) {
-                            emergency_brakelin = 0;
+                            emergency_brake_lin = 0;
                             if (latch == 2) {
                                 latch = 0;
                             }
                         }
 
-                        lin = emergency_brake_lin4;;
+                        lin = emergency_brake_lin;
                     }
                     else if (slow_brake) {
                         slow_brake_lin = slow_brake_lin - 0.01;
                         if (slow_brake_lin < 0.4) {
-                            slow_brake_lin = 0.4
+                            slow_brake_lin = 0.4;
                             slow_brake = false;
                         }
                         lin = slow_brake_lin;
