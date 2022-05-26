@@ -699,6 +699,7 @@ int main(int argc, char **argv) {
                         if (lin > 0) {
                             if (!emergency_brake) {
                                 emergency_brake = true;
+                                slow_start_lin = 0;
                                 brake_lin = lin;
                             }
                         }
@@ -720,7 +721,7 @@ int main(int argc, char **argv) {
 
 
                     if (emergency_brake) {
-                        brake_lin = brake_lin - 0.05;
+                        brake_lin = brake_lin - 0.02;
                         if (brake_lin < 0) {
                             lin = 0;
                         }
