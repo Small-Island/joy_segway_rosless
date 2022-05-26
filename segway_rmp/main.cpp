@@ -724,6 +724,9 @@ int main(int argc, char **argv) {
                         brake_lin = brake_lin - 0.02;
                         if (brake_lin < 0) {
                             lin = 0;
+                            if (latch == 2) {
+                                latch = 0;
+                            }
                         }
                         else {
                             lin = brake_lin;
