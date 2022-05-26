@@ -731,7 +731,7 @@ int main(int argc, char **argv) {
 
 
                     if (emergency_brake) {
-                        emergency_brake_lin = emergency_brake_lin - 0.02;
+                        emergency_brake_lin = emergency_brake_lin - 0.03;
                         if (emergency_brake_lin < 0) {
                             emergency_brake_lin = 0;
                             if (latch == 2) {
@@ -742,7 +742,7 @@ int main(int argc, char **argv) {
                         lin = emergency_brake_lin;
                     }
                     else if (slow_brake) {
-                        slow_brake_lin = slow_brake_lin - 0.01;
+                        slow_brake_lin = slow_brake_lin - 0.03;
                         if (slow_brake_lin < 0.4) {
                             slow_brake_lin = 0.4;
                         }
@@ -755,7 +755,7 @@ int main(int argc, char **argv) {
                                 slow_start = false;
                             }
                             else {
-                                slow_start_lin = slow_start_lin + 0.01;
+                                slow_start_lin = slow_start_lin + 0.03;
                                 lin = slow_start_lin;
                             }
                         }
