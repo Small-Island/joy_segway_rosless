@@ -656,7 +656,6 @@ int main(int argc, char **argv) {
                     }
                     if (lin < 0) {
                         lin = 0;
-                        emergency_brake = false;
                     }
                 }
                 else if (latch == 1) {
@@ -704,8 +703,13 @@ int main(int argc, char **argv) {
                     if (obstacle_detected_in_1_5m && lin > 0.4) {
                         lin = 0.4;
                     }
-                    if (obstacle_detected_in_0_7m && lin > 0) {
-                        emergency_brake = true;
+                    if (obstacle_detected_in_0_7m) {
+                        if (lin > 0) {
+                            emergency_brake = true;
+                        }
+                    }
+                    else {
+                        emergency_brake = false;
                     }
                     // if (lin < -0.5) {
                     //     lin = -0.5;
