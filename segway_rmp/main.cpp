@@ -710,6 +710,7 @@ int main(int argc, char **argv) {
                                 emergency_brake = true;
                                 emergency_brake_lin = lin;
                                 slow_brake = false;
+                                slow_start = false;
                             }
                         }
                         if (lin < 0) {
