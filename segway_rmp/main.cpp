@@ -578,8 +578,8 @@ int main(int argc, char **argv) {
     // this->spin();
 
     connected = false;
-    double brake_lin = 0, slow_start_lin = 0;
-    bool slow_start = false, emergency_brake = false;
+    double emergency_brake_lin = 0, slow_start_lin = 0, slow_brake_lin = 0;
+    bool slow_start = false, emergency_brake = false, slow_brake = false;
     while (true) {
         try {
             segway_rmp.connect(true);
@@ -693,14 +693,17 @@ int main(int argc, char **argv) {
 
                 try {
                     if (obstacle_detected_in_1_5m && lin > 0.4) {
-                        lin = 0.4;
+                        if (!slow_brake) {
+                            slow_brake = true;
+                            slow_brake_lin = lin;
+                        }
                     }
                     if (obstacle_detected_in_0_7m) {
                         if (lin > 0) {
                             if (!emergency_brake) {
                                 emergency_brake = true;
-                                slow_start_lin = 0;
-                                brake_lin = lin;
+                                emergency_brake_lin = lin;
+                                slow_brake = false;
                             }
                         }
                         if (lin < 0) {
@@ -721,25 +724,34 @@ int main(int argc, char **argv) {
 
 
                     if (emergency_brake) {
-                        brake_lin = brake_lin - 0.02;
-                        if (brake_lin < 0) {
-                            lin = 0;
+                        emergency_brake_lin = emergency_brake_lin - 0.02;
+                        if (emergency_brake_lin < 0) {
+                            emergency_brakelin = 0;
                             if (latch == 2) {
                                 latch = 0;
                             }
                         }
-                        else {
-                            lin = brake_lin;
+
+                        lin = emergency_brake_lin4;;
+                    }
+                    else if (slow_brake) {
+                        slow_brake_lin = slow_brake_lin - 0.01;
+                        if (slow_brake_lin < 0.4) {
+                            slow_brake_lin = 0.4
+                            slow_brake = false;
                         }
+                        lin = slow_brake_lin;
                     }
 
                     if (slow_start) {
-                        if (slow_start_lin > lin) {
-                            slow_start = false;
-                        }
-                        else {
-                            slow_start_lin = slow_start_lin + 0.01;
-                            lin = slow_start_lin;
+                        if (lin >= 0) {
+                            if (slow_start_lin > lin) {
+                                slow_start = false;
+                            }
+                            else {
+                                slow_start_lin = slow_start_lin + 0.01;
+                                lin = slow_start_lin;
+                            }
                         }
                     }
 
