@@ -194,8 +194,6 @@ std::ofstream* ofs;
 
 std::mutex m_mutex;
 
-bool emergency_brake = false;
-
 
 void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     if (!connected) {
@@ -581,6 +579,7 @@ int main(int argc, char **argv) {
 
     connected = false;
     double brake_lin = 0;
+    bool emergency_brake_start = false, emergency_brake = false;
     while (true) {
         try {
             segway_rmp.connect(true);
@@ -702,18 +701,20 @@ int main(int argc, char **argv) {
                             brake_lin = lin;
                         }
                     }
+
+                    if (!obstacle_detected_in_0_7m || lin < 0) {
+                        emergency_brake = false;
+                    }
+
                     if (emergency_brake) {
-                        brake_lin = brake_lin - 0.1;
-                        lin = brake_lin;
-                        if (lin < 0) {
-                            emergency_brake = false;
+                        brake_lin = brake_lin - 0.01;
+                        if (brake_lin < 0) {
                             lin = 0;
                         }
+                        else {
+                            lin = brake_lin;
+                        }
                     }
-                    // if (lin < -0.5) {
-                    //     lin = -0.5;
-                    // }
-                    // printf("%lf\n", lin);
                     segway_rmp.move(lin, ang);
                 } catch (std::exception& e) {
                     std::string e_msg(e.what());
