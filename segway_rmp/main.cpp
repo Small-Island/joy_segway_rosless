@@ -738,15 +738,13 @@ int main(int argc, char **argv) {
                                 latch = 0;
                             }
                         }
-
-                        lin = emergency_brake_lin;
+                        if (lin > emergency_brake_lin) {
+                            lin = emergency_brake_lin;
+                        }
                     }
                     else if (slow_brake) {
                         slow_brake_lin = slow_brake_lin - 0.03;
-                        if (slow_brake_lin < 0.4) {
-                            slow_brake_lin = 0.4;
-                        }
-                        if (lin > 0.4) {
+                        if (lin > slow_brake_lin) {
                             lin = slow_brake_lin;
                         }
                     }
