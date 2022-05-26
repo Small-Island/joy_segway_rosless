@@ -734,7 +734,7 @@ int main(int argc, char **argv) {
                             slow_start = false;
                         }
                         else {
-                            slow_start = slow_start + 0.05;
+                            slow_start = slow_start + 0.01;
                             lin = slow_start;
                         }
                     }
