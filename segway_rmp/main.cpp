@@ -732,11 +732,10 @@ int main(int argc, char **argv) {
                     if (slow_start) {
                         if (slow_start_lin > lin) {
                             slow_start = false;
-                            slow_start = 0;
                         }
                         else {
-                            slow_start = slow_start + 0.01;
-                            lin = slow_start;
+                            slow_start_lin = slow_start_lin + 0.01;
+                            lin = slow_start_lin;
                         }
                     }
 
