@@ -45,9 +45,8 @@
 int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 struct sockaddr_in addr;
 struct My_udp_data {
-    char obstacle_detected_in_0_5m = 0;
-    char obstacle_detected_in_2m = 0;
-    char obstacle_detected_in_3m = 0;
+    char obstacle_detected_in_0_7m = 0;
+    char obstacle_detected_in_1_5m = 0;
 };
 
 int sockfd_epos = socket(AF_INET, SOCK_DGRAM, 0);
@@ -176,9 +175,8 @@ int zero_judge = 0;
 double offset = 0.04;
 double gain = 0.4;
 int offset_gain_none_latch = 1;
-bool obstacle_detected_in_0_5m = false;
-bool obstacle_detected_in_2m = false;
-bool obstacle_detected_in_3m = false;
+bool obstacle_detected_in_0_7m = false;
+bool obstacle_detected_in_1_5m = false;
 bool motors_enabled = false;
 bool recover_motors_enabled = false;
 bool reset_odometry = false;
@@ -196,6 +194,7 @@ std::ofstream* ofs;
 
 std::mutex m_mutex;
 
+bool emergency_brake = false;
 
 
 void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
@@ -384,11 +383,12 @@ void joy_read() {
                 // my_queue.enqueue(-1.5*joy_axis.at(3)/32767.0 * fabs(joy_axis.at(3)/32767.0));
                 // this->lin = my_queue.mean();
 
-                double A = 1.0; // 指令値 (m/s) の最大値
+                double A = 0; // 指令値 (m/s) の最大値
                 double k = 0.05;
                 double x = -joy_axis.at(3)/32767.0; // joystick の入力値 -1 ~ 1
 
                 if (x > 0) {
+                    A = 1.0;
                     cmd_linear_vel_from_joystick = A*((1 - k)*x + k)*x;  // cmd_linear_vel_from_joystick は指令値 (m/s)
                 }
                 else {
@@ -440,13 +440,15 @@ void momo_serial_read() {
                 if (latch == 3) {
                     cmd_angular_vel_from_momo = 50*(int8_t)buf_ptr[2] /127.0 * std::fabs((int8_t)buf_ptr[2] /127.0);
 
-                    double A = 1.0; // 指令値 (m/s) の最大値
+                    double A = 0; // 指令値 (m/s) の最大値
                     double k = 0.05;
                     double x = (int8_t)buf_ptr[3] /127.0; // 遠隔のjoystick の入力値 -1 ~ 1
                     if (x > 0) {
+                        A = 1.0;
                         cmd_linear_vel_from_momo = A*((1 - k)*x + k)*x;  // cmd_linear_vel_from_momo は指令値 (m/s)
                     }
                     else {
+                        A = 0.4;
                         cmd_linear_vel_from_momo = - A*((1 - k)*(-x) + k)*(-x);  // cmd_linear_vel_from_momo は指令値 (m/s)
                     }
 
@@ -537,9 +539,8 @@ void udp_read() {
     while (1) {
         struct My_udp_data my_udp_data = {0};
         int recv_size = recv(sockfd, &my_udp_data, sizeof(struct My_udp_data), 0);
-        obstacle_detected_in_0_5m = my_udp_data.obstacle_detected_in_0_5m;
-        obstacle_detected_in_2m = my_udp_data.obstacle_detected_in_2m;
-        obstacle_detected_in_3m = my_udp_data.obstacle_detected_in_3m;
+        obstacle_detected_in_0_7m = my_udp_data.obstacle_detected_in_0_7m;
+        obstacle_detected_in_1_5m = my_udp_data.obstacle_detected_in_1_5m;
         // printf("0.5m %d, 2m %d, 3m %d\n", my_udp_data.obstacle_detected_in_0_5m, my_udp_data.obstacle_detected_in_2m, my_udp_data.obstacle_detected_in_3m);
     }
 }
@@ -649,6 +650,15 @@ int main(int argc, char **argv) {
                     cmd_linear_vel_from_joystick = 0;
                     cmd_angular_vel_from_joystick = 0;
                 }
+                else if (emergency_brake) {
+                    if (lin > 0) {
+                        lin = lin - 0.01;
+                    }
+                    if (lin < 0) {
+                        lin = 0;
+                        emergency_brake = false;
+                    }
+                }
                 else if (latch == 1) {
                     ang = cmd_angular_vel_from_joystick;
                     lin = cmd_linear_vel_from_joystick;
@@ -689,15 +699,13 @@ int main(int argc, char **argv) {
                     }
                 }
 
+
                 try {
-                    if (obstacle_detected_in_2m && lin > 0.4) {
+                    if (obstacle_detected_in_1_5m && lin > 0.4) {
                         lin = 0.4;
                     }
-                    if (obstacle_detected_in_0_5m && lin > 0) {
-                        lin = 0;
-                        if (latch == 2) {
-                            latch = 0;
-                        }
+                    if (obstacle_detected_in_0_7m && lin > 0) {
+                        emergency_brake = true;
                     }
                     // if (lin < -0.5) {
                     //     lin = -0.5;
