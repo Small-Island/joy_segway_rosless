@@ -392,6 +392,7 @@ void joy_read() {
                     cmd_linear_vel_from_joystick = A*((1 - k)*x + k)*x;  // cmd_linear_vel_from_joystick は指令値 (m/s)
                 }
                 else {
+                    A = 0.4;
                     cmd_linear_vel_from_joystick = - A*((1 - k)*(-x) + k)*(-x);  // cmd_linear_vel_from_joystick は指令値 (m/s)
                 }
 
