@@ -723,7 +723,7 @@ int main(int argc, char **argv) {
                             if (emergency_brake) {
                                 emergency_brake = false;
                                 slow_start = true;
-                                slow_start_lin = 0;
+                                slow_start_lin = linear_vel_feedback;
                             }
                         }
                     }
