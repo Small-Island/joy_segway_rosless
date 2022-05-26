@@ -744,6 +744,9 @@ int main(int argc, char **argv) {
                     }
                     else if (slow_brake) {
                         slow_brake_lin = slow_brake_lin - 0.03;
+                        if (slow_brake < 0.4) {
+                            slow_brake = 0.4;
+                        }
                         if (lin > slow_brake_lin) {
                             lin = slow_brake_lin;
                         }
