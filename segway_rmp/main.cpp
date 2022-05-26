@@ -578,8 +578,8 @@ int main(int argc, char **argv) {
     // this->spin();
 
     connected = false;
-    double brake_lin = 0;
-    bool emergency_brake_start = false, emergency_brake = false;
+    double brake_lin = 0, slow_start_lin = 0;
+    bool slow_start = false, emergency_brake = false;
     while (true) {
         try {
             segway_rmp.connect(true);
@@ -695,19 +695,32 @@ int main(int argc, char **argv) {
                     if (obstacle_detected_in_1_5m && lin > 0.4) {
                         lin = 0.4;
                     }
-                    if (obstacle_detected_in_0_7m && lin > 0) {
-                        if (!emergency_brake) {
-                            emergency_brake = true;
-                            brake_lin = lin;
+                    if (obstacle_detected_in_0_7m) {
+                        if (lin > 0) {
+                            if (!emergency_brake) {
+                                emergency_brake = true;
+                                brake_lin = lin;
+                            }
+                        }
+                        if (lin < 0) {
+                            emergency_brake = false;
                         }
                     }
 
-                    if (!obstacle_detected_in_0_7m || lin < 0) {
-                        emergency_brake = false;
+                    if (!obstacle_detected_in_0_7m) {
+                        if (lin > 0) {
+                            if (emergency_brake) {
+                                emergency_brake = false;
+                                slow_start = true;
+                                slow_start_lin = 0;
+                            }
+                        }
                     }
 
+
+
                     if (emergency_brake) {
-                        brake_lin = brake_lin - 0.01;
+                        brake_lin = brake_lin - 0.05;
                         if (brake_lin < 0) {
                             lin = 0;
                         }
@@ -715,6 +728,17 @@ int main(int argc, char **argv) {
                             lin = brake_lin;
                         }
                     }
+
+                    if (slow_start) {
+                        if (slow_start_lin > lin) {
+                            slow_start = false;
+                        }
+                        else {
+                            slow_start = slow_start + 0.05;
+                            lin = slow_start;
+                        }
+                    }
+
                     segway_rmp.move(lin, ang);
                 } catch (std::exception& e) {
                     std::string e_msg(e.what());
