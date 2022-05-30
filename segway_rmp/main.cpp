@@ -762,14 +762,13 @@ int main(int argc, char **argv) {
                     if (slow_start) {
                         stamp++;
                         printf("%d slow start\n", stamp);
-                        if (lin >= 0) {
-                            if (slow_start_lin > lin) {
-                                slow_start = false;
-                            }
-                            else {
-                                slow_start_lin = slow_start_lin + 0.03;
-                                lin = slow_start_lin;
-                            }
+
+                        if (slow_start_lin > lin) {
+                            slow_start = false;
+                        }
+                        else {
+                            slow_start_lin = slow_start_lin + 0.03;
+                            lin = slow_start_lin;
                         }
                     }
 
