@@ -696,6 +696,8 @@ int main(int argc, char **argv) {
                     if (obstacle_detected_in_1_5m && lin > 0.4) {
                         if (!slow_brake) {
                             slow_brake = true;
+                            slow_start = false;
+                            emergency_brake = false;
                             slow_brake_lin = lin;
                         }
                     }
@@ -746,7 +748,7 @@ int main(int argc, char **argv) {
                             lin = emergency_brake_lin;
                         }
                     }
-                    
+
                     if (slow_brake) {
                         stamp++;
                         printf("%d slow brake\n", stamp);
