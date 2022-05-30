@@ -698,11 +698,8 @@ int main(int argc, char **argv) {
                             slow_brake_lin = lin;
                         }
                     }
-
-                    if (!obstacle_detected_in_1_5m) {
-                        if (slow_brake) {
-                            slow_brake = false;
-                        }
+                    else {
+                        slow_brake = false;
                     }
 
 
@@ -719,8 +716,7 @@ int main(int argc, char **argv) {
                             emergency_brake = false;
                         }
                     }
-
-                    if (!obstacle_detected_in_0_7m) {
+                    else {
                         if (emergency_brake) {
                             emergency_brake = false;
                             slow_start = true;
