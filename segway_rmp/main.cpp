@@ -721,10 +721,6 @@ int main(int argc, char **argv) {
                                 slow_brake_lin = linear_vel_feedback;
                             }
                         }
-                        else if (lin >= 0) {
-                            slow_start = true;
-                            slow_start_lin = linear_vel_feedback;
-                        }
                     }
                     else {
                         slow_brake = false;
@@ -755,9 +751,8 @@ int main(int argc, char **argv) {
                     if (slow_brake) {
                         stamp++;
                         printf("%d slow brake\n", stamp);
-                        slow_brake_lin = slow_brake_lin - 0.03;
-                        if (slow_brake_lin < 0.4) {
-                            slow_brake_lin = 0.4;
+                        if (slow_brake_lin > 0.4) {
+                            slow_brake_lin = slow_brake_lin - 0.03;
                         }
                         if (lin > slow_brake_lin) {
                             lin = slow_brake_lin;
