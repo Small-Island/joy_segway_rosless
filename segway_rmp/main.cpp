@@ -693,18 +693,6 @@ int main(int argc, char **argv) {
 
 
                 try {
-                    if (obstacle_detected_in_1_5m && lin > 0.4) {
-                        if (!slow_brake) {
-                            slow_brake = true;
-                            slow_start = false;
-                            emergency_brake = false;
-                            slow_brake_lin = lin;
-                        }
-                    }
-                    else {
-                        slow_brake = false;
-                    }
-
 
                     if (obstacle_detected_in_0_7m) {
                         if (lin > 0) {
@@ -724,7 +712,22 @@ int main(int argc, char **argv) {
                             emergency_brake = false;
                         }
                     }
+                    else if (obstacle_detected_in_1_5m) {
+                        if (lin > 0.4) {
+                            if (!slow_brake) {
+                                slow_brake = true;
+                                slow_start = false;
+                                emergency_brake = false;
+                                slow_brake_lin = lin;
+                            }
+                        }
+                        else if (lin >= 0) {
+                            slow_start = true;
+                            slow_start_lin = linear_vel_feedback;
+                        }
+                    }
                     else {
+                        slow_brake = false;
                         if (emergency_brake) {
                             emergency_brake = false;
                             slow_start = true;
