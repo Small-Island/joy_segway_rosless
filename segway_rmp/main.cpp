@@ -718,7 +718,7 @@ int main(int argc, char **argv) {
                                 slow_brake = true;
                                 slow_start = false;
                                 emergency_brake = false;
-                                slow_brake_lin = lin;
+                                slow_brake_lin = linear_vel_feedback;
                             }
                         }
                         else if (lin >= 0) {
