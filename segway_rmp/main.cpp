@@ -746,7 +746,8 @@ int main(int argc, char **argv) {
                             lin = emergency_brake_lin;
                         }
                     }
-                    else if (slow_brake) {
+                    
+                    if (slow_brake) {
                         stamp++;
                         printf("%d slow brake\n", stamp);
                         slow_brake_lin = slow_brake_lin - 0.03;
