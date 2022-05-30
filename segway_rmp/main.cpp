@@ -727,6 +727,7 @@ int main(int argc, char **argv) {
 
 
                     if (emergency_brake) {
+                        printf("emergency brake\n");
                         emergency_brake_lin = emergency_brake_lin - 0.03;
                         if (emergency_brake_lin < 0) {
                             emergency_brake_lin = 0;
@@ -739,6 +740,7 @@ int main(int argc, char **argv) {
                         }
                     }
                     else if (slow_brake) {
+                        printf("slow brake\n");
                         slow_brake_lin = slow_brake_lin - 0.03;
                         if (slow_brake_lin < 0.4) {
                             slow_brake_lin = 0.4;
@@ -749,6 +751,7 @@ int main(int argc, char **argv) {
                     }
 
                     if (slow_start) {
+                        printf("slow start\n");
                         if (lin >= 0) {
                             if (slow_start_lin > lin) {
                                 slow_start = false;
