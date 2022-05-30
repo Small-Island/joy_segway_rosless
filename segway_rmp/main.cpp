@@ -580,6 +580,7 @@ int main(int argc, char **argv) {
     connected = false;
     double emergency_brake_lin = 0, slow_start_lin = 0, slow_brake_lin = 0;
     bool slow_start = false, emergency_brake = false, slow_brake = false;
+    int stamp = 0;
     while (true) {
         try {
             segway_rmp.connect(true);
@@ -707,7 +708,12 @@ int main(int argc, char **argv) {
                         if (lin > 0) {
                             if (!emergency_brake) {
                                 emergency_brake = true;
-                                emergency_brake_lin = 0.4;
+                                if (lin > 0.4) {
+                                    emergency_brake_lin = 0.4;
+                                }
+                                else {
+                                    emergency_brake_lin = lin;
+                                }
                                 slow_brake = false;
                                 slow_start = false;
                             }
@@ -727,7 +733,8 @@ int main(int argc, char **argv) {
 
 
                     if (emergency_brake) {
-                        printf("emergency brake\n");
+                        stamp++;
+                        printf("%d emergency brake\n", stamp);
                         emergency_brake_lin = emergency_brake_lin - 0.03;
                         if (emergency_brake_lin < 0) {
                             emergency_brake_lin = 0;
@@ -740,7 +747,8 @@ int main(int argc, char **argv) {
                         }
                     }
                     else if (slow_brake) {
-                        printf("slow brake\n");
+                        stamp++;
+                        printf("%d slow brake\n", stamp);
                         slow_brake_lin = slow_brake_lin - 0.03;
                         if (slow_brake_lin < 0.4) {
                             slow_brake_lin = 0.4;
@@ -751,7 +759,8 @@ int main(int argc, char **argv) {
                     }
 
                     if (slow_start) {
-                        printf("slow start\n");
+                        stamp++;
+                        printf("%d slow start\n", stamp);
                         if (lin >= 0) {
                             if (slow_start_lin > lin) {
                                 slow_start = false;
