@@ -754,13 +754,13 @@ int main(int argc, char **argv) {
                         if (slow_brake_lin > 0.4) {
                             slow_brake_lin -= 0.03;
                         }
-                        else if (slow_brake < 0.4) {
+                        else if (slow_brake_lin < 0.4) {
                             slow_brake_lin += 0.03;
                             if (slow_brake_lin > 0.4) {
                                 slow_brake_lin = 0.4;
                             }
                         }
-                        printf("lin: %lf, slow_brake_lin: %lf", lin, slow_brake_lin);
+                        printf("lin: %lf, slow_brake_lin: %lf\n", lin, slow_brake_lin);
                         if (lin > slow_brake_lin) {
                             lin = slow_brake_lin;
                         }
