@@ -750,7 +750,7 @@ int main(int argc, char **argv) {
 
                     if (slow_brake) {
                         stamp++;
-                        printf("%d slow brake\n", stamp);
+                        printf("%d slow brake ", stamp);
                         if (slow_brake_lin > 0.4) {
                             slow_brake_lin -= 0.03;
                         }
@@ -760,6 +760,7 @@ int main(int argc, char **argv) {
                                 slow_brake_lin = 0.4;
                             }
                         }
+                        printf("lin: %lf, slow_brake_lin: %lf", lin, slow_brake_lin);
                         if (lin > slow_brake_lin) {
                             lin = slow_brake_lin;
                         }
