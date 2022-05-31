@@ -723,8 +723,8 @@ int main(int argc, char **argv) {
                         }
                     }
                     else {
-                        slow_brake = false;
-                        if (emergency_brake) {
+                        if (slow_brake || emergency_brake) {
+                            slow_brake = false;
                             emergency_brake = false;
                             slow_start = true;
                             slow_start_lin = linear_vel_feedback;
