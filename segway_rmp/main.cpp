@@ -241,6 +241,17 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
         recover_motors_enabled = true;
     }
     motors_enabled = (bool)(ss.motor_status);
+
+
+    double left_wheel_displacement = ss.integrated_left_wheel_position;
+    double right_wheel_displacement = ss.integrated_right_wheel_position;
+    double forward_displacement = ss.integrated_forward_position;
+    double yaw_displacement = ss.integrated_turn_position * M_PI / 180.0;
+
+    printf("integrated_left_wheel_position: %lf\n", ss.integrated_left_wheel_position);
+    printf("integrated_right_wheel_position: %lf\n", ss.integrated_right_wheel_position);
+    printf("integrated_forward_position: %lf\n", ss.integrated_forward_position);
+    printf("integrated_turn_position: %lf\n", ss.integrated_turn_position);
 }
 
 
