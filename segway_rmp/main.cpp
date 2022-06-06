@@ -248,10 +248,10 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     double forward_displacement = ss.integrated_forward_position;
     double yaw_displacement = ss.integrated_turn_position * M_PI / 180.0;
 
-    printf("integrated_left_wheel_position: %lf\n", ss.integrated_left_wheel_position);
-    printf("integrated_right_wheel_position: %lf\n", ss.integrated_right_wheel_position);
-    printf("integrated_forward_position: %lf\n", ss.integrated_forward_position);
-    printf("integrated_turn_position: %lf\n", ss.integrated_turn_position);
+    printf("left wheel position: %.2lf (m)\n", ss.integrated_left_wheel_position);
+    printf("right wheel position: %.2lf (m)\n", ss.integrated_right_wheel_position);
+    printf("forward position: %.2lf (m)\n", ss.integrated_forward_position);
+    printf("turn position: %.2lf (deg)\n\n", ss.integrated_turn_position);
 }
 
 
