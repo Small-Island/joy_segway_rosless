@@ -251,7 +251,7 @@ public:
         return la;
     }
     void section_0() {
-        if (fabs(turn_position - this->initial_turn_position) < fabs(this->target_turn) - 4) {
+        if (fabs(turn_position - this->initial_turn_position) < fabs(this->target_turn) - 1) {
             if (target_turn > 0) {
                 this->ang = 20;
             }
