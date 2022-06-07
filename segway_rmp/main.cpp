@@ -242,6 +242,8 @@ public:
             case 3:
                 section_3();
                 break;
+            case 4:
+                section_4();
         }
         Lavel la;
         la.linear_vel = this->vel;
@@ -295,6 +297,10 @@ public:
             this->vel = this->vel_limit - this->a * this->t;
             this->t += dt;
             this->ct += dt;
+            if (this->vel < 0.1) {
+                this->section = 4;
+                return section_4();
+            }
         }
         else {
             this->vel = 0;
@@ -302,6 +308,16 @@ public:
             return;
         }
         return;
+    }
+    void section_4() {
+        if (forward_position < this->initial_forward_position + this->x) {
+            this->vel = 0.1;
+        }
+        else {
+            this->vel = 0;
+            *(this->latch) = 3;
+            return;
+        }
     }
 };
 
