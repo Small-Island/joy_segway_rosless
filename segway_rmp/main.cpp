@@ -251,7 +251,7 @@ public:
         return la;
     }
     void section_0() {
-        if (fabs(turn_position - this->initial_turn_position) < fabs(this->target_turn) - 10) {
+        if (fabs(turn_position - this->initial_turn_position) < fabs(this->target_turn) - 5) {
             if (target_turn > 0) {
                 this->ang = 20;
             }
@@ -381,8 +381,8 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     // printf("right wheel position: %.2lf (m)\n", ss.integrated_right_wheel_position);
 
     if (latch == 4) {
-        printf("forward speed: %.2lf (m/s)\n", linear_vel_feedback);
-        printf("turn speed: %.2lf (deg/s)\n", angular_vel_feedback);
+        // printf("forward speed: %.2lf (m/s)\n", linear_vel_feedback);
+        // printf("turn speed: %.2lf (deg/s)\n", angular_vel_feedback);
         printf("forward position: %.2lf (m)\n", ss.integrated_forward_position);
         printf("turn position: %.2lf (deg)\n\n", ss.integrated_turn_position);
     }
@@ -611,7 +611,7 @@ void momo_serial_read() {
             else if (buf_ptr[0] == 0x44) {
                 if (latch == 3) {
                     latch = 4;
-                    movingplan->setup((int8_t)buf_ptr[2]/10, (int8_t)buf_ptr[3]);
+                    movingplan->setup((int8_t)buf_ptr[2]/10.0, (int8_t)buf_ptr[3]);
                 }
             }
 
