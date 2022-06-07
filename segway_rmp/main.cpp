@@ -839,6 +839,8 @@ int main(int argc, char **argv) {
                 }
                 else if (latch == 4) {
                     Lavel la = movingplan->controller();
+                    lin = la.linear_vel;
+                    ang = la.angular_vel;
                 }
 
 
