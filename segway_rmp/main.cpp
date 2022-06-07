@@ -251,10 +251,10 @@ public:
     void section_0() {
         if ((turn_position - this->initial_turn_position) < this->target_turn) {
             if (target_turn > 0) {
-                this->ang = 5;
+                this->ang = 20;
             }
             else {
-                this->ang = -5;
+                this->ang = -20;
             }
             this->vel = 0;
         }
