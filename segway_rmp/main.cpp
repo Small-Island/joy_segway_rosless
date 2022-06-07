@@ -679,6 +679,7 @@ void udp_read() {
 }
 
 void hoge() {
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     while (1) {
         if (latch == 4) {
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
