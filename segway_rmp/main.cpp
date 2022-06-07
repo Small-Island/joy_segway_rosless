@@ -679,7 +679,6 @@ void udp_read() {
 }
 
 void hoge() {
-    latch = 4;
     while (1) {
         double forward, turn;
         printf("前進 << ");
