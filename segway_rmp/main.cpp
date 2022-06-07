@@ -251,7 +251,7 @@ public:
         return la;
     }
     void section_0() {
-        if ((turn_position - this->initial_turn_position) < this->target_turn) {
+        if (fabs(turn_position - this->initial_turn_position) < fabs(this->target_turn) - 10) {
             if (target_turn > 0) {
                 this->ang = 20;
             }
@@ -297,7 +297,7 @@ public:
             this->vel = this->vel_limit - this->a * this->t;
             this->t += dt;
             this->ct += dt;
-            if (this->vel < 0.1) {
+            if (this->vel < 0.15) {
                 this->section = 4;
                 return section_4();
             }
@@ -312,6 +312,7 @@ public:
     void section_4() {
         if (forward_position < this->initial_forward_position + this->x) {
             this->vel = 0.1;
+            return;
         }
         else {
             this->vel = 0;
