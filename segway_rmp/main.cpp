@@ -363,10 +363,12 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     // printf("left wheel position: %.2lf (m)\n", ss.integrated_left_wheel_position);
     // printf("right wheel position: %.2lf (m)\n", ss.integrated_right_wheel_position);
 
-    printf("forward speed: %.2lf (m/s)\n", linear_vel_feedback);
-    printf("turn speed: %.2lf (deg/s)\n", angular_vel_feedback);
-    printf("forward position: %.2lf (m)\n", ss.integrated_forward_position);
-    printf("turn position: %.2lf (deg)\n\n", ss.integrated_turn_position);
+    if (latch == 4) {
+        printf("forward speed: %.2lf (m/s)\n", linear_vel_feedback);
+        printf("turn speed: %.2lf (deg/s)\n", angular_vel_feedback);
+        printf("forward position: %.2lf (m)\n", ss.integrated_forward_position);
+        printf("turn position: %.2lf (deg)\n\n", ss.integrated_turn_position);
+    }
 }
 
 
@@ -680,8 +682,10 @@ void hoge() {
     latch = 4;
     while (1) {
         double forward, turn;
-        scanf("前進 << %lf\n", &forward);
-        scanf("旋回 << %lf\n", &turn);
+        printf("前進 << ");
+        scanf("%lf", &forward);
+        printf("旋回 << ");
+        scanf("%lf", &turn);
         latch = 4;
         movingplan->setup(forward, turn);
     }
