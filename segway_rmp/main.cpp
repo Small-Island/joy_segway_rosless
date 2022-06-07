@@ -680,6 +680,10 @@ void udp_read() {
 
 void hoge() {
     while (1) {
+        if (latch == 4) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            continue;
+        }
         double forward, turn;
         printf("前進 << ");
         scanf("%lf", &forward);
