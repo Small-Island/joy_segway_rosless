@@ -198,31 +198,33 @@ class MovingPlan {
     int* latch;
     int section;
     double t, ct, total_time, T1, T2, T3;
-    double vel, a;
+    double vel, a, ang;
     double vel_limit;
     double x;
+    double target_x, target_turn;
     double initial_forward_position, initial_turn_position;
 public:
     MovingPlan(int* latch): latch(latch) {}
-    void setup(double x, double turn) {
+    void setup(double target_x, double target_turn) {
         this->vel_limit = 0.3;
         this->a = 0.1;
         this->T1 = this->vel_limit / a;
         this->T3 = this->vel_limit / a;
-        this->x = x;
+        this->x = target_x;
         if (T1*vel_limit > x) {
-            this->T1 = x/vel_limit;
+            this->T1 = this->x/this->vel_limit;
             this->T2 = 0;
-            this->T3 = T1;
+            this->T3 = this->T1;
         }
         else {
-            this->T2 = x/vel_limit - T1;
+            this->T2 = this->x/this->vel_limit - this->T1;
         }
         this->total_time = this->T1 + this->T2 + this->T3;
         this->vel = 0;
         this->t = 0;
         this->ct = 0;
-        this->section = 1;
+        this->section = 0;
+        this->target_turn = target_turn;
         this->initial_forward_position = forward_position;
         this->initial_turn_position = turn_position;
     }
@@ -247,6 +249,20 @@ public:
         return la;
     }
     void section_0() {
+        if ((turn_position - this->initial_turn_position) < this->target_turn) {
+            if (target_turn > 0) {
+                this->ang = 5;
+            }
+            else {
+                this->ang = -5;
+            }
+            this->vel = 0;
+        }
+        else {
+            this->ang = 0;
+            this->section = 1;
+            return section_1();
+        }
         return;
     }
     void section_1() {
@@ -282,6 +298,7 @@ public:
         }
         else {
             this->vel = 0;
+            *(this->latch) = 3;
             return;
         }
         return;
@@ -572,6 +589,13 @@ void momo_serial_read() {
                 jyja_arrival_time = std::chrono::system_clock::now();
             }
 
+            else if (buf_ptr[0] == 0x44) {
+                if (latch == 3) {
+                    latch = 4;
+                    movingplan->setup((int8_t)buf_ptr[2], (int8_t)buf_ptr[3]);
+                }
+            }
+
             // else if (buf_ptr[0] == 0xab) {
             //     if (latch == 3) {
             //         latch = 2;
@@ -652,6 +676,18 @@ void udp_read() {
     }
 }
 
+void hoge() {
+    latch = 4;
+    while (1) {
+        double forward, turn;
+        scanf("前進 << %lf\n", &forward);
+        scanf("旋回 << %lf\n", &turn);
+        latch = 4;
+        movingplan->setup(forward, turn);
+    }
+    return;
+}
+
 
 int main(int argc, char **argv) {
     addr.sin_family = AF_INET;
@@ -684,8 +720,7 @@ int main(int argc, char **argv) {
     std::thread th_joy_read(joy_read);
     std::thread th_udp_read(udp_read);
 
-    // boost::thread th_hoge(&SegwayRMPNode::hoge, this);
-    // this->spin();
+    std::thread th_hoge(hoge);
 
     connected = false;
     double emergency_brake_lin = 0, slow_start_lin = 0, slow_brake_lin = 0;
@@ -752,7 +787,6 @@ int main(int argc, char **argv) {
                 // boost::mutex::scoped_lock lock(m_mutex);
                 m_mutex.lock();
 
-                Lavel la;
                 if (latch == 0) {
                     lin = 0;
                     ang = 0;
@@ -766,7 +800,7 @@ int main(int argc, char **argv) {
                     lin = cmd_linear_vel_from_joystick;
                 }
                 else if (latch == 2) {
-                    la = ba->controller();
+                    Lavel la = ba->controller();
                     if (offset_gain_none_latch == 1) {
                         lin = la.linear_vel + offset;
                     }
@@ -799,6 +833,9 @@ int main(int argc, char **argv) {
                         ang = cmd_angular_vel_from_momo;
                         lin = cmd_linear_vel_from_momo;
                     }
+                }
+                else if (latch == 4) {
+                    Lavel la = movingplan->controller();
                 }
 
 
