@@ -245,7 +245,7 @@ public:
         }
         Lavel la;
         la.linear_vel = this->vel;
-        la.angular_vel = 0;
+        la.angular_vel = this->ang;
         return la;
     }
     void section_0() {
