@@ -611,7 +611,7 @@ void momo_serial_read() {
             else if (buf_ptr[0] == 0x44) {
                 if (latch == 3) {
                     latch = 4;
-                    movingplan->setup((int8_t)buf_ptr[2]/10.0, (int8_t)buf_ptr[3]);
+                    movingplan->setup((int8_t)buf_ptr[2]/10.0, (int8_t)buf_ptr[3]*2.0);
                 }
             }
 
