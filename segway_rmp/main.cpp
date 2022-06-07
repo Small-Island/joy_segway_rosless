@@ -164,14 +164,12 @@ public:
 };
 
 
-
 int latch = 3;
 double lin = 0, cmd_linear_vel_from_momo = 0, cmd_linear_vel_from_joystick= 0;
 double ang = 0, cmd_angular_vel_from_momo = 0, cmd_angular_vel_from_joystick = 0;
 double before_target_linear_vel = 0;
 double linear_vel_feedback = 0;
 double angular_vel_feedback = 0;
-int zero_judge = 0;
 double offset = 0.04;
 double gain = 0.4;
 int offset_gain_none_latch = 1;
@@ -179,7 +177,6 @@ bool obstacle_detected_in_0_7m = false;
 bool obstacle_detected_in_1_5m = false;
 bool motors_enabled = false;
 bool recover_motors_enabled = false;
-bool reset_odometry = false;
 int d1_count = 0;
 bool ofs_closed = true;
 int log_margin_count = 0;
@@ -190,10 +187,108 @@ bool connected = false;
 
 BanAccel* ba;
 
+double forward_position = 0;
+double turn_position = 0;
+
 std::ofstream* ofs;
 
 std::mutex m_mutex;
 
+class MovingPlan {
+    int* latch;
+    int section;
+    double t, ct, total_time, T1, T2, T3;
+    double vel, a;
+    double vel_limit;
+    double x;
+    double initial_forward_position, initial_turn_position;
+public:
+    MovingPlan(int* latch): latch(latch) {}
+    void setup(double x, double turn) {
+        this->vel_limit = 0.3;
+        this->a = 0.1;
+        this->T1 = this->vel_limit / a;
+        this->T3 = this->vel_limit / a;
+        this->x = x;
+        if (T1*vel_limit > x) {
+            this->T1 = x/vel_limit;
+            this->T2 = 0;
+            this->T3 = T1;
+        }
+        else {
+            this->T2 = x/vel_limit - T1;
+        }
+        this->total_time = this->T1 + this->T2 + this->T3;
+        this->vel = 0;
+        this->t = 0;
+        this->ct = 0;
+        this->section = 1;
+        this->initial_forward_position = forward_position;
+        this->initial_turn_position = turn_position;
+    }
+    Lavel controller() {
+        switch (this->section) {
+            case 0:
+                section_0();
+                break;
+            case 1:
+                section_1();
+                break;
+            case 2:
+                section_2();
+                break;
+            case 3:
+                section_3();
+                break;
+        }
+        Lavel la;
+        la.linear_vel = this->vel;
+        la.angular_vel = 0;
+        return la;
+    }
+    void section_0() {
+        return;
+    }
+    void section_1() {
+        if (this->t < this->T1) {
+            this->vel = this->a * this->t;
+            this->t += dt;
+            this->ct += dt;
+        }
+        else {
+            this->t = 0;
+            this->section = 2;
+            return section_2();
+        }
+        return;
+    }
+    void section_2() {
+        if (this->t < this->T2) {
+            this->vel = this->vel_limit;
+            this->t += dt;
+            this->ct += dt;
+        }
+        else {
+            this->t = 0;
+            this->section = 3;
+            return section_3();
+        }
+    }
+    void section_3() {
+        if (this->t < this->T3) {
+            this->vel = this->vel_limit - this->a * this->t;
+            this->t += dt;
+            this->ct += dt;
+        }
+        else {
+            this->vel = 0;
+            return;
+        }
+        return;
+    }
+};
+
+MovingPlan* movingplan;
 
 void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     if (!connected) {
@@ -245,11 +340,14 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
 
     double left_wheel_displacement = ss.integrated_left_wheel_position;
     double right_wheel_displacement = ss.integrated_right_wheel_position;
-    double forward_displacement = ss.integrated_forward_position;
-    double yaw_displacement = ss.integrated_turn_position * M_PI / 180.0;
+    forward_position = ss.integrated_forward_position;
+    turn_position = ss.integrated_turn_position;
 
-    printf("left wheel position: %.2lf (m)\n", ss.integrated_left_wheel_position);
-    printf("right wheel position: %.2lf (m)\n", ss.integrated_right_wheel_position);
+    // printf("left wheel position: %.2lf (m)\n", ss.integrated_left_wheel_position);
+    // printf("right wheel position: %.2lf (m)\n", ss.integrated_right_wheel_position);
+
+    printf("forward speed: %.2lf (m/s)\n", linear_vel_feedback);
+    printf("turn speed: %.2lf (deg/s)\n", angular_vel_feedback);
     printf("forward position: %.2lf (m)\n", ss.integrated_forward_position);
     printf("turn position: %.2lf (deg)\n\n", ss.integrated_turn_position);
 }
@@ -580,6 +678,7 @@ int main(int argc, char **argv) {
     begin_time_point = std::chrono::system_clock::now();
 
     ba = new BanAccel(&latch);
+    movingplan = new MovingPlan(&latch);
 
     std::thread th_momo_serial_read(momo_serial_read);
     std::thread th_joy_read(joy_read);
