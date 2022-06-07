@@ -728,7 +728,7 @@ int main(int argc, char **argv) {
     std::thread th_joy_read(joy_read);
     std::thread th_udp_read(udp_read);
 
-    std::thread th_hoge(hoge);
+    // std::thread th_hoge(hoge);
 
     connected = false;
     double emergency_brake_lin = 0, slow_start_lin = 0, slow_brake_lin = 0;
