@@ -380,12 +380,12 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     // printf("left wheel position: %.2lf (m)\n", ss.integrated_left_wheel_position);
     // printf("right wheel position: %.2lf (m)\n", ss.integrated_right_wheel_position);
 
-    if (latch == 4) {
-        // printf("forward speed: %.2lf (m/s)\n", linear_vel_feedback);
-        // printf("turn speed: %.2lf (deg/s)\n", angular_vel_feedback);
+    // if (latch == 4) {
+        printf("forward speed: %.2lf (m/s)\n", linear_vel_feedback);
+        printf("turn speed: %.2lf (deg/s)\n", angular_vel_feedback);
         printf("forward position: %.2lf (m)\n", ss.integrated_forward_position);
         printf("turn position: %.2lf (deg)\n\n", ss.integrated_turn_position);
-    }
+    // }
 }
 
 
@@ -531,11 +531,11 @@ void joy_read() {
                 double x = -joy_axis.at(3)/32767.0; // joystick の入力値 -1 ~ 1
 
                 if (x > 0) {
-                    A = 0.7;
+                    A = 5.0;
                     cmd_linear_vel_from_joystick = A*((1 - k)*x + k)*x;  // cmd_linear_vel_from_joystick は指令値 (m/s)
                 }
                 else {
-                    A = 0.4;
+                    A = 5.0;
                     cmd_linear_vel_from_joystick = - A*((1 - k)*(-x) + k)*(-x);  // cmd_linear_vel_from_joystick は指令値 (m/s)
                 }
 
