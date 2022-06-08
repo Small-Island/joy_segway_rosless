@@ -386,7 +386,7 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
         printf("forward position: %.2lf (m)\n", ss.integrated_forward_position);
         printf("turn position: %.2lf (deg)\n", ss.integrated_turn_position);
         printf("ui_battery_voltage: %lf\n", ss.ui_battery_voltage);
-        printf("powerbase_battery_voltage: %lf\n", ss.powerbase_battery_voltage);
+        printf("powerbase_battery_voltage: %lf\n\n", ss.powerbase_battery_voltage);
     // }
 }
 
