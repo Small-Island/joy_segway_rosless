@@ -768,7 +768,7 @@ void SegwayRMP::ReadContinuously_() {
                 this->error_("Checksum mismatch...");
             }
             else if (e.error_number() == 3) { // No packet received
-                this->error_("No data from Segway...");
+                // this->error_("No data from Segway...");
                 this->no_data_from_segway = true;
             }
             else {
