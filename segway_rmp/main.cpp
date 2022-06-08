@@ -384,7 +384,9 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
         printf("forward speed: %.2lf (m/s)\n", linear_vel_feedback);
         printf("turn speed: %.2lf (deg/s)\n", angular_vel_feedback);
         printf("forward position: %.2lf (m)\n", ss.integrated_forward_position);
-        printf("turn position: %.2lf (deg)\n\n", ss.integrated_turn_position);
+        printf("turn position: %.2lf (deg)\n", ss.integrated_turn_position);
+        printf("ui_battery_voltage: %lf\n", ss.ui_battery_voltage);
+        printf("powerbase_battery_voltage: %lf\n", ss.powerbase_battery_voltage);
     // }
 }
 
