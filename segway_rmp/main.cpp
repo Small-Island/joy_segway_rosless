@@ -350,8 +350,8 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     uint8_t lt = (uint8_t)((uint32_t)(end_time_point & 0x0000ff00) >> 8);
     uint8_t llt = (uint8_t)(end_time_point & 0x000000ff);
 
-    uint8_t buf[13] = {hht, ht, lt, llt, hh, h, l, ll, hha, ha, la, lla, '\n'};
-    write(fd_write, &buf, 13);
+    uint8_t buf[14] = {hht, ht, lt, llt, hh, h, l, ll, hha, ha, la, lla, (uint8_t)latch, '\n'};
+    write(fd_write, &buf, 14);
 
     if (latch == 2 && !ofs_closed) {
         *(ofs) << end_time_point/1000.0 << ' ' << linear_vel_feedback << '\n';
