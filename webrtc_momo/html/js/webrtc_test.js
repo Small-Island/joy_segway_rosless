@@ -203,12 +203,14 @@ function prepareNewConnection() {
   peer.addTransceiver('audio', {direction: 'recvonly'});
 
   dataChannel.onmessage = function (event) {
-      if (event.data.byteLength == 13) {
+      if (event.data.byteLength == 21) {
         recvonly.sendMessage('#sora-devtools', event.data);
-        let vel_time = (new Int32Array([new Uint8Array(event.data)[0] << 24])[0] + new Int32Array([new Uint8Array(event.data)[1] << 16])[0] + new Int32Array([new Uint8Array(event.data)[2] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[3]])[0] )/1000.0 ;
-        let lin_vel = (new Int32Array([new Uint8Array(event.data)[4] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[5] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[6] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[7]])[0] )/10000.0 ;
-        let ang_vel = (new Int32Array([new Uint8Array(event.data)[8] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[9] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[10] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[11]])[0] )/10000.0 ;
+        let vel_time = (new Int32Array([new Uint8Array(event.data)[0] << 24])[0] + new Int32Array([new Uint8Array(event.data)[1] << 16])[0] + new Int32Array([new Uint8Array(event.data)[2] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[3]])[0] )/1000.0;
+        let lin_vel = (new Int32Array([new Uint8Array(event.data)[4] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[5] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[6] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[7]])[0] )/10000.0;
+        let ang_vel = (new Int32Array([new Uint8Array(event.data)[8] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[9] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[10] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[11]])[0] )/10000.0;
         let latch = new Uint8Array(event.data)[12];
+        let position_x = (new Int32Array([new Uint8Array(event.data)[13] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[14] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[15] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[16]])[0] )/10000.0;
+        let position_z = (new Int32Array([new Uint8Array(event.data)[17] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[18] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[19] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[20]])[0] )/10000.0;
 
         document.getElementById("sgss").innerHTML = 'latch ' + latch + '\n時刻(s) ' + vel_time + '\n並進速度(m/s) ' + lin_vel + '\n旋回速度(deg/s)' + ang_vel;
         if (log_latch) {
