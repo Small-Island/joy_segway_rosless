@@ -393,7 +393,7 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     position_x = position_x + tangent*cos(ss.integrated_turn_position/180.0*M_PI + M_PI_2);
     position_z = position_z + tangent*sin(ss.integrated_turn_position/180.0*M_PI + M_PI_2);
 
-    printf("position x %.2lf z %.2lf\n", position_x, position_z);
+    printf("position: x %.2lf(m), z %.2lf(m)\n", position_x, position_z);
     printf("ui_battery_voltage: %lf\n", ss.ui_battery_voltage);
     printf("powerbase_battery_voltage: %lf\n\n", ss.powerbase_battery_voltage);
 
