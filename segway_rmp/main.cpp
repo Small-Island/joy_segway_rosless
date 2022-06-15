@@ -352,20 +352,16 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     uint8_t lt = (uint8_t)((uint32_t)(end_time_point & 0x0000ff00) >> 8);
     uint8_t llt = (uint8_t)(end_time_point & 0x000000ff);
 
-    int px = (int32_t)(position_x * 10000.0);
-    uint8_t hhpx = (uint8_t)((uint32_t)(px & 0xff000000) >> 24);
-    uint8_t hpx = (uint8_t)((uint32_t)(px & 0x00ff0000) >> 16);
-    uint8_t lpx = (uint8_t)((uint32_t)(px & 0x0000ff00) >> 8);
-    uint8_t llpx = (uint8_t)(px & 0x000000ff);
+    int px = (int16_t)(position_x * 100.0);
+    uint8_t hpx = (uint8_t)((uint16_t)(px & 0xff00) >> 8);
+    uint8_t lpx = (uint8_t)(px & 0x00ff);
 
-    int pz = (int32_t)(position_z * 10000.0);
-    uint8_t hhpz = (uint8_t)((uint32_t)(pz & 0xff000000) >> 24);
-    uint8_t hpz = (uint8_t)((uint32_t)(pz & 0x00ff0000) >> 16);
-    uint8_t lpz = (uint8_t)((uint32_t)(pz & 0x0000ff00) >> 8);
-    uint8_t llpz = (uint8_t)(pz & 0x000000ff);
+    int pz = (int16_t)(position_z * 100.0);
+    uint8_t hpz = (uint8_t)((uint16_t)(pz & 0xff00) >> 8);
+    uint8_t lpz = (uint8_t)(pz & 0x00ff);
 
-    uint8_t buf[22] = {hht, ht, lt, llt, hh, h, l, ll, hha, ha, la, lla, (uint8_t)latch, hhpx, hpx, lpx, llpx, hhpz, hpz, lpz, llpz, '\n'};
-    write(fd_write, &buf, 22);
+    uint8_t buf[18] = {hht, ht, lt, llt, hh, h, l, ll, hha, ha, la, lla, (uint8_t)latch, hpx, lpx, hpz, lpz, '\n'};
+    write(fd_write, &buf, 18);
 
     if (latch == 2 && !ofs_closed) {
         *(ofs) << end_time_point/1000.0 << ' ' << linear_vel_feedback << '\n';
