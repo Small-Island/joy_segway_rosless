@@ -189,6 +189,7 @@ BanAccel* ba;
 
 double forward_position = 0;
 double turn_position = 0;
+double position_x = 0, position_z = 0;
 
 std::ofstream* ofs;
 
@@ -374,20 +375,33 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
 
     double left_wheel_displacement = ss.integrated_left_wheel_position;
     double right_wheel_displacement = ss.integrated_right_wheel_position;
-    forward_position = ss.integrated_forward_position;
-    turn_position = ss.integrated_turn_position;
+    // forward_position = ss.integrated_forward_position;
+    // turn_position = ss.integrated_turn_position;
 
     // printf("left wheel position: %.2lf (m)\n", ss.integrated_left_wheel_position);
     // printf("right wheel position: %.2lf (m)\n", ss.integrated_right_wheel_position);
 
-    // if (latch == 4) {
-        printf("forward speed: %.2lf (m/s)\n", linear_vel_feedback);
-        printf("turn speed: %.2lf (deg/s)\n", angular_vel_feedback);
-        printf("forward position: %.2lf (m)\n", ss.integrated_forward_position);
-        printf("turn position: %.2lf (deg)\n", ss.integrated_turn_position);
-        printf("ui_battery_voltage: %lf\n", ss.ui_battery_voltage);
-        printf("powerbase_battery_voltage: %lf\n\n", ss.powerbase_battery_voltage);
-    // }
+    printf("forward speed: %.2lf (m/s)\n", linear_vel_feedback);
+    printf("turn speed: %.2lf (deg/s)\n", angular_vel_feedback);
+    printf("forward position: %.2lf (m)\n", ss.integrated_forward_position);
+    printf("turn position: %.2lf (deg)\n", ss.integrated_turn_position);
+    // printf("ui_battery_voltage: %lf\n", ss.ui_battery_voltage);
+    // printf("powerbase_battery_voltage: %lf\n\n", ss.powerbase_battery_voltage);
+
+    double tangent = ss.integrated_forward_position - forward_position;
+    double omega = ss.integrated_turn_position - turn_position;
+
+    position_x = position_x + tangent*cos(omega/180.0*M_PI);
+    position_z = position_z + tangent*sin(omega/180.0*M_PI);
+
+    printf("position x %.2lf y %.2lf\n", position_x, position_z);
+    printf("ui_battery_voltage: %lf\n", ss.ui_battery_voltage);
+    printf("powerbase_battery_voltage: %lf\n\n", ss.powerbase_battery_voltage);
+
+    forward_position = ss.integrated_forward_position;
+    turn_position = ss.integrated_turn_position;
+
+    return;
 }
 
 
