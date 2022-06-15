@@ -351,8 +351,8 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     uint8_t lt = (uint8_t)((uint32_t)(end_time_point & 0x0000ff00) >> 8);
     uint8_t llt = (uint8_t)(end_time_point & 0x000000ff);
 
-    int fp = (int16_t)(forward_position * 100.0);
-    uint8_t hfp = (uint8_t)((uint16_t)(fp & 0xff00) >> 8);
+    int fp = (int16_t)((forward_position - init_fp) * 100.0);
+    uint8_t hfp = (uint8_t)((uint16_t)((fp - init_tp) & 0xff00) >> 8);
     uint8_t lfp = (uint8_t)(fp & 0x00ff);
 
     int tp = (int16_t)(turn_position * 100.0);
