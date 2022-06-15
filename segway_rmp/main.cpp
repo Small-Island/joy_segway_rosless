@@ -390,8 +390,8 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
 
     double tangent = ss.integrated_forward_position - forward_position;
 
-    position_x = position_x + tangent*cos(ss.integrated_forward_position/180.0*M_PI + M_PI_2);
-    position_z = position_z + tangent*sin(ss.integrated_forward_position/180.0*M_PI + M_PI_2);
+    position_x = position_x + tangent*cos(ss.integrated_turn_position/180.0*M_PI + M_PI_2);
+    position_z = position_z + tangent*sin(ss.integrated_turn_position/180.0*M_PI + M_PI_2);
 
     printf("position x %.2lf z %.2lf\n", position_x, position_z);
     printf("ui_battery_voltage: %lf\n", ss.ui_battery_voltage);
