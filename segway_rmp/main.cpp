@@ -405,7 +405,7 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     printf("powerbase_battery_voltage: %lf\n\n", ss.powerbase_battery_voltage);
 
     forward_position = ss.integrated_forward_position;
-
+    turn_position = ss.integrated_turn_position;
 
     return;
 }
