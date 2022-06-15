@@ -190,6 +190,7 @@ BanAccel* ba;
 double forward_position = 0;
 double turn_position = 0;
 double position_x = 0, position_z = 0;
+bool reset_odometry = false;
 
 std::ofstream* ofs;
 
@@ -389,6 +390,12 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     // printf("powerbase_battery_voltage: %lf\n\n", ss.powerbase_battery_voltage);
 
     double tangent = ss.integrated_forward_position - forward_position;
+
+    if (reset_odometry) {
+        position_x = 0;
+        position_z = 0;
+        reset_odometry = false;
+    }
 
     position_x = position_x + tangent*cos(ss.integrated_turn_position/180.0*M_PI + M_PI_2);
     position_z = position_z + tangent*sin(ss.integrated_turn_position/180.0*M_PI + M_PI_2);
@@ -626,6 +633,7 @@ void momo_serial_read() {
             else if (buf_ptr[0] == 0x44) {
                 if (latch == 3) {
                     latch = 4;
+                    reset_odometry = true;
                     movingplan->setup((int8_t)buf_ptr[2]/10.0, (int8_t)buf_ptr[3]*2.0);
                 }
             }
