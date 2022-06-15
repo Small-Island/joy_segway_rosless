@@ -187,10 +187,9 @@ bool connected = false;
 
 BanAccel* ba;
 
-double forward_position = 0;
-double turn_position = 0;
-double position_x = 0, position_z = 0;
-bool reset_odometry = false;
+double forward_position = 0, turn_position = 0;
+// double position_x = 0, position_z = 0;
+double init_fp = 0, init_tp = 0;
 
 std::ofstream* ofs;
 
@@ -352,15 +351,15 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     uint8_t lt = (uint8_t)((uint32_t)(end_time_point & 0x0000ff00) >> 8);
     uint8_t llt = (uint8_t)(end_time_point & 0x000000ff);
 
-    int px = (int16_t)(position_x * 100.0);
-    uint8_t hpx = (uint8_t)((uint16_t)(px & 0xff00) >> 8);
-    uint8_t lpx = (uint8_t)(px & 0x00ff);
+    int fp = (int16_t)(forward_position * 100.0);
+    uint8_t hfp = (uint8_t)((uint16_t)(fp & 0xff00) >> 8);
+    uint8_t lfp = (uint8_t)(fp & 0x00ff);
 
-    int pz = (int16_t)(position_z * 100.0);
-    uint8_t hpz = (uint8_t)((uint16_t)(pz & 0xff00) >> 8);
-    uint8_t lpz = (uint8_t)(pz & 0x00ff);
+    int tp = (int16_t)(turn_position * 100.0);
+    uint8_t htp = (uint8_t)((uint16_t)(tp & 0xff00) >> 8);
+    uint8_t ltp = (uint8_t)(tp & 0x00ff);
 
-    uint8_t buf[18] = {hht, ht, lt, llt, hh, h, l, ll, hha, ha, la, lla, (uint8_t)latch, hpx, lpx, hpz, lpz, '\n'};
+    uint8_t buf[18] = {hht, ht, lt, llt, hh, h, l, ll, hha, ha, la, lla, (uint8_t)latch, hfp, lfp, htp, ltp, '\n'};
     write(fd_write, &buf, 18);
 
     if (latch == 2 && !ofs_closed) {
@@ -384,31 +383,25 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
 
     double left_wheel_displacement = ss.integrated_left_wheel_position;
     double right_wheel_displacement = ss.integrated_right_wheel_position;
-    // forward_position = ss.integrated_forward_position;
-    // turn_position = ss.integrated_turn_position;
+    forward_position = ss.integrated_forward_position;
+    turn_position = ss.integrated_turn_position;
 
     // printf("left wheel position: %.2lf (m)\n", ss.integrated_left_wheel_position);
     // printf("right wheel position: %.2lf (m)\n", ss.integrated_right_wheel_position);
 
     printf("forward speed: %.2lf (m/s)\n", linear_vel_feedback);
     printf("turn speed: %.2lf (deg/s)\n", angular_vel_feedback);
-    printf("forward position: %.2lf (m)\n", ss.integrated_forward_position);
-    printf("turn position: %.2lf (deg)\n", ss.integrated_turn_position);
+    printf("plan forward position: %.2lf (m)\n", ss.integrated_forward_position - init_fp);
+    printf("plan turn position: %.2lf (deg)\n", ss.integrated_turn_position - init_tp);
     // printf("ui_battery_voltage: %lf\n", ss.ui_battery_voltage);
     // printf("powerbase_battery_voltage: %lf\n\n", ss.powerbase_battery_voltage);
 
-    double tangent = ss.integrated_forward_position - forward_position;
+    // double tangent = ss.integrated_forward_position - forward_position;
+    //
+    // position_x = position_x + tangent*cos(ss.integrated_turn_position/180.0*M_PI + M_PI_2);
+    // position_z = position_z + tangent*sin(ss.integrated_turn_position/180.0*M_PI + M_PI_2);
 
-    if (reset_odometry) {
-        position_x = 0;
-        position_z = 0;
-        reset_odometry = false;
-    }
-
-    position_x = position_x + tangent*cos(ss.integrated_turn_position/180.0*M_PI + M_PI_2);
-    position_z = position_z + tangent*sin(ss.integrated_turn_position/180.0*M_PI + M_PI_2);
-
-    printf("position: x %.2lf(m), z %.2lf(m)\n", position_x, position_z);
+    // printf("position: x %.2lf(m), z %.2lf(m)\n", position_x, position_z);
     printf("ui_battery_voltage: %lf\n", ss.ui_battery_voltage);
     printf("powerbase_battery_voltage: %lf\n\n", ss.powerbase_battery_voltage);
 
@@ -641,7 +634,8 @@ void momo_serial_read() {
             else if (buf_ptr[0] == 0x44) {
                 if (latch == 3) {
                     latch = 4;
-                    reset_odometry = true;
+                    init_fp = forward_position;
+                    init_tp = turn_position;
                     movingplan->setup((int8_t)buf_ptr[2]/10.0, (int8_t)buf_ptr[3]*2.0);
                 }
             }

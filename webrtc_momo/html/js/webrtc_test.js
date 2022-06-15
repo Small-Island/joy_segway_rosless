@@ -209,10 +209,10 @@ function prepareNewConnection() {
         let lin_vel = (new Int32Array([new Uint8Array(event.data)[4] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[5] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[6] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[7]])[0] )/10000.0;
         let ang_vel = (new Int32Array([new Uint8Array(event.data)[8] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[9] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[10] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[11]])[0] )/10000.0;
         let latch = new Uint8Array(event.data)[12];
-        let position_x = (new Int16Array([new Uint8Array(event.data)[13] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[14]])[0] )/100.0;
-        let position_z = (new Int16Array([new Uint8Array(event.data)[15] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[16]])[0] )/100.0;
+        let forward_position = (new Int16Array([new Uint8Array(event.data)[13] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[14]])[0] )/100.0;
+        let turn_position = (new Int16Array([new Uint8Array(event.data)[15] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[16]])[0] )/100.0;
 
-        document.getElementById("sgss").innerHTML = 'latch ' + latch + '\nx(m) ' + position_x + '\nz(m) ' + position_z + '\n時刻(s) ' + vel_time + '\n並進速度(m/s) ' + lin_vel + '\n旋回速度(deg/s)' + ang_vel;
+        document.getElementById("sgss").innerHTML = 'latch ' + latch + '\nforward_position(m) ' + forward_position + '\nturn_position(m) ' + turn_position + '\n時刻(s) ' + vel_time + '\n並進速度(m/s) ' + lin_vel + '\n旋回速度(deg/s)' + ang_vel;
         if (log_latch) {
           real_velocity_logData = real_velocity_logData + vel_time + ' ' + lin_vel + ' ' + ang_vel + '\n';
         }
