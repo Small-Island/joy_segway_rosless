@@ -351,11 +351,11 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     uint8_t lt = (uint8_t)((uint32_t)(end_time_point & 0x0000ff00) >> 8);
     uint8_t llt = (uint8_t)(end_time_point & 0x000000ff);
 
-    int fp = (int16_t)((forward_position - init_fp) * 100.0);
+    int fp = (int16_t)((ss.integrated_forward_position - init_fp) * 100.0);
     uint8_t hfp = (uint8_t)((uint16_t)(fp & 0xff00) >> 8);
     uint8_t lfp = (uint8_t)(fp & 0x00ff);
 
-    int tp = (int16_t)((turn_position - init_tp) * 100.0);
+    int tp = (int16_t)((ss.integrated_turn_position - init_tp) * 100.0);
     uint8_t htp = (uint8_t)((uint16_t)(tp & 0xff00) >> 8);
     uint8_t ltp = (uint8_t)(tp & 0x00ff);
 
@@ -380,14 +380,6 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     }
     motors_enabled = (bool)(ss.motor_status);
 
-
-    double left_wheel_displacement = ss.integrated_left_wheel_position;
-    double right_wheel_displacement = ss.integrated_right_wheel_position;
-    forward_position = ss.integrated_forward_position;
-    turn_position = ss.integrated_turn_position;
-
-    // printf("left wheel position: %.2lf (m)\n", ss.integrated_left_wheel_position);
-    // printf("right wheel position: %.2lf (m)\n", ss.integrated_right_wheel_position);
 
     printf("forward speed: %.2lf (m/s)\n", linear_vel_feedback);
     printf("turn speed: %.2lf (deg/s)\n", angular_vel_feedback);
