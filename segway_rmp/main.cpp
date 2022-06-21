@@ -188,7 +188,7 @@ bool connected = false;
 BanAccel* ba;
 
 double forward_position = 0, turn_position = 0;
-// double position_x = 0, position_z = 0;
+double position_x = 0, position_z = 0;
 double init_fp = 0, init_tp = 0;
 
 std::ofstream* ofs;
