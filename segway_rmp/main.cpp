@@ -313,7 +313,7 @@ public:
     }
     void section_4() {
         if (forward_position < this->initial_forward_position + this->x) {
-            this->vel = 0.15;
+            this->vel = 0.1;
             return;
         }
         else {
