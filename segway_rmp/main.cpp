@@ -209,11 +209,12 @@ public:
     void setup(double target_x, double target_turn) {
         this->vel_limit = 0.3;
         this->a = 0.01;
-        this->T1 = this->vel_limit / a;
-        this->T3 = this->vel_limit / a;
+        this->T1 = this->vel_limit / this->a;
+        this->T3 = this->vel_limit / this->a;
         this->x = target_x;
-        if (this->T1*this->vel_limit > x) {
-            this->T1 = this->x/this->vel_limit;
+        if (this->T1*this->vel_limit > this->x) {
+            this->T1 = sqrt(this->x/this->a);
+            this->vel_limit = this->a * this->T1;
             this->T2 = 0;
             this->T3 = this->T1;
         }
