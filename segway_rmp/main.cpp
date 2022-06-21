@@ -208,7 +208,7 @@ public:
     MovingPlan(int* latch): latch(latch) {}
     void setup(double target_x, double target_turn) {
         this->vel_limit = 0.3;
-        this->a = 0.1;
+        this->a = 0.01;
         this->T1 = this->vel_limit / a;
         this->T3 = this->vel_limit / a;
         this->x = target_x;
