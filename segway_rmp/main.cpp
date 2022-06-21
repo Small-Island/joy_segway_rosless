@@ -212,7 +212,7 @@ public:
         this->T1 = this->vel_limit / a;
         this->T3 = this->vel_limit / a;
         this->x = target_x;
-        if (T1*vel_limit > x) {
+        if (this->T1*vel_limit > x) {
             this->T1 = this->x/this->vel_limit;
             this->T2 = 0;
             this->T3 = this->T1;
