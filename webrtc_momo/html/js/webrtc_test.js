@@ -213,7 +213,7 @@ function prepareNewConnection() {
         let position_x = (new Int16Array([new Uint8Array(event.data)[15] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[16]])[0] )/100.0;
         let position_z = (new Int16Array([new Uint8Array(event.data)[17] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[18]])[0] )/100.0;
 
-        document.getElementById("sgss").innerHTML = 'latch ' + latch + '\nforward position(m) ' + forward_position + '\nturn position(deg) ' + turn_position + '\nposition x(m) ' + position_x + '\nposition z(m) ' + position_z  + '\n時刻(s) ' + vel_time + '\n並進速度(m/s) ' + lin_vel + '\n旋回速度(deg/s)' + ang_vel;
+        document.getElementById("sgss").innerHTML = 'latch ' + latch + '\nturn position(deg) ' + turn_position + '\nposition x(m) ' + position_x + '\nposition z(m) ' + position_z  + '\n時刻(s) ' + vel_time + '\n並進速度(m/s) ' + lin_vel + '\n旋回速度(deg/s)' + ang_vel;
         if (log_latch) {
           real_velocity_logData = real_velocity_logData + vel_time + ' ' + lin_vel + ' ' + ang_vel + '\n';
         }
