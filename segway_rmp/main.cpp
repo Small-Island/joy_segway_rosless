@@ -372,7 +372,7 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     uint8_t buf[20] = {hht, ht, lt, llt, hh, h, l, ll, hha, ha, la, lla, (uint8_t)latch, htp, ltp, hx, lx, hz, lz, '\n'};
 
     momo_send_count++;
-    if (momo_send_count > 50) {
+    if (momo_send_count > 20) {
         write(fd_write, &buf, 20);
         momo_send_count = 0;
     }
