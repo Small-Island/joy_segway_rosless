@@ -325,6 +325,7 @@ public:
 };
 
 MovingPlan* movingplan;
+int momo_send_count = 0;
 
 void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     if (!connected) {
@@ -369,7 +370,12 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     uint8_t lz = (uint8_t)(p_z & 0x00ff);
 
     uint8_t buf[20] = {hht, ht, lt, llt, hh, h, l, ll, hha, ha, la, lla, (uint8_t)latch, htp, ltp, hx, lx, hz, lz, '\n'};
-    write(fd_write, &buf, 20);
+
+    momo_send_count++;
+    if (momo_send_count > 10) {
+        write(fd_write, &buf, 20);
+        momo_send_count = 0;
+    }
 
     if (latch == 2 && !ofs_closed) {
         *(ofs) << end_time_point/1000.0 << ' ' << linear_vel_feedback << '\n';
