@@ -369,11 +369,11 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     uint8_t hz = (uint8_t)((uint16_t)(p_z & 0xff00) >> 8);
     uint8_t lz = (uint8_t)(p_z & 0x00ff);
 
-    uint8_t buf[20] = {hht, ht, lt, llt, hh, h, l, ll, hha, ha, la, lla, (uint8_t)latch, htp, ltp, hx, lx, hz, lz, '\n'};
+    uint8_t buf[21] = {0x45, hht, ht, lt, llt, hh, h, l, ll, hha, ha, la, lla, (uint8_t)latch, htp, ltp, hx, lx, hz, lz, '\n'};
 
     momo_send_count++;
     if (momo_send_count > 20) {
-        write(fd_write, &buf, 20);
+        write(fd_write, &buf, 21);
         momo_send_count = 0;
     }
 
