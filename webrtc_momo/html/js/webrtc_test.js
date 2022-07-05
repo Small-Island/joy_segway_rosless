@@ -2,7 +2,7 @@ const debug = true;
 // const sora = Sora.connection("wss://207-148-92-89.stable.sora.sora-labo.shiguredo.app/signaling", debug);
 const sora = Sora.connection("wss://sora.ikeilabsora.0am.jp/signaling", debug);
 // const channelId = "OJIMA-YUKIYA@sora-devtools";
-const channelId = "twincam-right";
+const channelId = "robots-control";
 // const metadata = {
 //     "signaling_key": "0mKFzDghLJNL7bmqa99hj4pp13IGaG_o4SHWdHoIKMzffpyZwQmo5dOIVi_9QBZ_",
 // };
