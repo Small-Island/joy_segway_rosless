@@ -706,9 +706,7 @@ void momo_serial_read() {
             }
 
             else if (buf_ptr[0] == 0x99) {
-                latch = 0;
-                lin = 0;
-                ang = 0;
+                cmd_angular_vel_from_momo = 0;
                 latch = 3;
                 stop_auto_moving = true;
                 // std::cout << "segway_rmp_node を終了\n";
