@@ -707,6 +707,7 @@ void momo_serial_read() {
                 latch = 0;
                 lin = 0;
                 ang = 0;
+                latch = 3;
                 // std::cout << "segway_rmp_node を終了\n";
                 // std_msgs::String msg;
                 // msg.data = "quit";
