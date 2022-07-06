@@ -905,7 +905,7 @@ int main(int argc, char **argv) {
 
                     if (stop_auto_moving) {
                         if (stop_auto_moving_lin > 0) {
-                            stop_auto_moving_lin = stop_auto_moving_lin - 0.01;
+                            stop_auto_moving_lin = stop_auto_moving_lin - 0.005;
                         }
                         if (stop_auto_moving_lin <= 0) {
                             stop_auto_moving_lin = 0;
