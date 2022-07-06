@@ -707,9 +707,11 @@ void momo_serial_read() {
             }
 
             else if (buf_ptr[0] == 0x99) {
-                stop_auto_moving = true;
-                latch = 3;
-                stop_auto_moving_lin = linear_vel_feedback;
+                if (latch == 4) {
+                    stop_auto_moving = true;
+                    latch = 3;
+                    stop_auto_moving_lin = linear_vel_feedback;
+                }
                 // std::cout << "segway_rmp_node を終了\n";
                 // std_msgs::String msg;
                 // msg.data = "quit";
