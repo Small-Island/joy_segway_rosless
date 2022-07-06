@@ -196,6 +196,7 @@ std::ofstream* ofs;
 std::mutex m_mutex;
 
 bool stop_auto_moving = false;
+double stop_auto_moving_lin = 0;
 
 class MovingPlan {
     int* latch;
@@ -706,9 +707,8 @@ void momo_serial_read() {
             }
 
             else if (buf_ptr[0] == 0x99) {
-                cmd_angular_vel_from_momo = 0;
-                latch = 3;
                 stop_auto_moving = true;
+                stop_auto_moving_lin = linear_vel_feedback;
                 // std::cout << "segway_rmp_node を終了\n";
                 // std_msgs::String msg;
                 // msg.data = "quit";
@@ -903,13 +903,14 @@ int main(int argc, char **argv) {
                 try {
 
                     if (stop_auto_moving) {
-                        if (lin > 0) {
-                            lin = lin - 0.01;
+                        if (stop_auto_moving_lin > 0) {
+                            stop_auto_moving_lin = stop_auto_moving_lin - 0.01;
                         }
-                        if (lin <= 0) {
-                            lin = 0;
+                        if (stop_auto_moving_lin <= 0) {
+                            stop_auto_moving_lin = 0;
                             stop_auto_moving = false;
                         }
+                        lin = stop_auto_moving_lin;
                     }
 
 
