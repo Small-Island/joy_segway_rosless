@@ -161,6 +161,16 @@
                     }
                 }
             }
+            else if (new Uint8Array(event.data)[0] == 0x99 && event.data.byteLength == 4) {
+                if (dataChannel) {
+                    if (dataChannel.readyState == 'open') {
+                        dataChannel.send(event.data);
+                    }
+                    else {
+                        connect();
+                    }
+                }
+            }
         });
 
         // setInterval(observe_wifi, 5000);
