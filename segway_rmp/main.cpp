@@ -974,7 +974,7 @@ int main(int argc, char **argv) {
                     if (slow_brake) {
                         stamp++;
                         printf("%d slow brake ", stamp);
-                        if (slow_brake_lin > 0.4) {
+                        if (slow_brake_lin > 0.2) {
                             slow_brake_lin -= 0.03;
                         }
                         else if (slow_brake_lin < 0.4) {
