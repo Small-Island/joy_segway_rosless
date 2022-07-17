@@ -603,7 +603,7 @@ void momo_serial_read() {
         }
         // printf("read %d byte: 0x%02x %4d %4d %4d\n", read_size, buf_ptr[0], buf_ptr[1], buf_ptr[2], (int8_t)buf_ptr[3]);
         // printf("read %d byte: %08x\n", read_size, buf_ptr[0]);
-        if (read_size == 2) {
+        if (read_size == 3) {
             if (buf_ptr[0] == 0xe0) {
                 uint8_t val[2] = {buf_ptr[1], buf_ptr[2]};
                 sendto(sockfd_epos, &val, 2*sizeof(uint8_t), 0, (struct sockaddr *)&addr_epos, sizeof(addr_epos));
