@@ -45,7 +45,7 @@
 int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 struct sockaddr_in addr;
 struct My_udp_data {
-    char obstacle_detected_in_0_7m = 0;
+    char obstacle_detected_in_0_5m = 0;
     char obstacle_detected_in_1_5m = 0;
 };
 
@@ -173,7 +173,7 @@ double angular_vel_feedback = 0;
 double offset = 0.04;
 double gain = 0.4;
 int offset_gain_none_latch = 1;
-bool obstacle_detected_in_0_7m = false;
+bool obstacle_detected_in_0_5m = false;
 bool obstacle_detected_in_1_5m = false;
 bool motors_enabled = false;
 bool recover_motors_enabled = false;
@@ -726,7 +726,7 @@ void udp_read() {
     while (1) {
         struct My_udp_data my_udp_data = {0};
         int recv_size = recv(sockfd, &my_udp_data, sizeof(struct My_udp_data), 0);
-        obstacle_detected_in_0_7m = my_udp_data.obstacle_detected_in_0_7m;
+        obstacle_detected_in_0_5m = my_udp_data.obstacle_detected_in_0_5m;
         obstacle_detected_in_1_5m = my_udp_data.obstacle_detected_in_1_5m;
         // printf("0.5m %d, 2m %d, 3m %d\n", my_udp_data.obstacle_detected_in_0_5m, my_udp_data.obstacle_detected_in_2m, my_udp_data.obstacle_detected_in_3m);
     }
@@ -917,7 +917,7 @@ int main(int argc, char **argv) {
                     }
 
 
-                    if (obstacle_detected_in_0_7m) {
+                    if (obstacle_detected_in_0_5m) {
                         if (lin > 0) {
                             if (!emergency_brake) {
                                 emergency_brake = true;
