@@ -151,7 +151,7 @@
                     }
                 }
             }
-            else if (new Uint8Array(event.data)[0] == 0xe0 && event.data.byteLength == 2) {
+            else if (new Uint8Array(event.data)[0] == 0xe0 && event.data.byteLength == 3) {
                 if (dataChannel) {
                     if (dataChannel.readyState == 'open') {
                         dataChannel.send(event.data);
