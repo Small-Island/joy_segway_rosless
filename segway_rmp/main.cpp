@@ -958,6 +958,9 @@ int main(int argc, char **argv) {
 
 
                     if (emergency_brake) {
+                        if (latch == 4) {
+                            latch = 3;
+                        }
                         stamp++;
                         printf("%d emergency brake\n", stamp);
                         emergency_brake_lin = emergency_brake_lin - 0.03;
