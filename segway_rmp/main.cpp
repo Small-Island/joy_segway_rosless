@@ -921,6 +921,7 @@ int main(int argc, char **argv) {
                         if (lin > 0) {
                             if (!emergency_brake) {
                                 emergency_brake = true;
+                                latch = 3;
                                 if (lin > 0.4) {
                                     emergency_brake_lin = 0.4;
                                 }
