@@ -657,35 +657,35 @@ void momo_serial_read() {
             //         ba->setup((int8_t)buf_ptr[1]/2.0, (int8_t)buf_ptr[2]/20.0, (int8_t)buf_ptr[3]/20.0, 1);
             //     }
             // }
-            else if ((buf_ptr[0] & 0xf0) == 0xa0) {
-                if (latch == 3) {
-                    latch = 2;
-                    log_margin_count = 0;
-                    begin_time_point = std::chrono::system_clock::now();
-                    ba->setup((int8_t)buf_ptr[1]/2.0, (int8_t)buf_ptr[2]/20.0, (int8_t)buf_ptr[3]/20.0, 0, (int8_t)(buf_ptr[0] & 0x0f));
-                    std::stringstream ss;
-                    // ss << "./log/" << std::setfill('0') << std::setw(2) << file_counta << std::setfill(' ') << "actual_velocity_a_" << (int8_t)buf_ptr[2]/20.0 << "_v_" << (int8_t)buf_ptr[3]/20.0 << "_T2_" << (int8_t)buf_ptr[1]/2.0 << ".out";
-                    time_t t = time(NULL);
-                    std::string str = ctime(&t);
-                    ss << "./log/" << str.substr(0, str.size()-1) << "actual_velocity_a_" << (int8_t)buf_ptr[2]/20.0 << "_v_" << (int8_t)buf_ptr[3]/20.0 << "_T2_" << (int8_t)buf_ptr[1]/2.0 << "_count_" << (int)(buf_ptr[0] & 0x0f);
-                    switch (offset_gain_none_latch) {
-                        case 1: ss << "_offset_" << offset << ".out"; break;
-                        case 2: ss << "_gain_" << gain << ".out"; break;
-                        case 3: ss << "_none.out"; break;
-                    }
-                    ofs = new std::ofstream(ss.str());
-                    ofs_closed = false;
-                    *(ofs) << "#accel(m/s^2) " << (int8_t)buf_ptr[2]/20.0 << " max_vel(m/s) " << (int8_t)buf_ptr[3]/20.0 << " max_vel_time(s) " << (int8_t)buf_ptr[1]/2.0;
-                    switch (offset_gain_none_latch) {
-                        case 1: *(ofs) << " offset " << offset; break;
-                        case 2: *(ofs) << " gain " << gain; break;
-                        case 3: *(ofs) << " none "; break;
-                    }
-                    *(ofs) << " count " << (int)(buf_ptr[0] & 0x0f) << '\n';
-                    *(ofs) << "#時刻(s) 実際の速度(m/s)\n";
-                    ofs_closed = false;
-                }
-            }
+            // else if ((buf_ptr[0] & 0xf0) == 0xa0) {
+            //     if (latch == 3) {
+            //         latch = 2;
+            //         log_margin_count = 0;
+            //         begin_time_point = std::chrono::system_clock::now();
+            //         ba->setup((int8_t)buf_ptr[1]/2.0, (int8_t)buf_ptr[2]/20.0, (int8_t)buf_ptr[3]/20.0, 0, (int8_t)(buf_ptr[0] & 0x0f));
+            //         std::stringstream ss;
+            //         // ss << "./log/" << std::setfill('0') << std::setw(2) << file_counta << std::setfill(' ') << "actual_velocity_a_" << (int8_t)buf_ptr[2]/20.0 << "_v_" << (int8_t)buf_ptr[3]/20.0 << "_T2_" << (int8_t)buf_ptr[1]/2.0 << ".out";
+            //         time_t t = time(NULL);
+            //         std::string str = ctime(&t);
+            //         ss << "./log/" << str.substr(0, str.size()-1) << "actual_velocity_a_" << (int8_t)buf_ptr[2]/20.0 << "_v_" << (int8_t)buf_ptr[3]/20.0 << "_T2_" << (int8_t)buf_ptr[1]/2.0 << "_count_" << (int)(buf_ptr[0] & 0x0f);
+            //         switch (offset_gain_none_latch) {
+            //             case 1: ss << "_offset_" << offset << ".out"; break;
+            //             case 2: ss << "_gain_" << gain << ".out"; break;
+            //             case 3: ss << "_none.out"; break;
+            //         }
+            //         ofs = new std::ofstream(ss.str());
+            //         ofs_closed = false;
+            //         *(ofs) << "#accel(m/s^2) " << (int8_t)buf_ptr[2]/20.0 << " max_vel(m/s) " << (int8_t)buf_ptr[3]/20.0 << " max_vel_time(s) " << (int8_t)buf_ptr[1]/2.0;
+            //         switch (offset_gain_none_latch) {
+            //             case 1: *(ofs) << " offset " << offset; break;
+            //             case 2: *(ofs) << " gain " << gain; break;
+            //             case 3: *(ofs) << " none "; break;
+            //         }
+            //         *(ofs) << " count " << (int)(buf_ptr[0] & 0x0f) << '\n';
+            //         *(ofs) << "#時刻(s) 実際の速度(m/s)\n";
+            //         ofs_closed = false;
+            //     }
+            // }
 
             else if (buf_ptr[0] == 0x01) {
                 offset_gain_none_latch = 1;
