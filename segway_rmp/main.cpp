@@ -923,7 +923,7 @@ int main(int argc, char **argv) {
 
 
                     if (obstacle_detected_in_0_5m) {
-                        if ((latch != 4 && linear_vel_feedback > 0) || (latch == 4 && section != 0)) {
+                        if ((latch != 4 && lin > 0) || (latch == 4 && section != 0)) {
                             if (!emergency_brake) {
                                 emergency_brake = true;
                                 latch = 3;
