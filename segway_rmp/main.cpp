@@ -937,7 +937,7 @@ int main(int argc, char **argv) {
                                 slow_start = false;
                             }
                         }
-                        if (lin < 0) {
+                        if (lin <= 0) {
                             emergency_brake = false;
                         }
                     }
