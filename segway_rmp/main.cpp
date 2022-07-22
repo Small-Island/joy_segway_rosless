@@ -65,6 +65,7 @@ const double dt = 1.0/20.0;
 class Lavel {
 public:
     double linear_vel, angular_vel;
+    double section;
 };
 
 
@@ -113,6 +114,7 @@ public:
         if (reverse) {
             la.linear_vel = -la.linear_vel;
         }
+        la.section = this->section;
         return la;
     }
     void section_1() {
@@ -253,6 +255,7 @@ public:
         Lavel la;
         la.linear_vel = this->vel;
         la.angular_vel = this->ang;
+        la.section = this->section;
         return la;
     }
     void section_0() {
@@ -788,6 +791,7 @@ int main(int argc, char **argv) {
     double emergency_brake_lin = 0, slow_start_lin = 0, slow_brake_lin = 0;
     bool slow_start = false, emergency_brake = false, slow_brake = false;
     int stamp = 0;
+    int section = 0;
     while (true) {
         try {
             segway_rmp.connect(true);
@@ -900,6 +904,7 @@ int main(int argc, char **argv) {
                     Lavel la = movingplan->controller();
                     lin = la.linear_vel;
                     ang = la.angular_vel;
+                    section = la.section;
                 }
 
 
@@ -918,7 +923,7 @@ int main(int argc, char **argv) {
 
 
                     if (obstacle_detected_in_0_5m) {
-                        if (lin > 0) {
+                        if ((latch != 4 && lin > 0) || (latch == 4 && section != 0)) {
                             if (!emergency_brake) {
                                 emergency_brake = true;
                                 latch = 3;
