@@ -1011,6 +1011,7 @@ int main(int argc, char **argv) {
                         }
                     }
 
+                    printf("latch %d lin %.2lf ang %.2lf\n", latch, lin, ang);
                     segway_rmp.move(lin, ang);
                 } catch (std::exception& e) {
                     std::string e_msg(e.what());
