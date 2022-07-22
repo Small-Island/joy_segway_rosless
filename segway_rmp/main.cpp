@@ -402,10 +402,10 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     motors_enabled = (bool)(ss.motor_status);
 
 
-    printf("forward speed: %.2lf (m/s)\n", linear_vel_feedback);
-    printf("turn speed: %.2lf (deg/s)\n", angular_vel_feedback);
-    printf("plan forward position: %.2lf (m)\n", ss.integrated_forward_position - init_fp);
-    printf("plan turn position: %.2lf (deg)\n", ss.integrated_turn_position - init_tp);
+    // printf("forward speed: %.2lf (m/s)\n", linear_vel_feedback);
+    // printf("turn speed: %.2lf (deg/s)\n", angular_vel_feedback);
+    // printf("plan forward position: %.2lf (m)\n", ss.integrated_forward_position - init_fp);
+    // printf("plan turn position: %.2lf (deg)\n", ss.integrated_turn_position - init_tp);
     // printf("ui_battery_voltage: %lf\n", ss.ui_battery_voltage);
     // printf("powerbase_battery_voltage: %lf\n\n", ss.powerbase_battery_voltage);
 
@@ -414,9 +414,9 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     position_x = position_x + tangent*cos(ss.integrated_turn_position/180.0*M_PI + M_PI_2);
     position_z = position_z + tangent*sin(ss.integrated_turn_position/180.0*M_PI + M_PI_2);
 
-    printf("position: x %.2lf(m), z %.2lf(m)\n", position_x, position_z);
-    printf("ui_battery_voltage: %lf\n", ss.ui_battery_voltage);
-    printf("powerbase_battery_voltage: %lf\n\n", ss.powerbase_battery_voltage);
+    // printf("position: x %.2lf(m), z %.2lf(m)\n", position_x, position_z);
+    // printf("ui_battery_voltage: %lf\n", ss.ui_battery_voltage);
+    // printf("powerbase_battery_voltage: %lf\n\n", ss.powerbase_battery_voltage);
 
     forward_position = ss.integrated_forward_position;
     turn_position = ss.integrated_turn_position;
@@ -923,15 +923,15 @@ int main(int argc, char **argv) {
 
 
                     if (obstacle_detected_in_0_5m) {
-                        if ((latch != 4 && lin > 0) || (latch == 4 && section != 0)) {
+                        if ((latch != 4 && linear_vel_feedback > 0) || (latch == 4 && section != 0)) {
                             if (!emergency_brake) {
                                 emergency_brake = true;
                                 latch = 3;
-                                if (lin > 0.4) {
+                                if (linear_vel_feedback > 0.4) {
                                     emergency_brake_lin = 0.4;
                                 }
                                 else {
-                                    emergency_brake_lin = lin;
+                                    emergency_brake_lin = linear_vel_feedback;
                                 }
                                 slow_brake = false;
                                 slow_start = false;
