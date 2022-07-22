@@ -926,6 +926,9 @@ int main(int argc, char **argv) {
                         if ((latch != 4 && lin > 0) || (latch == 4 && section != 0)) {
                             if (!emergency_brake) {
                                 emergency_brake = true;
+                                if (latch == 4) {
+                                    latch = 3;
+                                }
                                 if (linear_vel_feedback > 0.4) {
                                     emergency_brake_lin = 0.4;
                                 }
