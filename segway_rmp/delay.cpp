@@ -353,7 +353,7 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     uint8_t l = (uint8_t)((uint32_t)(vel & 0x0000ff00) >> 8);
     uint8_t ll = (uint8_t)(vel & 0x000000ff);
 
-    int time_since_epoch = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    int time_since_epoch = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - 1658000000000;
     uint8_t hht = (uint8_t)((uint32_t)(time_since_epoch & 0xff000000) >> 24);
     uint8_t ht = (uint8_t)((uint32_t)(time_since_epoch & 0x00ff0000) >> 16);
     uint8_t lt = (uint8_t)((uint32_t)(time_since_epoch & 0x0000ff00) >> 8);
