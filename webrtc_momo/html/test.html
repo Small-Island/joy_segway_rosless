@@ -131,17 +131,7 @@
 
             // console.log("message");
 
-            if (new Uint8Array(event.data)[0] == 0x43 && event.data.byteLength == 4) {
-                if (dataChannel) {
-                    if (dataChannel.readyState == 'open') {
-                        dataChannel.send(event.data);
-                    }
-                    else {
-                        connect();
-                    }
-                }
-            }
-            else if (new Uint8Array(event.data)[0] == 0x44 && event.data.byteLength == 4) {
+            if ((new Uint8Array(event.data)[0] == 0x43 || new Uint8Array(event.data)[0] == 0x44 || new Uint8Array(event.data)[0] == 0x46 || new Uint8Array(event.data)[0] == 0x47 ) && event.data.byteLength == 4) {
                 if (dataChannel) {
                     if (dataChannel.readyState == 'open') {
                         dataChannel.send(event.data);
