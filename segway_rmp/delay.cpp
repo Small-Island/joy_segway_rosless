@@ -668,6 +668,7 @@ void momo_serial_read() {
             }
             else if (buf_ptr[0] == 0x47) {
                 ofs_closed = true;
+                ofs->close();
             }
 
             // else if (buf_ptr[0] == 0xab) {
