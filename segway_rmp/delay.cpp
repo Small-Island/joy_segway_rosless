@@ -353,11 +353,11 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     uint8_t l = (uint8_t)((uint32_t)(vel & 0x0000ff00) >> 8);
     uint8_t ll = (uint8_t)(vel & 0x000000ff);
 
-    int end_time_point = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - begin_time_point).count();
-    uint8_t hht = (uint8_t)((uint32_t)(end_time_point & 0xff000000) >> 24);
-    uint8_t ht = (uint8_t)((uint32_t)(end_time_point & 0x00ff0000) >> 16);
-    uint8_t lt = (uint8_t)((uint32_t)(end_time_point & 0x0000ff00) >> 8);
-    uint8_t llt = (uint8_t)(end_time_point & 0x000000ff);
+    int time_since_epoch = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    uint8_t hht = (uint8_t)((uint32_t)(time_since_epoch & 0xff000000) >> 24);
+    uint8_t ht = (uint8_t)((uint32_t)(time_since_epoch & 0x00ff0000) >> 16);
+    uint8_t lt = (uint8_t)((uint32_t)(time_since_epoch & 0x0000ff00) >> 8);
+    uint8_t llt = (uint8_t)(time_since_epoch & 0x000000ff);
 
     // int fp = (int16_t)((ss.integrated_forward_position - init_fp) * 100.0);
     // uint8_t hfp = (uint8_t)((uint16_t)(fp & 0xff00) >> 8);
@@ -397,9 +397,8 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     // }
 
     if (!ofs_closed) {
-        std::chrono::milliseconds millisec_since_epoch = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
         char char_array_millisec_since_epoch[32];
-        std::sprintf(char_array_millisec_since_epoch, "%.3lf", millisec_since_epoch.count()/1000.0);
+        std::sprintf(char_array_millisec_since_epoch, "%.3lf", time_since_epoch/1000.0);
         *ofs << std::string(char_array_millisec_since_epoch) << ' ' << linear_vel_feedback << '\n';
     }
 
