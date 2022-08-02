@@ -1002,7 +1002,7 @@ int main(int argc, char **argv) {
                         stamp++;
                         printf("%d slow brake ", stamp);
                         if (slow_brake_lin > 0.2) {
-                            slow_brake_lin -= 0.015;
+                            slow_brake_lin -= 0.008;
                         }
                         else {
                             slow_brake_lin = 0.2;
