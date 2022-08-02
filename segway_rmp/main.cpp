@@ -961,7 +961,7 @@ int main(int argc, char **argv) {
                         }
                     }
                     else if (obstacle_detected_in_1_5m) {
-                        if (lin > 0.4) {
+                        if (lin > 0.2) {
                             if (!slow_brake) {
                                 slow_brake = true;
                                 slow_start = false;
