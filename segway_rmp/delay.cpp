@@ -987,7 +987,7 @@ int main(int argc, char **argv) {
                         }
                         stamp++;
                         printf("%d emergency brake\n", stamp);
-                        emergency_brake_lin = emergency_brake_lin - 0.03;
+                        emergency_brake_lin = emergency_brake_lin - 0.005;
                         if (emergency_brake_lin < 0) {
                             emergency_brake_lin = 0;
                             if (latch == 2) {
@@ -998,26 +998,21 @@ int main(int argc, char **argv) {
                             lin = emergency_brake_lin;
                         }
                     }
-
-                    if (slow_brake) {
+                    else if (slow_brake) {
                         stamp++;
                         printf("%d slow brake ", stamp);
                         if (slow_brake_lin > 0.2) {
-                            slow_brake_lin -= 0.03;
+                            slow_brake_lin -= 0.005;
                         }
-                        else if (slow_brake_lin < 0.4) {
-                            slow_brake_lin += 0.03;
-                            if (slow_brake_lin > 0.4) {
-                                slow_brake_lin = 0.4;
-                            }
+                        else {
+                            slow_brake_lin = 0.2;
                         }
                         printf("lin: %lf, slow_brake_lin: %lf\n", lin, slow_brake_lin);
                         if (lin > slow_brake_lin) {
                             lin = slow_brake_lin;
                         }
                     }
-
-                    if (slow_start) {
+                    else if (slow_start) {
                         stamp++;
                         printf("%d slow start\n", stamp);
 
@@ -1025,7 +1020,7 @@ int main(int argc, char **argv) {
                             slow_start = false;
                         }
                         else {
-                            slow_start_lin = slow_start_lin + 0.03;
+                            slow_start_lin = slow_start_lin + 0.005;
                             lin = slow_start_lin;
                         }
                     }
