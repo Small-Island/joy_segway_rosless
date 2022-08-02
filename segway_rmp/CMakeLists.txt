@@ -57,7 +57,7 @@ add_executable(main main.cpp)
 #     RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/..
 # )
 
-add_executable(delay delay.cpp)
+# add_executable(delay delay.cpp)
 
 add_executable(main_ras main_ras.cpp)
 
@@ -103,10 +103,10 @@ target_link_libraries(main_ras
   ${libsegwayrmp_LIBRARIES}
 )
 
-target_link_libraries(delay
-  ${Boost_LIBRARIES}
-  ${libsegwayrmp_LIBRARIES}
-)
+# target_link_libraries(delay
+#   ${Boost_LIBRARIES}
+#   ${libsegwayrmp_LIBRARIES}
+# )
 
 
 target_link_libraries(tst
