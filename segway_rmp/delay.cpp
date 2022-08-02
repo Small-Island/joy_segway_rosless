@@ -929,7 +929,7 @@ int main(int argc, char **argv) {
 
                     if (stop_auto_moving) {
                         if (stop_auto_moving_lin > 0) {
-                            stop_auto_moving_lin = stop_auto_moving_lin - 0.005;
+                            stop_auto_moving_lin = stop_auto_moving_lin - 0.01;
                         }
                         if (stop_auto_moving_lin <= 0) {
                             stop_auto_moving_lin = 0;
@@ -987,7 +987,7 @@ int main(int argc, char **argv) {
                         }
                         stamp++;
                         printf("%d emergency brake\n", stamp);
-                        emergency_brake_lin = emergency_brake_lin - 0.005;
+                        emergency_brake_lin = emergency_brake_lin - 0.01;
                         if (emergency_brake_lin < 0) {
                             emergency_brake_lin = 0;
                             if (latch == 2) {
