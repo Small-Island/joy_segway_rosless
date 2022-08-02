@@ -988,7 +988,7 @@ int main(int argc, char **argv) {
                             slow_brake_lin -= 0.01;
                         }
                         else {
-                            slow_brake_in = 0.2;
+                            slow_brake_lin = 0.2;
                         }
 
                         printf("lin: %lf, slow_brake_lin: %lf\n", lin, slow_brake_lin);
