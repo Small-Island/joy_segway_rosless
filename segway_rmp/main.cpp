@@ -1020,7 +1020,7 @@ int main(int argc, char **argv) {
                             slow_start = false;
                         }
                         else {
-                            slow_start_lin = slow_start_lin + 0.005;
+                            slow_start_lin = slow_start_lin + 0.0025;
                             lin = slow_start_lin;
                         }
                     }
