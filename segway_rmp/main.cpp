@@ -353,11 +353,11 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     uint8_t l = (uint8_t)((uint32_t)(vel & 0x0000ff00) >> 8);
     uint8_t ll = (uint8_t)(vel & 0x000000ff);
 
-    int end_time_point = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - begin_time_point).count();
-    uint8_t hht = (uint8_t)((uint32_t)(end_time_point & 0xff000000) >> 24);
-    uint8_t ht = (uint8_t)((uint32_t)(end_time_point & 0x00ff0000) >> 16);
-    uint8_t lt = (uint8_t)((uint32_t)(end_time_point & 0x0000ff00) >> 8);
-    uint8_t llt = (uint8_t)(end_time_point & 0x000000ff);
+    int time_since_epoch = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - 1658000000000;
+    uint8_t hht = (uint8_t)((uint32_t)(time_since_epoch & 0xff000000) >> 24);
+    uint8_t ht = (uint8_t)((uint32_t)(time_since_epoch & 0x00ff0000) >> 16);
+    uint8_t lt = (uint8_t)((uint32_t)(time_since_epoch & 0x0000ff00) >> 8);
+    uint8_t llt = (uint8_t)(time_since_epoch & 0x000000ff);
 
     // int fp = (int16_t)((ss.integrated_forward_position - init_fp) * 100.0);
     // uint8_t hfp = (uint8_t)((uint16_t)(fp & 0xff00) >> 8);
@@ -383,17 +383,23 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
         momo_send_count = 0;
     }
 
-    if (latch == 2 && !ofs_closed) {
-        *(ofs) << end_time_point/1000.0 << ' ' << linear_vel_feedback << '\n';
-    }
-    else if (latch == 3 && !ofs_closed && log_margin_count < 200) {
-        *(ofs) << end_time_point/1000.0 << ' ' << linear_vel_feedback << '\n';
-        log_margin_count++;
-    }
-    else if (latch == 3 && !ofs_closed && log_margin_count >= 200) {
-        ofs->close();
-        ofs_closed = true;
-        log_margin_count = 0;
+    // if (latch == 2 && !ofs_closed) {
+    //     *(ofs) << end_time_point/1000.0 << ' ' << linear_vel_feedback << '\n';
+    // }
+    // else if (latch == 3 && !ofs_closed && log_margin_count < 200) {
+    //     *(ofs) << end_time_point/1000.0 << ' ' << linear_vel_feedback << '\n';
+    //     log_margin_count++;
+    // }
+    // else if (latch == 3 && !ofs_closed && log_margin_count >= 200) {
+    //     ofs->close();
+    //     ofs_closed = true;
+    //     log_margin_count = 0;
+    // }
+
+    if (!ofs_closed) {
+        char char_array_millisec_since_epoch[32];
+        std::sprintf(char_array_millisec_since_epoch, "%.3lf", time_since_epoch/1000.0);
+        *ofs << std::string(char_array_millisec_since_epoch) << ' ' << linear_vel_feedback << '\n';
     }
 
     if (!motors_enabled && (bool)(ss.motor_status)) {
@@ -643,7 +649,6 @@ void momo_serial_read() {
                 }
                 jyja_arrival_time = std::chrono::system_clock::now();
             }
-
             else if (buf_ptr[0] == 0x44) {
                 if (latch == 3) {
                     latch = 4;
@@ -651,6 +656,18 @@ void momo_serial_read() {
                     init_tp = turn_position;
                     movingplan->setup((int8_t)buf_ptr[2]/10.0, (int8_t)buf_ptr[3]*2.0);
                 }
+            }
+            else if (buf_ptr[0] == 0x46) {
+                std::stringstream ss;
+                time_t t = time(NULL);
+                std::string str = ctime(&t);
+                ss << "./log/" << str.substr(0, str.size()-1) << "_data_delay.log";
+                ofs = new std::ofstream(ss.str());
+                ofs_closed = false;
+            }
+            else if (buf_ptr[0] == 0x47) {
+                ofs_closed = true;
+                ofs->close();
             }
 
             // else if (buf_ptr[0] == 0xab) {
@@ -912,7 +929,7 @@ int main(int argc, char **argv) {
 
                     if (stop_auto_moving) {
                         if (stop_auto_moving_lin > 0) {
-                            stop_auto_moving_lin = stop_auto_moving_lin - 0.005;
+                            stop_auto_moving_lin = stop_auto_moving_lin - 0.01;
                         }
                         if (stop_auto_moving_lin <= 0) {
                             stop_auto_moving_lin = 0;
@@ -970,7 +987,7 @@ int main(int argc, char **argv) {
                         }
                         stamp++;
                         printf("%d emergency brake\n", stamp);
-                        emergency_brake_lin = emergency_brake_lin - 0.01;
+                        emergency_brake_lin = emergency_brake_lin - 0.0075;
                         if (emergency_brake_lin < 0) {
                             emergency_brake_lin = 0;
                             if (latch == 2) {
@@ -985,12 +1002,11 @@ int main(int argc, char **argv) {
                         stamp++;
                         printf("%d slow brake ", stamp);
                         if (slow_brake_lin > 0.2) {
-                            slow_brake_lin -= 0.01;
+                            slow_brake_lin -= 0.0075;
                         }
                         else {
                             slow_brake_lin = 0.2;
                         }
-
                         printf("lin: %lf, slow_brake_lin: %lf\n", lin, slow_brake_lin);
                         if (lin > slow_brake_lin) {
                             lin = slow_brake_lin;
@@ -1004,7 +1020,7 @@ int main(int argc, char **argv) {
                             slow_start = false;
                         }
                         else {
-                            slow_start_lin = slow_start_lin + 0.03;
+                            slow_start_lin = slow_start_lin + 0.005;
                             lin = slow_start_lin;
                         }
                     }
