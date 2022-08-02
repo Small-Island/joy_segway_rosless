@@ -987,7 +987,7 @@ int main(int argc, char **argv) {
                         }
                         stamp++;
                         printf("%d emergency brake\n", stamp);
-                        emergency_brake_lin = emergency_brake_lin - 0.0075;
+                        emergency_brake_lin = emergency_brake_lin - 0.009;
                         if (emergency_brake_lin < 0) {
                             emergency_brake_lin = 0;
                             if (latch == 2) {
@@ -1002,7 +1002,7 @@ int main(int argc, char **argv) {
                         stamp++;
                         printf("%d slow brake ", stamp);
                         if (slow_brake_lin > 0.2) {
-                            slow_brake_lin -= 0.0075;
+                            slow_brake_lin -= 0.009;
                         }
                         else {
                             slow_brake_lin = 0.2;
