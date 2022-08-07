@@ -212,7 +212,7 @@ class MovingPlan {
 public:
     MovingPlan(int* latch): latch(latch) {}
     void setup(double target_x, double target_turn) {
-        this->vel_limit = 0.5;
+        this->vel_limit = 0.7;
         this->a = 0.05;
         this->T1 = this->vel_limit / this->a;
         this->T3 = this->vel_limit / this->a;
@@ -629,11 +629,11 @@ void momo_serial_read() {
                     double k = 0.05;
                     double x = (int8_t)buf_ptr[3] /127.0; // 遠隔のjoystick の入力値 -1 ~ 1
                     if (x > 0) {
-                        A = 0.4;
+                        A = 0.5;
                         cmd_linear_vel_from_momo = A*((1 - k)*x + k)*x;  // cmd_linear_vel_from_momo は指令値 (m/s)
                     }
                     else {
-                        A = 0.4;
+                        A = 0.5;
                         cmd_linear_vel_from_momo = - A*((1 - k)*(-x) + k)*(-x);  // cmd_linear_vel_from_momo は指令値 (m/s)
                     }
 
