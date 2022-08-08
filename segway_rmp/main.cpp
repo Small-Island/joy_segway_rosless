@@ -261,10 +261,10 @@ public:
     void section_0() {
         if (fabs(turn_position - this->initial_turn_position) < fabs(this->target_turn) - 1) {
             if (target_turn > 0) {
-                this->ang = 10;
+                this->ang = 15;
             }
             else {
-                this->ang = -10;
+                this->ang = -15;
             }
             this->vel = 0;
         }
