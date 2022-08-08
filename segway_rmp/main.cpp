@@ -289,7 +289,7 @@ public:
         return;
     }
     void section_2() {
-        if (this->t < this->T2) {
+        if (this->t < this->T2 + 0.2) {
             this->vel = this->vel_limit;
             this->t += dt;
             this->ct += dt;
