@@ -555,7 +555,7 @@ void joy_read() {
                 system("shutdown -h 0");
             }
 
-	    if ((int)joy_button.at(10) && (int)joy_button.at(11)) { //L1 and R1
+            if ((int)joy_button.at(10) && (int)joy_button.at(11)) { //L1 and R1
                 ang = 0;
                 lin = 0;
                 cmd_linear_vel_from_momo = 0;
@@ -563,14 +563,14 @@ void joy_read() {
                 cmd_linear_vel_from_joystick = 0;
                 cmd_angular_vel_from_joystick = 0;
                 if (-joy_axis.at(0)/32767.0 < -0.3) {
-		    uint8_t val = 0xe1;
+                    uint8_t val = 0xe1;
                     sendto(sockfd_epos, &val, sizeof(uint8_t), 0, (struct sockaddr *)&addr_epos, sizeof(addr_epos));
-		}
+                }
                 else if (-joy_axis.at(0)/32767.0 > 0.3) {
-		    uint8_t val = 0xe2;
+                    uint8_t val = 0xe2;
                     sendto(sockfd_epos, &val, sizeof(uint8_t), 0, (struct sockaddr *)&addr_epos, sizeof(addr_epos));
-		}
-		continue;
+                }
+                continue;
             }
 
             if (latch == 1) {
