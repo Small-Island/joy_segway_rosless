@@ -46,6 +46,7 @@ int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 struct sockaddr_in addr;
 struct My_udp_data {
     char obstacle_detected_in_0_5m = 0;
+    char obstacle_detected_in_1_0m = 0;
     char obstacle_detected_in_1_5m = 0;
 };
 
