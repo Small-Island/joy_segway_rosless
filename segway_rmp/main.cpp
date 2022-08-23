@@ -333,6 +333,7 @@ public:
 
 MovingPlan* movingplan;
 int momo_send_count = 0;
+int start_time_since_epoch = 0;
 
 void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     if (!connected) {
@@ -354,7 +355,13 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     uint8_t l = (uint8_t)((uint32_t)(vel & 0x0000ff00) >> 8);
     uint8_t ll = (uint8_t)(vel & 0x000000ff);
 
-    int time_since_epoch = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - 1661234080000;
+    int time_since_epoch = 0;
+    if (start_time_since_epoch == 0) {
+        time_since_epoch = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - 1661234080000;
+    }
+    else {
+        time_since_epoch = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - start_time_since_epoch;
+    }
     uint8_t hht = (uint8_t)((uint32_t)(time_since_epoch & 0xff000000) >> 24);
     uint8_t ht = (uint8_t)((uint32_t)(time_since_epoch & 0x00ff0000) >> 16);
     uint8_t lt = (uint8_t)((uint32_t)(time_since_epoch & 0x0000ff00) >> 8);
@@ -631,13 +638,13 @@ void momo_serial_read() {
         }
         // printf("read %d byte: 0x%02x %4d %4d %4d\n", read_size, buf_ptr[0], buf_ptr[1], buf_ptr[2], (int8_t)buf_ptr[3]);
         // printf("read %d byte: %08x\n", read_size, buf_ptr[0]);
-        if (read_size == 3) {
+        else if (read_size == 3) {
             if (buf_ptr[0] == 0xe0) {
                 uint8_t val[3] = {buf_ptr[0], buf_ptr[1], buf_ptr[2]};
                 sendto(sockfd_epos, &val, 3*sizeof(uint8_t), 0, (struct sockaddr *)&addr_epos, sizeof(addr_epos));
             }
         }
-        if (read_size == 4) {
+        else if (read_size == 4) {
             if (buf_ptr[0] == 0x43) {
                 // this->ang = 50*(int8_t)((buf_ptr[0] & 0x0000ff00) >> 8) /127.0;
                 // this->lin = 1.0*(int8_t)(buf_ptr[0] & 0x000000ff)/127.0;
@@ -744,7 +751,6 @@ void momo_serial_read() {
                     ang = 3.5*(int8_t)buf_ptr[2]/127.0;
                 }
             }
-
             else if (buf_ptr[0] == 0x99) {
                 if (latch == 4) {
                     stop_auto_moving = true;
@@ -756,6 +762,13 @@ void momo_serial_read() {
                 // msg.data = "quit";
                 // halt_pub.publish(msg);
             }
+        }
+        else if (read_size  == 5) {
+            int ltime = 0;
+            if (buf_ptr[0] == 0x96) {
+                ltime = (int)((uint32_t)buf_ptr[1] << 24) + (int)((uint32_t)buf_ptr[2] << 16) + (int)((uint32_t)buf_ptr[3] << 8) + (int)((uint32_t)buf_ptr[4]);
+            }
+            start_time_since_epoch = 1660000000*1000 + ltime*1000;
         }
     }
     return;
