@@ -333,7 +333,7 @@ public:
 
 MovingPlan* movingplan;
 int momo_send_count = 0;
-int start_time_since_epoch = 0;
+int ltime = 0;
 
 void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     if (!connected) {
@@ -356,11 +356,11 @@ void handleStatus(segwayrmp::SegwayStatus::Ptr ss_ptr) {
     uint8_t ll = (uint8_t)(vel & 0x000000ff);
 
     int time_since_epoch = 0;
-    if (start_time_since_epoch == 0) {
+    if (ltime == 0) {
         time_since_epoch = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - 1661234080000;
     }
     else {
-        time_since_epoch = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - start_time_since_epoch;
+        time_since_epoch = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - 1660000000*1000 - ltime*1000;
     }
     uint8_t hht = (uint8_t)((uint32_t)(time_since_epoch & 0xff000000) >> 24);
     uint8_t ht = (uint8_t)((uint32_t)(time_since_epoch & 0x00ff0000) >> 16);
@@ -764,11 +764,9 @@ void momo_serial_read() {
             }
         }
         else if (read_size  == 5) {
-            int ltime = 0;
             if (buf_ptr[0] == 0x96) {
                 ltime = (int)((uint32_t)buf_ptr[1] << 24) + (int)((uint32_t)buf_ptr[2] << 16) + (int)((uint32_t)buf_ptr[3] << 8) + (int)((uint32_t)buf_ptr[4]);
             }
-            start_time_since_epoch = 1660000000*1000 + ltime*1000;
         }
     }
     return;
