@@ -42,8 +42,6 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-struct sockaddr_in addr;
 struct My_udp_data {
     char obstacle_detected_in_0_5m = 0;
     char obstacle_detected_in_1_0m = 0;
@@ -627,6 +625,12 @@ void joy_read() {
 
 void momo_serial_read() {
     int fd_read = open(SERIAL_PATH, O_RDONLY); // SERIAL_PATH は serialPathConfig.h.in にて定義されている。
+    int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+    struct sockaddr_in addr;
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = inet_addr("192.168.11.240"); // chair
+    addr.sin_port = htons(4009);
+
     while (true) {
         int req_size = 100*sizeof(uint8_t);
         uint8_t buf_ptr[100] = {
@@ -649,8 +653,6 @@ void momo_serial_read() {
                 // this->ang = 50*(int8_t)((buf_ptr[0] & 0x0000ff00) >> 8) /127.0;
                 // this->lin = 1.0*(int8_t)(buf_ptr[0] & 0x000000ff)/127.0;
                 if (latch == 3) {
-                    cmd_angular_vel_from_momo = 50*(int8_t)buf_ptr[2] /127.0 * std::fabs((int8_t)buf_ptr[2] /127.0);
-
                     double A = 0; // 指令値 (m/s) の最大値
                     double k = 0.05;
                     double x = (int8_t)buf_ptr[3] /127.0; // 遠隔のjoystick の入力値 -1 ~ 1
@@ -672,6 +674,12 @@ void momo_serial_read() {
                     else {
                         cmd_angular_vel_from_momo = - A*((1 - k)*(-x) + k)*(-x);  // cmd_linear_vel_from_momo は指令値 (m/s)
                     }
+
+                    if ((fabs(cmd_linear_vel_from_momo) > 0.05 || fabs(cmd_angular_vel_from_momo) > 5.0)) {
+                        char val = 0xc0;
+                        sendto(sockfd, &val, 1*sizeof(uint8_t), 0, (struct sockaddr *)&addr, sizeof(addr));
+                    }
+
                 }
                 jyja_arrival_time = std::chrono::system_clock::now();
             }
@@ -773,6 +781,13 @@ void momo_serial_read() {
 }
 
 void udp_read() {
+    int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+    struct sockaddr_in addr;
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = inet_addr("0.0.0.0");
+    addr.sin_port = htons(4001);
+    bind(sockfd, (const struct sockaddr *)&addr, sizeof(addr));
+
     while (1) {
         struct My_udp_data my_udp_data = {0};
         int recv_size = recv(sockfd, &my_udp_data, sizeof(struct My_udp_data), 0);
@@ -802,12 +817,6 @@ void hoge() {
 
 
 int main(int argc, char **argv) {
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = inet_addr("0.0.0.0");
-    addr.sin_port = htons(4001);
-
-    bind(sockfd, (const struct sockaddr *)&addr, sizeof(addr));
-
     addr_epos.sin_family = AF_INET;
     addr_epos.sin_addr.s_addr = inet_addr("127.0.0.1");
     addr_epos.sin_port = htons(4002);
