@@ -649,6 +649,8 @@ void momo_serial_read() {
             }
         }
         else if (read_size == 4) {
+            printf("read %d byte: 0x%02x %4d %4d %4d\n", read_size, buf_ptr[0],(int8_t)buf_ptr[1], (int8_t)buf_ptr[2], (int8_t)buf_ptr[3]);
+
             if (buf_ptr[0] == 0x43) {
                 // this->ang = 50*(int8_t)((buf_ptr[0] & 0x0000ff00) >> 8) /127.0;
                 // this->lin = 1.0*(int8_t)(buf_ptr[0] & 0x000000ff)/127.0;
@@ -676,8 +678,9 @@ void momo_serial_read() {
                     }
 
                     if ((fabs(cmd_linear_vel_from_momo) > 0.05 || fabs(cmd_angular_vel_from_momo) > 5.0)) {
-                        char val = 0xc0;
-                        sendto(sockfd, &val, 1*sizeof(uint8_t), 0, (struct sockaddr *)&addr, sizeof(addr));
+                        uint8_t val[3] = {0xc0};
+			printf("send to chair");
+                        sendto(sockfd, val, sizeof(uint8_t), 0, (struct sockaddr *)&addr, sizeof(addr));
                     }
 
                 }
