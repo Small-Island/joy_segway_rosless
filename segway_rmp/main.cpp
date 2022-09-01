@@ -679,7 +679,6 @@ void momo_serial_read() {
 
                     if ((fabs(cmd_linear_vel_from_momo) > 0.05 || fabs(cmd_angular_vel_from_momo) > 5.0)) {
                         uint8_t val[3] = {0xc0};
-			printf("send to chair");
                         sendto(sockfd, val, sizeof(uint8_t), 0, (struct sockaddr *)&addr, sizeof(addr));
                     }
 
