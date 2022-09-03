@@ -24,7 +24,7 @@ const peerConnectionConfig = {
 
 const isSSL = location.protocol === 'https:';
 const wsProtocol = isSSL ? 'wss://' : 'ws://';
-const wsUrl = wsProtocol + location.host + '/ws';
+const wsUrl = 'ws://192.168.11.32:8080/ws';
 const ws = new WebSocket(wsUrl);
 ws.onopen = onWsOpen.bind();
 ws.onerror = onWsError.bind();
