@@ -1,5 +1,5 @@
 const localrecvonly = class {
-    constructor(remoteVideo_id_str, wsUrl_in) {
+    constructor(remoteVideo_id_str, wsUrl_in, onmessageHandler_in) {
         this.remoteVideo_id = remoteVideo_id_str;
         this.remoteVideo = document.getElementById(remoteVideo_id_str);
         this.peerConnection = null;
@@ -15,6 +15,8 @@ const localrecvonly = class {
         this.ws.onopen = this.onWsOpen.bind(this);
         this.ws.onerror = this.onWsError.bind(this);
         this.ws.onmessage = this.onWsMessage.bind(this);
+
+        this.onmessageHandler = onmessageHandler_in;
     }
     onWsError(error){
         console.error('ws onerror() ERROR:', error);
@@ -185,6 +187,7 @@ const localrecvonly = class {
         peer.addTransceiver('video', {direction: 'recvonly'});
         peer.addTransceiver('audio', {direction: 'recvonly'});
 
+        this.dataChannel.onmessage = this.onmessageHandler;
         // this.dataChannel.onmessage = function (event) {
         //     if (this.remoteVideo_id == 'segway_control_dummy_video') {
         //         if (new Uint8Array(event.data)[0] == 0x45 && event.data.byteLength == 20) {

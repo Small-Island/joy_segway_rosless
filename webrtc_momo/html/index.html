@@ -127,9 +127,7 @@
         //     }
         // }
 
-        localrecvonly_segway = new localrecvonly('segway_control_dummy_video', 'ws://' + location.hostname + ':8080/ws');
-        localrecvonly_segway.connect();
-        localrecvonly_segway.dataChannel.onmessage = function (event) {
+        onmessageHandler_segway = function (event) {
             if (new Uint8Array(event.data)[0] == 0x45 && event.data.byteLength == 20) {
                 segway_message_stamp++;
                 segway_time_since_epoch = (new Int32Array([new Uint8Array(event.data)[1] << 24])[0] + new Int32Array([new Uint8Array(event.data)[2] << 16])[0] + new Int32Array([new Uint8Array(event.data)[3] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[4]])[0] )/1000.0;
@@ -142,10 +140,10 @@
                 document.getElementById("sgss").innerHTML = 'latch ' + segway_latch + '\nturn position(deg) ' + segway_turn_position + '\nposition x(m) ' + segway_position_x + '\nposition z(m) ' + segway_position_z  + '\n時刻(s) ' + segway_time_since_epoch + '\n並進速度(m/s) ' + segway_lin_vel + '\n旋回速度(deg/s)' + segway_ang_vel;
             }
         };
+        localrecvonly_segway = new localrecvonly('segway_control_dummy_video', 'ws://' + location.hostname + ':8080/ws', onmessageHandler_segway);
+        localrecvonly_segway.connect();
 
-        localrecvonly_haptics = new localrecvonly('haptics_dummy_video', 'ws://' + location.hostname + ':8089/ws');
-        localrecvonly_haptics.connect();
-        localrecvonly_haptics.dataChannel.onmessage = function (event) {
+        onmessageHandler_haptics = function (event) {
             if (event.data.byteLength == 461) {
                 if (recvonly_haptics.signalingSwitched) {
                     recvonly_haptics.sendMessage('#sora-devtools', event.data);
@@ -155,6 +153,8 @@
                 }
             }
         };
+        localrecvonly_haptics = new localrecvonly('haptics_dummy_video', 'ws://' + location.hostname + ':8089/ws' onmessageHandler_haptics);
+        localrecvonly_haptics.connect();
 
     </script>
   </body>
