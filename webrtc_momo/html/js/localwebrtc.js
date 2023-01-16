@@ -185,42 +185,42 @@ const localrecvonly = class {
         peer.addTransceiver('video', {direction: 'recvonly'});
         peer.addTransceiver('audio', {direction: 'recvonly'});
 
-        this.dataChannel.onmessage = function (event) {
-            if (this.remoteVideo_id == 'segway_control_dummy_video') {
-                if (new Uint8Array(event.data)[0] == 0x45 && event.data.byteLength == 20) {
-                    segway_message_stamp++;
-                    segway_time_since_epoch = (new Int32Array([new Uint8Array(event.data)[1] << 24])[0] + new Int32Array([new Uint8Array(event.data)[2] << 16])[0] + new Int32Array([new Uint8Array(event.data)[3] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[4]])[0] )/1000.0;
-                    segway_lin_vel = (new Int32Array([new Uint8Array(event.data)[5] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[6] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[7] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[8]])[0] )/10000.0;
-                    segway_ang_vel = (new Int32Array([new Uint8Array(event.data)[9] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[10] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[11] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[12]])[0] )/10000.0;
-                    segway_latch = new Uint8Array(event.data)[13];
-                    segway_turn_position = (new Int16Array([new Uint8Array(event.data)[14] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[15]])[0] )/100.0;
-                    segway_position_x = (new Int16Array([new Uint8Array(event.data)[16] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[17]])[0] )/100.0;
-                    segway_position_z = (new Int16Array([new Uint8Array(event.data)[18] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[19]])[0] )/100.0;
-                    document.getElementById("sgss").innerHTML = 'latch ' + segway_latch + '\nturn position(deg) ' + segway_turn_position + '\nposition x(m) ' + segway_position_x + '\nposition z(m) ' + segway_position_z  + '\n時刻(s) ' + segway_time_since_epoch + '\n並進速度(m/s) ' + segway_lin_vel + '\n旋回速度(deg/s)' + segway_ang_vel;
-                }
-            }
-            if (this.remoteVideo_id == 'a1_control_dummy_video') {
-                if (new Uint8Array(event.data)[0] == 0xa5 && event.data.byteLength == 20) {
-                    let event_data = new Uint8Array(event.data);
-                    a1_message_stamp++;
-                    a1_auto_moving_status = event_data[1];
-                    a1_position_x = (new Int16Array([event_data[2] << 8])[0] + new Int16Array([event_data[3]])[0] )/100.0;
-                    a1_position_z = (new Int16Array([event_data[4] << 8])[0] + new Int16Array([event_data[5]])[0] )/100.0;
-                    a1_position_rot = (new Int16Array([event_data[6] << 8])[0] + new Int16Array([event_data[7]])[0] )/100.0;
-                    a1_forwardSpeed = (new Int32Array([event_data[8] << 24])[0] + new Int32Array([event_data[9] << 16 ])[0] + new Int32Array([event_data[10] << 8])[0] + new Int32Array([event_data[11]])[0] )/10000.0;
-                    a1_rotateSpeed = (new Int32Array([event_data[12] << 24])[0] + new Int32Array([event_data[13] << 16 ])[0] + new Int32Array([event_data[14] << 8])[0] + new Int32Array([event_data[15]])[0] )/10000.0;
-                    a1_time_since_epoch = (new Int32Array([event_data[16] << 24])[0] + new Int32Array([event_data[17] << 16])[0] + new Int32Array([event_data[18] << 8])[0] + new Int32Array([event_data[19]])[0] )/1000.0;
-                    document.getElementById("sgss").innerHTML = 'auto_moving ' + a1_auto_moving_status + '\nposition x(m) ' + a1_position_x + '\nposition z(m) ' + a1_position_z + '\nrotation (deg) ' + a1_position_rot + '\ntime since epoch (s) ' + a1_time_since_epoch + '\nforwardSpeed (m/s) ' + a1_forwardSpeed + '\nrotateSpeed (deg/s) ' + a1_rotateSpeed;
-                }
-            }
-            if (this.remoteVideo_id == 'haptics_dummy_video') {
-                if (event.data.byteLength == 461) {
-                    if (recvonly.signalingSwitched) {
-                        recvonly.sendMessage('#sora-devtools', event.data);
-                    }
-                }
-            }
-        };
+        // this.dataChannel.onmessage = function (event) {
+        //     if (this.remoteVideo_id == 'segway_control_dummy_video') {
+        //         if (new Uint8Array(event.data)[0] == 0x45 && event.data.byteLength == 20) {
+        //             segway_message_stamp++;
+        //             segway_time_since_epoch = (new Int32Array([new Uint8Array(event.data)[1] << 24])[0] + new Int32Array([new Uint8Array(event.data)[2] << 16])[0] + new Int32Array([new Uint8Array(event.data)[3] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[4]])[0] )/1000.0;
+        //             segway_lin_vel = (new Int32Array([new Uint8Array(event.data)[5] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[6] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[7] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[8]])[0] )/10000.0;
+        //             segway_ang_vel = (new Int32Array([new Uint8Array(event.data)[9] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[10] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[11] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[12]])[0] )/10000.0;
+        //             segway_latch = new Uint8Array(event.data)[13];
+        //             segway_turn_position = (new Int16Array([new Uint8Array(event.data)[14] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[15]])[0] )/100.0;
+        //             segway_position_x = (new Int16Array([new Uint8Array(event.data)[16] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[17]])[0] )/100.0;
+        //             segway_position_z = (new Int16Array([new Uint8Array(event.data)[18] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[19]])[0] )/100.0;
+        //             document.getElementById("sgss").innerHTML = 'latch ' + segway_latch + '\nturn position(deg) ' + segway_turn_position + '\nposition x(m) ' + segway_position_x + '\nposition z(m) ' + segway_position_z  + '\n時刻(s) ' + segway_time_since_epoch + '\n並進速度(m/s) ' + segway_lin_vel + '\n旋回速度(deg/s)' + segway_ang_vel;
+        //         }
+        //     }
+        //     if (this.remoteVideo_id == 'a1_control_dummy_video') {
+        //         if (new Uint8Array(event.data)[0] == 0xa5 && event.data.byteLength == 20) {
+        //             let event_data = new Uint8Array(event.data);
+        //             a1_message_stamp++;
+        //             a1_auto_moving_status = event_data[1];
+        //             a1_position_x = (new Int16Array([event_data[2] << 8])[0] + new Int16Array([event_data[3]])[0] )/100.0;
+        //             a1_position_z = (new Int16Array([event_data[4] << 8])[0] + new Int16Array([event_data[5]])[0] )/100.0;
+        //             a1_position_rot = (new Int16Array([event_data[6] << 8])[0] + new Int16Array([event_data[7]])[0] )/100.0;
+        //             a1_forwardSpeed = (new Int32Array([event_data[8] << 24])[0] + new Int32Array([event_data[9] << 16 ])[0] + new Int32Array([event_data[10] << 8])[0] + new Int32Array([event_data[11]])[0] )/10000.0;
+        //             a1_rotateSpeed = (new Int32Array([event_data[12] << 24])[0] + new Int32Array([event_data[13] << 16 ])[0] + new Int32Array([event_data[14] << 8])[0] + new Int32Array([event_data[15]])[0] )/10000.0;
+        //             a1_time_since_epoch = (new Int32Array([event_data[16] << 24])[0] + new Int32Array([event_data[17] << 16])[0] + new Int32Array([event_data[18] << 8])[0] + new Int32Array([event_data[19]])[0] )/1000.0;
+        //             document.getElementById("sgss").innerHTML = 'auto_moving ' + a1_auto_moving_status + '\nposition x(m) ' + a1_position_x + '\nposition z(m) ' + a1_position_z + '\nrotation (deg) ' + a1_position_rot + '\ntime since epoch (s) ' + a1_time_since_epoch + '\nforwardSpeed (m/s) ' + a1_forwardSpeed + '\nrotateSpeed (deg/s) ' + a1_rotateSpeed;
+        //         }
+        //     }
+        //     if (this.remoteVideo_id == 'haptics_dummy_video') {
+        //         if (event.data.byteLength == 461) {
+        //             if (recvonly.signalingSwitched) {
+        //                 recvonly.sendMessage('#sora-devtools', event.data);
+        //             }
+        //         }
+        //     }
+        // };
         return peer;
     }
     sendSdp(sessionDescription) {
