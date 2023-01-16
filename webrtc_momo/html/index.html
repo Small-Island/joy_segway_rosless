@@ -26,6 +26,7 @@
     <input type="button" onclick="connect();" id="connect" value="Connect">
     <input type="button" onclick="disconnect();" value="Disconnect">
     <video id="segway_control_dummy_video" style="display: none;"></video>
+    <video id="haptics_dummy_video" style="display: none;"></video>
     <main>
         <div class="VelocityStatus">
             Send to Segway<br>
@@ -42,10 +43,6 @@
             <br>
         </div>
     </main>
-    <script type="text/javascript">
-        let CLOSE_DATA_CHANNEL = false;
-        let RESTART = true;
-    </script>
     <script type='text/javascript' src='./js/sora2022.3.1.js'></script>
     <script type='text/javascript' src='./js/localwebrtc.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -64,38 +61,39 @@
                 }
             ]
         };
-        let recvonly = sora.recvonly("haptics", null, options);
-        recvonly.connect();
+        let recvonly_robots_control = sora.recvonly("robots-control", null, options);
+        let recvonly_haptics = sora.recvonly('haptics', null, options);
+        recvonly_robots_control.connect();
 
-        recvonly.on('message', (event) => {
+        recvonly_robots_control.on('message', (event) => {
 
             if ((new Uint8Array(event.data)[0] == 0x43 || new Uint8Array(event.data)[0] == 0x44 || new Uint8Array(event.data)[0] == 0x46 || new Uint8Array(event.data)[0] == 0x47 ) && event.data.byteLength == 4) {
-                if (localmomosegway.dataChannel) {
-                    if (localmomosegway.dataChannel.readyState == 'open') {
-                        localmomosegway.dataChannel.send(event.data);
+                if (localrecvonly_segway.dataChannel) {
+                    if (localrecvonly_segway.dataChannel.readyState == 'open') {
+                        localrecvonly_segway.dataChannel.send(event.data);
                     }
                     else {
-                        localmomosegway.connect();
+                        localrecvonly_segway.connect();
                     }
                 }
             }
             else if (new Uint8Array(event.data)[0] == 0xe0 && event.data.byteLength == 3) {
-                if (localmomosegway.dataChannel) {
-                    if (localmomosegway.dataChannel.readyState == 'open') {
-                        localmomosegway.dataChannel.send(event.data);
+                if (localrecvonly_segway.dataChannel) {
+                    if (localrecvonly_segway.dataChannel.readyState == 'open') {
+                        localrecvonly_segway.dataChannel.send(event.data);
                     }
                     else {
-                        localmomosegway.connect();
+                        localrecvonly_segway.connect();
                     }
                 }
             }
             else if (new Uint8Array(event.data)[0] == 0x99 && event.data.byteLength == 4) {
-                if (localmomosegway.dataChannel) {
-                    if (localmomosegway.dataChannel.readyState == 'open') {
-                        localmomosegway.dataChannel.send(event.data);
+                if (localrecvonly_segway.dataChannel) {
+                    if (localrecvonly_segway.dataChannel.readyState == 'open') {
+                        localrecvonly_segway.dataChannel.send(event.data);
                     }
                     else {
-                        localmomosegway.connect();
+                        localrecvonly_segway.connect();
                     }
                 }
             }
@@ -103,21 +101,34 @@
 
         setInterval(observe_CLOSE_DATA_CHANNEL, 5000);
         function observe_CLOSE_DATA_CHANNEL() {
-            if (CLOSE_DATA_CHANNEL) {
-                if (!recvonly.signalingSwitched) {
-                    disconnect();
-                    recvonly.connect();
+            if (!recvonly_robots_control.signalingSwitched) {
+                recvonly_robots_control.connect();
+            }
+            if (!recvonly_haptics.signalingSwitched) {
+                recvonly_haptics.connect();
+            }
+
+            if (localrecvonly_segway.dataChannel) {
+                if (localrecvonly_segway.dataChannel.readyState != 'open') {
+                    localrecvonly_segway.connect();
                 }
             }
-            if (RESTART) {
-                RESTART = false;
-                // disconnect();
-                connect();
+            else {
+                localrecvonly_segway.connect();
+            }
+
+            if (localrecvonly_haptics.dataChannel) {
+                if (localrecvonly_haptics.dataChannel.readyState != 'open') {
+                    localrecvonly_haptics.connect();
+                }
+            }
+            else {
+                localrecvonly_haptics.connect();
             }
         }
 
-        localmomosegway = localrecvonly('segway_control_dummy_video', 'ws://127.0.0.1:8080/ws');
-        localmomosegway.dataChannel.onmessage = function (event) {
+        localrecvonly_segway = localrecvonly('segway_control_dummy_video', 'ws://127.0.0.1:8080/ws');
+        localrecvonly_segway.dataChannel.onmessage = function (event) {
             if (new Uint8Array(event.data)[0] == 0x45 && event.data.byteLength == 20) {
                 segway_message_stamp++;
                 segway_time_since_epoch = (new Int32Array([new Uint8Array(event.data)[1] << 24])[0] + new Int32Array([new Uint8Array(event.data)[2] << 16])[0] + new Int32Array([new Uint8Array(event.data)[3] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[4]])[0] )/1000.0;
@@ -130,6 +141,19 @@
                 document.getElementById("sgss").innerHTML = 'latch ' + segway_latch + '\nturn position(deg) ' + segway_turn_position + '\nposition x(m) ' + segway_position_x + '\nposition z(m) ' + segway_position_z  + '\n時刻(s) ' + segway_time_since_epoch + '\n並進速度(m/s) ' + segway_lin_vel + '\n旋回速度(deg/s)' + segway_ang_vel;
             }
         };
+
+        localrecvonly_haptics = localrecvonly('haptics_dummy_video', 'ws://127.0.0.1:8089/ws');
+        localrecvonly_haptics.dataChannel.onmessage = function (event) {
+            if (event.data.byteLength == 461) {
+                if (recvonly_haptics.signalingSwitched) {
+                    recvonly_haptics.sendMessage('#sora-devtools', event.data);
+                }
+                else {
+                    recvonly_haptics.connect();
+                }
+            }
+        };
+
     </script>
   </body>
 </html>
