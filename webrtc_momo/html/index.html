@@ -153,7 +153,7 @@
                 }
             }
         };
-        localrecvonly_haptics = new localrecvonly('haptics_dummy_video', 'ws://' + location.hostname + ':8089/ws' onmessageHandler_haptics);
+        localrecvonly_haptics = new localrecvonly('haptics_dummy_video', 'ws://' + location.hostname + ':8089/ws', onmessageHandler_haptics);
         localrecvonly_haptics.connect();
 
     </script>
