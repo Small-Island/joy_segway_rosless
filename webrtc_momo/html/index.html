@@ -127,7 +127,7 @@
             }
         }
 
-        localrecvonly_segway = localrecvonly('segway_control_dummy_video', 'ws://127.0.0.1:8080/ws');
+        localrecvonly_segway = new localrecvonly('segway_control_dummy_video', 'ws://127.0.0.1:8080/ws');
         localrecvonly_segway.dataChannel.onmessage = function (event) {
             if (new Uint8Array(event.data)[0] == 0x45 && event.data.byteLength == 20) {
                 segway_message_stamp++;
@@ -142,7 +142,7 @@
             }
         };
 
-        localrecvonly_haptics = localrecvonly('haptics_dummy_video', 'ws://127.0.0.1:8089/ws');
+        localrecvonly_haptics = new localrecvonly('haptics_dummy_video', 'ws://127.0.0.1:8089/ws');
         localrecvonly_haptics.dataChannel.onmessage = function (event) {
             if (event.data.byteLength == 461) {
                 if (recvonly_haptics.signalingSwitched) {
