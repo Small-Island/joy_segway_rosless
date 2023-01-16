@@ -127,7 +127,7 @@
         //     }
         // }
 
-        localrecvonly_segway = new localrecvonly('segway_control_dummy_video', 'ws://127.0.0.1:8080/ws');
+        localrecvonly_segway = new localrecvonly('segway_control_dummy_video', 'ws://' + location.hostname + ':8080/ws');
         localrecvonly_segway.connect();
         localrecvonly_segway.dataChannel.onmessage = function (event) {
             if (new Uint8Array(event.data)[0] == 0x45 && event.data.byteLength == 20) {
@@ -143,7 +143,7 @@
             }
         };
 
-        localrecvonly_haptics = new localrecvonly('haptics_dummy_video', 'ws://127.0.0.1:8089/ws');
+        localrecvonly_haptics = new localrecvonly('haptics_dummy_video', 'ws://' + location.hostname + ':8089/ws');
         localrecvonly_haptics.connect();
         localrecvonly_haptics.dataChannel.onmessage = function (event) {
             if (event.data.byteLength == 461) {
