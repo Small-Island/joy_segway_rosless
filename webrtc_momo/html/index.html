@@ -99,33 +99,33 @@
             }
         });
 
-        setInterval(observe_CLOSE_DATA_CHANNEL, 5000);
-        function observe_CLOSE_DATA_CHANNEL() {
-            if (!recvonly_robots_control.signalingSwitched) {
-                recvonly_robots_control.connect();
-            }
-            if (!recvonly_haptics.signalingSwitched) {
-                recvonly_haptics.connect();
-            }
-
-            if (localrecvonly_segway.dataChannel) {
-                if (localrecvonly_segway.dataChannel.readyState != 'open') {
-                    localrecvonly_segway.connect();
-                }
-            }
-            else {
-                localrecvonly_segway.connect();
-            }
-
-            if (localrecvonly_haptics.dataChannel) {
-                if (localrecvonly_haptics.dataChannel.readyState != 'open') {
-                    localrecvonly_haptics.connect();
-                }
-            }
-            else {
-                localrecvonly_haptics.connect();
-            }
-        }
+        // setInterval(observe_CLOSE_DATA_CHANNEL, 5000);
+        // function observe_CLOSE_DATA_CHANNEL() {
+        //     if (!recvonly_robots_control.signalingSwitched) {
+        //         recvonly_robots_control.connect();
+        //     }
+        //     if (!recvonly_haptics.signalingSwitched) {
+        //         recvonly_haptics.connect();
+        //     }
+        //
+        //     if (localrecvonly_segway.dataChannel) {
+        //         if (localrecvonly_segway.dataChannel.readyState != 'open') {
+        //             localrecvonly_segway.connect();
+        //         }
+        //     }
+        //     else {
+        //         localrecvonly_segway.connect();
+        //     }
+        //
+        //     if (localrecvonly_haptics.dataChannel) {
+        //         if (localrecvonly_haptics.dataChannel.readyState != 'open') {
+        //             localrecvonly_haptics.connect();
+        //         }
+        //     }
+        //     else {
+        //         localrecvonly_haptics.connect();
+        //     }
+        // }
 
         localrecvonly_segway = new localrecvonly('segway_control_dummy_video', 'ws://127.0.0.1:8080/ws');
         localrecvonly_segway.connect();
