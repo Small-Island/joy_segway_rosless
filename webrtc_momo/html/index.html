@@ -64,6 +64,7 @@
         let recvonly_robots_control = sora.recvonly("robots-control", null, options);
         let recvonly_haptics = sora.recvonly('haptics', null, options);
         recvonly_robots_control.connect();
+        recvonly_haptics.connect();
 
         recvonly_robots_control.on('message', (event) => {
 
@@ -146,9 +147,6 @@
             if (event.data.byteLength == 461) {
                 if (recvonly_haptics.signalingSwitched) {
                     recvonly_haptics.sendMessage('#sora-devtools', event.data);
-                }
-                else {
-                    recvonly_haptics.connect();
                 }
             }
         };
