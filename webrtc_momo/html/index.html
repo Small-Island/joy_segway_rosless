@@ -25,7 +25,7 @@
     <h3>Momo P2P</h3>
     <input type="button" onclick="connect();" id="connect" value="Connect">
     <input type="button" onclick="disconnect();" value="Disconnect">
-    <video id="remote_video" style="display: none;"></video>
+    <video id="segway_control_dummy_video" style="display: none;"></video>
     <main>
         <div class="VelocityStatus">
             Send to Segway<br>
@@ -116,7 +116,7 @@
             }
         }
 
-        localrecvonly
+        localmomosegway = localrecvonly('segway_control_dummy_video', 'ws://127.0.0.1:8080/ws');
     </script>
   </body>
 </html>
