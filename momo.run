@@ -2,21 +2,21 @@
 
 set -ex
 
-if [[ $(ps | grep momo_x64 | grep -v 'run') ]]; then
-    killall momo_x64
-fi
-
-if [[ $(ps | grep momo_xavier | grep -v 'run') ]]; then
-    killall momo_xavier
-fi
-
-# if [[ $(ps | grep momo_raspberry | grep -v 'run') ]]; then
-#     killall momo_raspberry
+# if [[ $(ps | grep momo_x64 | grep -v 'run') ]]; then
+#     killall momo_x64
 # fi
-
-if [[ $(ps | grep socat) ]]; then
-    killall socat
-fi
+#
+# if [[ $(ps | grep momo_xavier | grep -v 'run') ]]; then
+#     killall momo_xavier
+# fi
+#
+# # if [[ $(ps | grep momo_raspberry | grep -v 'run') ]]; then
+# #     killall momo_raspberry
+# # fi
+#
+# if [[ $(ps | grep socat) ]]; then
+#     killall socat
+# fi
 
 socat pty,echo=0,raw,link=./serial_out  pty,raw,echo=0,link=./webrtc_momo/serial_in &
 
