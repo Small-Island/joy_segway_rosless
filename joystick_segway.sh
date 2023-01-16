@@ -2,6 +2,9 @@
 
 cd ~/tactile
 ./momo.run
+
+sleep 2s
+
 ./main &
 
 cd ~/joy_segway_rosless
