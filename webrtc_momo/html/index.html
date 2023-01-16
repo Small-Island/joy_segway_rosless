@@ -129,14 +129,13 @@
 
         onmessageHandler_segway = function (event) {
             if (new Uint8Array(event.data)[0] == 0x45 && event.data.byteLength == 20) {
-                segway_message_stamp++;
-                segway_time_since_epoch = (new Int32Array([new Uint8Array(event.data)[1] << 24])[0] + new Int32Array([new Uint8Array(event.data)[2] << 16])[0] + new Int32Array([new Uint8Array(event.data)[3] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[4]])[0] )/1000.0;
-                segway_lin_vel = (new Int32Array([new Uint8Array(event.data)[5] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[6] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[7] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[8]])[0] )/10000.0;
-                segway_ang_vel = (new Int32Array([new Uint8Array(event.data)[9] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[10] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[11] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[12]])[0] )/10000.0;
-                segway_latch = new Uint8Array(event.data)[13];
-                segway_turn_position = (new Int16Array([new Uint8Array(event.data)[14] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[15]])[0] )/100.0;
-                segway_position_x = (new Int16Array([new Uint8Array(event.data)[16] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[17]])[0] )/100.0;
-                segway_position_z = (new Int16Array([new Uint8Array(event.data)[18] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[19]])[0] )/100.0;
+                let segway_time_since_epoch = (new Int32Array([new Uint8Array(event.data)[1] << 24])[0] + new Int32Array([new Uint8Array(event.data)[2] << 16])[0] + new Int32Array([new Uint8Array(event.data)[3] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[4]])[0] )/1000.0;
+                let segway_lin_vel = (new Int32Array([new Uint8Array(event.data)[5] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[6] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[7] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[8]])[0] )/10000.0;
+                let segway_ang_vel = (new Int32Array([new Uint8Array(event.data)[9] << 24])[0] + new Int32Array([ new Uint8Array(event.data)[10] << 16 ])[0] + new Int32Array([new Uint8Array(event.data)[11] << 8])[0] + new Int32Array([ new Uint8Array(event.data)[12]])[0] )/10000.0;
+                let segway_latch = new Uint8Array(event.data)[13];
+                let segway_turn_position = (new Int16Array([new Uint8Array(event.data)[14] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[15]])[0] )/100.0;
+                let segway_position_x = (new Int16Array([new Uint8Array(event.data)[16] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[17]])[0] )/100.0;
+                let segway_position_z = (new Int16Array([new Uint8Array(event.data)[18] << 8])[0] + new Int16Array([ new Uint8Array(event.data)[19]])[0] )/100.0;
                 document.getElementById("sgss").innerHTML = 'latch ' + segway_latch + '\nturn position(deg) ' + segway_turn_position + '\nposition x(m) ' + segway_position_x + '\nposition z(m) ' + segway_position_z  + '\n時刻(s) ' + segway_time_since_epoch + '\n並進速度(m/s) ' + segway_lin_vel + '\n旋回速度(deg/s)' + segway_ang_vel;
             }
         };
