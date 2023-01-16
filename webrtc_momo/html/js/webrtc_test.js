@@ -8,12 +8,13 @@ const channelId = "robots-control";
 // };
 const options = {
     multistream: true,
-    video: false,
+    video: true,
     audio: true,
     dataChannelSignaling: true,
     dataChannels: [
         {
             label: "#sora-devtools",
+	    ordered: true,
             direction: "sendrecv"
         }
     ]

@@ -659,22 +659,26 @@ void momo_serial_read() {
                     double k = 0.05;
                     double x = (int8_t)buf_ptr[3] /127.0; // 遠隔のjoystick の入力値 -1 ~ 1
                     if (x > 0) {
-                        A = 0.4;
-                        cmd_linear_vel_from_momo = A*((1 - k)*x + k)*x;  // cmd_linear_vel_from_momo は指令値 (m/s)
+                        A = 0.3;
+			cmd_linear_vel_from_momo = A*x;
+                        // cmd_linear_vel_from_momo = A*((1 - k)*x + k)*x;  // cmd_linear_vel_from_momo は指令値 (m/s)
                     }
                     else {
-                        A = 0.4;
-                        cmd_linear_vel_from_momo = - A*((1 - k)*(-x) + k)*(-x);  // cmd_linear_vel_from_momo は指令値 (m/s)
+                        A = 0.3;
+			cmd_linear_vel_from_momo = A*x;
+                        // cmd_linear_vel_from_momo = - A*((1 - k)*(-x) + k)*(-x);  // cmd_linear_vel_from_momo は指令値 (m/s)
                     }
 
                     A = 40.0; // 指令値 (deg/s) の最大値
                     k = 0.05;
                     x = (int8_t)buf_ptr[2] /127.0; // 遠隔のjoystick の入力値 -1 ~ 1
                     if (x > 0) {
-                        cmd_angular_vel_from_momo = A*((1 - k)*x + k)*x;  // cmd_linear_vel_from_momo は指令値 (m/s)
+			cmd_angular_vel_from_momo = A*x;
+                        // cmd_angular_vel_from_momo = A*((1 - k)*x + k)*x;  // cmd_linear_vel_from_momo は指令値 (m/s)
                     }
                     else {
-                        cmd_angular_vel_from_momo = - A*((1 - k)*(-x) + k)*(-x);  // cmd_linear_vel_from_momo は指令値 (m/s)
+			cmd_angular_vel_from_momo = A*x;
+                        // cmd_angular_vel_from_momo = - A*((1 - k)*(-x) + k)*(-x);  // cmd_linear_vel_from_momo は指令値 (m/s)
                     }
 
                     if ((fabs(cmd_linear_vel_from_momo) > 0.05 || fabs(cmd_angular_vel_from_momo) > 5.0)) {
