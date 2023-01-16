@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="icon" type='image/png' href="../momo_icon.png">
+    <style type="text/css">
+    main div {
+        margin: 0;
+        padding: 0;
+    }
+    .VelocityStatus {
+        float: left;
+        width: 50%;
+        background-color: #ddd;
+    }
+    .SegwayStatusStamped {
+        float: right;
+        width: 50%;
+        background-color: #eee;
+    }
+    </style>
+    <title>Momo P2P</title>
+  </head>
+  <body>
+    <h3>Momo P2P</h3>
+    <input type="button" onclick="connect();" id="connect" value="Connect">
+    <input type="button" onclick="disconnect();" value="Disconnect">
+    <video id="remote_video" style="display: none;"></video>
+    <main>
+        <div class="VelocityStatus">
+            Send to Segway<br>
+            <font size="4">
+                <pre><div id="sgvs"></div></pre>
+            </font>
+            <br>
+        </div>
+        <div class="SegwayStatusStamped">
+            Recieve from Segway <br>
+            <font size="4">
+                <pre><div id="sgss"></div></pre>
+            </font>
+            <br>
+        </div>
+    </main>
+    <script type="text/javascript">
+        let CLOSE_DATA_CHANNEL = false;
+        let RESTART = true;
+    </script>
+    <script type='text/javascript' src='./js/sora2022.3.1.js'></script>
+    <script type='text/javascript' src='./js/localwebrtc.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="text/javascript">
+        const debug = true;
+        const sora = Sora.connection("ws://192.168.11.64:5000/signaling", debug);
+        const options = {
+            multistream: true,
+            video: false,
+            audio: true,
+            dataChannelSignaling: true,
+            dataChannels: [
+                {
+                    label: "#sora-devtools",
+                    direction: "sendrecv"
+                }
+            ]
+        };
+        let recvonly = sora.recvonly("haptics", null, options);
+        recvonly.connect();
+
+        recvonly.on('message', (event) => {
+
+            if ((new Uint8Array(event.data)[0] == 0x43 || new Uint8Array(event.data)[0] == 0x44 || new Uint8Array(event.data)[0] == 0x46 || new Uint8Array(event.data)[0] == 0x47 ) && event.data.byteLength == 4) {
+                if (dataChannel) {
+                    if (dataChannel.readyState == 'open') {
+                        dataChannel.send(event.data);
+                    }
+                    else {
+                        connect();
+                    }
+                }
+            }
+            else if (new Uint8Array(event.data)[0] == 0xe0 && event.data.byteLength == 3) {
+                if (dataChannel) {
+                    if (dataChannel.readyState == 'open') {
+                        dataChannel.send(event.data);
+                    }
+                    else {
+                        connect();
+                    }
+                }
+            }
+            else if (new Uint8Array(event.data)[0] == 0x99 && event.data.byteLength == 4) {
+                if (dataChannel) {
+                    if (dataChannel.readyState == 'open') {
+                        dataChannel.send(event.data);
+                    }
+                    else {
+                        connect();
+                    }
+                }
+            }
+        });
+
+        setInterval(observe_CLOSE_DATA_CHANNEL, 5000);
+        function observe_CLOSE_DATA_CHANNEL() {
+            if (CLOSE_DATA_CHANNEL) {
+                if (!recvonly.signalingSwitched) {
+                    disconnect();
+                    recvonly.connect();
+                }
+            }
+            if (RESTART) {
+                RESTART = false;
+                // disconnect();
+                connect();
+            }
+        }
+
+        localrecvonly
+    </script>
+  </body>
+</html>
