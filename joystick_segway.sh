@@ -7,6 +7,11 @@ sleep 2s
 
 #./main &
 
+cd ~/kortex_python
+
+./momo.run
+./main.py &
+
 cd ~/joy_segway_rosless
 # ./sora_arm64.run
 #/usr/bin/chromium-browser http://127.0.0.1:8080/html/test.html &
