@@ -5,7 +5,7 @@ cd ~/tactile
 
 sleep 2s
 
-./main &
+#./main &
 
 cd ~/joy_segway_rosless
 # ./sora_arm64.run
